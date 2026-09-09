@@ -1,7 +1,9 @@
 import type { AgeRange } from '../domain/age';
-import type { InstalledBaseFilter } from '../domain/installed-equipment';
-import type { InstalledBase } from '../store/installed-base';
+import type { InstalledBaseFilter, InstalledEquipment } from '../domain/installed-equipment';
+import type { Modality } from '../domain/modality';
+import type { Provenance } from '../domain/provenance';
 import type { Use } from '../domain/use';
+import type { InstalledBase } from '../store/installed-base';
 
 export type DashboardStatus = 'loading' | 'ready' | 'offline' | 'empty' | 'no-results';
 
@@ -9,23 +11,25 @@ export interface DashboardEquipmentRow {
   readonly siteName: string;
   readonly city: string;
   readonly country: string;
-  readonly modality: string;
+  readonly modality: Modality;
   readonly brand: string | null;
   readonly model: string | null;
   readonly quantity: number;
   readonly age: AgeRange | null;
   readonly use: Use | null;
-  readonly state: string;
+  readonly state: Provenance;
   readonly observationIds: readonly string[];
+}
+
+export interface DashboardSiteGroup {
+  readonly siteName: string;
+  readonly equipment: readonly DashboardEquipmentRow[];
+  readonly quantity: number;
 }
 
 export interface DashboardClientGroup {
   readonly clientName: string;
-  readonly sites: readonly {
-    readonly siteName: string;
-    readonly equipment: readonly DashboardEquipmentRow[];
-    readonly quantity: number;
-  }[];
+  readonly sites: readonly DashboardSiteGroup[];
   readonly quantity: number;
 }
 
@@ -44,13 +48,7 @@ export interface DashboardView {
   readonly aggregation: DashboardAggregation | null;
 }
 
-type MutableClientGroup = {
-  clientName: string;
-  sites: { siteName: string; equipment: DashboardEquipmentRow[]; quantity: number }[];
-  quantity: number;
-};
-
-function row(record: ReturnType<InstalledBase['all']>[number]): DashboardEquipmentRow {
+function toEquipmentRow(record: InstalledEquipment): DashboardEquipmentRow {
   return {
     siteName: record.site.name,
     city: record.site.city,
@@ -66,6 +64,10 @@ function row(record: ReturnType<InstalledBase['all']>[number]): DashboardEquipme
   };
 }
 
+function sumQuantity(items: readonly { readonly quantity: number }[]): number {
+  return items.reduce((sum, item) => sum + item.quantity, 0);
+}
+
 export function dashboardView(
   base: InstalledBase,
   filter: InstalledBaseFilter = {},
@@ -77,28 +79,30 @@ export function dashboardView(
   if (base.all().length === 0) return { status: 'empty', clients: [], aggregation: null };
   if (equipment.length === 0) return { status: 'no-results', clients: [], aggregation: null };
 
-  const clients = new Map<string, MutableClientGroup>();
+  const groups = new Map<string, DashboardClientGroup>();
   for (const record of equipment) {
+    const equipmentRow = toEquipmentRow(record);
     const clientName = record.site.client.name;
-    const client = clients.get(clientName) ?? { clientName, sites: [], quantity: 0 };
-    const existingSite = client.sites.find((site) => site.siteName === record.site.name);
-    const equipmentRow = row(record);
-    if (existingSite !== undefined) {
-      client.sites = client.sites.map((site) => site.siteName === existingSite.siteName
-        ? { ...site, equipment: [...site.equipment, equipmentRow], quantity: site.quantity + record.quantity }
-        : site);
-    } else {
-      client.sites = [...client.sites, { siteName: record.site.name, equipment: [equipmentRow], quantity: record.quantity }];
-    }
-    client.quantity += record.quantity;
-    clients.set(clientName, client);
+    const siteName = record.site.name;
+    const current = groups.get(clientName) ?? { clientName, sites: [] as DashboardSiteGroup[], quantity: 0 };
+    const siteIndex = current.sites.findIndex((site) => site.siteName === siteName);
+    const sites = siteIndex === -1
+      ? [...current.sites, { siteName, equipment: [equipmentRow], quantity: record.quantity }]
+      : current.sites.map((site, index) => index === siteIndex
+          ? { ...site, equipment: [...site.equipment, equipmentRow], quantity: sumQuantity([...site.equipment, equipmentRow]) }
+          : site);
+    groups.set(clientName, {
+      clientName,
+      sites,
+      quantity: sumQuantity(sites.flatMap((site) => site.equipment)),
+    });
   }
 
   return {
     status: 'ready',
-    clients: [...clients.values()],
+    clients: [...groups.values()],
     aggregation: {
-      quantity: equipment.reduce((sum, item) => sum + item.quantity, 0),
+      quantity: sumQuantity(equipment),
       locations: equipment.map((item) => ({ clientName: item.site.client.name, siteName: item.site.name, quantity: item.quantity })),
     },
   };

@@ -28,6 +28,19 @@ describe('dashboard view', () => {
     expect(new Set(view.aggregation?.locations.map((location) => location.clientName)).size).toBeGreaterThan(1);
   });
 
+  it('derives site and client quantities from equipment quantities', async () => {
+    const view = dashboardView(await seededBase());
+    for (const client of view.clients) {
+      for (const site of client.sites) {
+        expect(site.quantity).toBe(site.equipment.reduce((sum, item) => sum + item.quantity, 0));
+      }
+      expect(client.quantity).toBe(client.sites.flatMap((site) => site.equipment).reduce((sum, item) => sum + item.quantity, 0));
+    }
+    expect(view.aggregation?.quantity).toBe(
+      view.clients.flatMap((client) => client.sites).flatMap((site) => site.equipment).reduce((sum, item) => sum + item.quantity, 0),
+    );
+  });
+
   it('represents loading, offline, empty, and no-result states', async () => {
     const base = await seededBase();
     expect(dashboardView(base, {}, { loading: true }).status).toBe('loading');
