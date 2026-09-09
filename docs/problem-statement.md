@@ -43,4 +43,4 @@ The solution must use **QVAC** with inference on the device or delegated peer-to
 
 ## Domain decisions
 
-The shared domain model behind this statement is captured in the **Language — Field equipment capture** glossary in `CONTEXT.md` (Field note, Observation, Modality, Client, Site, State, Installed equipment, Independent confirmation, Installed base, Confidence score, Renewal opportunity) and the architecture decision in `docs/adr/`.
+The shared domain model behind this statement is captured in the **Language — Field equipment capture** glossary in `CONTEXT.md` (Field note, Observation, Modality, Age, Comment, Client, Site, State, Installed equipment, Conflicting observation, Independent confirmation, Installed base, Confidence score, Renewal opportunity) and the architecture decisions in `docs/adr/`.
