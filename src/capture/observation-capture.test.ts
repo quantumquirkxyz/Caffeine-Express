@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { captureObservation, DeterministicObservationExtractor, ExtractionError } from './observation-capture';
 import { MemoryObservationStore } from '../store/memory-observation-store';
+import type { ObservationInput } from '../validation/observation.schema';
 
 describe('typed Observation capture', () => {
   it('extracts, validates, and persists a Field note while preserving Unknown Age', async () => {
@@ -43,7 +44,8 @@ describe('typed Observation capture', () => {
     const store = new MemoryObservationStore();
     const extractor = new DeterministicObservationExtractor();
     const input = await extractor.extract('one MRI at Site, client Client, brand A, model One');
-    const two = { extract: vi.fn(async () => [...input, { ...input[0], brand: 'B', model: 'Two' }]) };
+    const second: ObservationInput = { ...input[0]!, brand: 'B', model: 'Two' };
+    const two = { extract: vi.fn(async () => [...input, second]) };
     const observations = await captureObservation('two devices', two, store);
     expect(observations).toHaveLength(2);
     expect(await store.all()).toHaveLength(2);
