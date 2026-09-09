@@ -1,6 +1,6 @@
 # Caffeine-Express
 
-The project turns what a field collaborator observes in a hospital into structured, reliable data about installed medical equipment, with conversational capture as simple as a conversation and inference running on the device.
+The project turns what a field collaborator observes in a hospital into structured, reliable data about installed medical equipment, with conversational capture as simple as a conversation and inference running on the device. The solution is delivered as a **Web/Mobile app (Android/iOS)**: a field app for capture on the phone and a local-first dashboard for the installed base.
 
 ## Language
 
