@@ -4,3 +4,4 @@ export * from './domain/site';
 export * from './domain/age';
 export * from './domain/use';
 export * from './domain/observation';
+export * from './validation/observation.schema';
