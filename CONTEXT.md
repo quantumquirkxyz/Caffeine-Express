@@ -2,6 +2,36 @@
 
 The project turns what a field collaborator observes in a hospital into structured, reliable data about installed medical equipment, with conversational capture as simple as a conversation and inference running on the device. The solution is delivered as a **Web/Mobile app (Android/iOS)**: a field app for capture on the phone and a local-first dashboard for the installed base.
 
+## Project scope
+
+**Current focus:** build the MVP first. Post-MVP capabilities are reference material only and must not expand the current implementation scope until the MVP is complete.
+
+The prototype is built in two explicit stages. The **MVP** is the reference implementation to build first:
+
+- The Collaborator types a natural-language Observation.
+- QVAC extracts Client/Site, Modality, brand, model, quantity, Age, and Use when present; required Age remains `Unknown` when unresolved.
+- The data is validated and persisted as an Observation.
+- The Observation updates the Installed base.
+- The dashboard shows the installed base per Client and basic aggregation across Clients.
+
+The **post-MVP** stage adds capabilities only after the MVP is complete:
+
+- Dictation with Parakeet speech-to-text.
+- Camera capture of equipment plates.
+- OCR and VisionPsy extraction of brand, model, and manufacturing year.
+- Automatic follow-up for Unknown fields.
+- Independent confirmation, conflict handling, and peer-to-peer synchronization.
+- Natural-language queries, freshness, Age and Use analytics, and renewal opportunities.
+
+```mermaid
+flowchart LR
+    Input["Typed natural-language Observation"] --> Extract["QVAC structured extraction"]
+    Extract --> Store["Validate and persist Observation"]
+    Store --> Base["Update Installed base"]
+    Base --> Dashboard["Client view and basic aggregation"]
+    Dashboard -.after MVP.-> Extensions["Dictation, camera, OCR, follow-up, confirmation, P2P, advanced analytics"]
+```
+
 ## Language
 
 ### Actors and occasions
@@ -24,7 +54,7 @@ _Use when_: referring to the uncleaned input utterance.
 _Avoid_: Report, visit note (unless the visit-level grouping is meant, not the utterance).
 
 **Observation**
-: A persisted structured record for one equipment group at a Site, keyed by Site × Modality × brand × model, carrying modality, brand, model, age (a min–max range), quantity, and a state. The Field note renders into 1..n Observations — the model decides the count based on how specifically the collaborator distinguishes equipment (e.g. "two MRI machines" = one Observation with quantity=2; "one NovaMed MRI and one Celeris MRI" = two distinct Observations).
+: A persisted structured record for one equipment group at a Site, keyed by Site × Modality × brand × model, carrying modality, brand, model, Age (a required min–max range or Unknown), quantity, and a state. The Field note renders into 1..n Observations — the model decides the count based on how specifically the collaborator distinguishes equipment (e.g. "two MRI machines" = one Observation with quantity=2; "one NovaMed MRI and one Celeris MRI" = two distinct Observations).
 _Use when_: referring to the structured, state-carrying data record.
 _Avoid_: Item, loose record — each Observation is the unit that carries a state.
 
@@ -34,9 +64,19 @@ _Use when_: referring to the normalized equipment type of an Observation or Inst
 _Avoid_: Equipment type (if a brand-specific line is meant), generic equipment — reserve Modality for the controlled category.
 
 **Age**
-: The equipment's time in service, captured as an inclusive min–max range in years: min is the youngest plausible value, max the oldest. An exact figure is the degenerate range min = max (e.g. "six years old" → 6–6). An approximation widens the range ("about eight" → 7–9; "8–10 years old" → 8–10; "relatively new" → a low young range). The range inherits its field provenance (Reported/Estimated/Confirmed); Unknown leaves it open. A manufacturing year read from a plate is a proxy that derives the range, not the Age itself.
+: The elapsed calendar time since an equipment group was installed or put into service, calculated relative to the observation date. The installation or commissioning date, when known, is the preferred evidence and may itself be a range; Age is derived from it as an inclusive min–max range in years and can be recalculated as time passes. An exact date produces a degenerate range (e.g. installed on 2018-06-01 and observed on 2026-09-09 → approximately 8–8 years). An installation range of 2017–2019 produces approximately 7–9 years. When installation evidence is unavailable, a manufacturing year read from a plate is only a proxy: it produces an Estimated Age range with uncertainty and is never treated as the exact installation date. Vague language without a defensible bound does not receive an invented numeric age; it triggers a follow-up or leaves Age Unknown. The range inherits its field provenance (Reported/Estimated/Confirmed); Unknown leaves it open.
 _Use when_: referring to how long the equipment has been installed or operating.
-_Avoid_: Age as a single point figure (false precision), installation year (a proxy for deriving the range).
+_Avoid_: Age as a single point figure (false precision), manufacturing year as Age, equipment Use, or the commercial lifespan of a model.
+
+**Use**
+: The equipment's operating usage, measured in hours and kept distinct from Age. Use may describe accumulated operating hours or hours over a defined period; the period is optional and the observation date remains the source timestamp. A statement such as "used a lot" does not invent hours; it stays as a Comment or triggers a follow-up. Use does not determine when equipment is old.
+_Use when_: referring to how intensively or how long equipment has operated.
+_Avoid_: using Use as a substitute for installation age or as evidence of a model's commercial availability.
+
+**Sales lifecycle**
+: The period during which a manufacturer sells or commercially supports a model. It is a model-level commercial concept, distinct from the Age of a particular Installed equipment group and from its Use.
+_Use when_: referring to commercial availability or support duration of a model.
+_Avoid_: treating a 2–3 year sales lifecycle as the equipment's installation age or operating time.
 
 **Comment**
 : Free-text, non-structured context attached to an Observation — extra information that does not fit the equipment fields (modality, brand, model, age, quantity). It plays no role in matching, State, confidence, or renewal; it is captured from the same Field note/Evidence and stays visible in the evidence drill-down.
