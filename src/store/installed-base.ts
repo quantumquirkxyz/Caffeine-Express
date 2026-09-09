@@ -1,7 +1,6 @@
-import { observationKey, type Observation } from '../domain/observation';
-import { recordState } from '../domain/observation';
+import { observationKey, recordState, type Observation, type ObservationKey } from '../domain/observation';
 import type { InstalledBaseFilter, InstalledEquipment } from '../domain/installed-equipment';
-import { lesserFirm, type Provenance } from '../domain/provenance';
+import { leastFirm, type Provenance } from '../domain/provenance';
 
 function mergeAge(current: Observation['age'], next: Observation['age']): Observation['age'] {
   if (current === null) return next;
@@ -9,19 +8,21 @@ function mergeAge(current: Observation['age'], next: Observation['age']): Observ
   return { min: Math.min(current.min, next.min), max: Math.max(current.max, next.max) };
 }
 
-function independentState(observations: readonly Observation[]): Provenance {
-  const collaborators = new Set(observations.map((observation) => observation.collaborator).filter((value) => value !== null));
-  if (collaborators.size > 1) return 'Confirmed';
-  return observations.reduce<Provenance>((state, observation) => lesserFirm(state, recordState(observation)), 'Confirmed');
+function mergedState(observations: readonly Observation[]): Provenance {
+  return leastFirm(observations.map(recordState));
+}
+
+function installedEquipmentKey(key: ObservationKey): string {
+  return JSON.stringify([key.siteName, key.modality, key.brand, key.model]);
 }
 
 export class InstalledBase {
   private readonly records = new Map<string, InstalledEquipment>();
+  private readonly observations = new Map<string, Observation>();
 
-  update(observation: Observation): InstalledEquipment | null {
-    if (observation.brand === null || observation.model === null) return null;
+  update(observation: Observation): InstalledEquipment {
     const key = observationKey(observation);
-    const mapKey = JSON.stringify(key);
+    const mapKey = installedEquipmentKey(key);
     const current = this.records.get(mapKey);
     const related = current === undefined
       ? [observation]
@@ -29,7 +30,6 @@ export class InstalledBase {
     const latest = related.reduce((a, b) => (b.visitDate >= a.visitDate ? b : a));
     const record: InstalledEquipment = {
       key,
-      clientName: observation.site.client.name,
       site: observation.site,
       modality: observation.modality,
       brand: observation.brand,
@@ -37,7 +37,7 @@ export class InstalledBase {
       quantity: Math.max(...related.map((item) => item.quantity)),
       age: related.reduce<Observation['age']>((age, item) => mergeAge(age, item.age), null),
       use: latest.use,
-      state: independentState(related),
+      state: mergedState(related),
       observationIds: related.map((item) => item.id),
     };
     this.records.set(mapKey, record);
@@ -45,13 +45,11 @@ export class InstalledBase {
     return record;
   }
 
-  private readonly observations = new Map<string, Observation>();
-
   all(): readonly InstalledEquipment[] { return [...this.records.values()]; }
 
   find(filter: InstalledBaseFilter = {}): readonly InstalledEquipment[] {
     return this.all().filter((record) =>
-      (filter.clientName === undefined || record.clientName === filter.clientName) &&
+      (filter.clientName === undefined || record.site.client.name === filter.clientName) &&
       (filter.siteName === undefined || record.site.name === filter.siteName) &&
       (filter.modality === undefined || record.modality === filter.modality) &&
       (filter.brand === undefined || record.brand === filter.brand) &&

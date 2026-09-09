@@ -6,11 +6,10 @@ import type { Use } from './use';
 
 export interface InstalledEquipment {
   readonly key: ObservationKey;
-  readonly clientName: string;
   readonly site: Observation['site'];
   readonly modality: Modality;
-  readonly brand: string;
-  readonly model: string;
+  readonly brand: string | null;
+  readonly model: string | null;
   readonly quantity: number;
   readonly age: AgeRange | null;
   readonly use: Use | null;
