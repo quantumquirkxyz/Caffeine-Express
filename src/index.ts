@@ -7,5 +7,7 @@ export * from './domain/observation';
 export * from './validation/observation.schema';
 export * from './store/observation-store';
 export * from './store/memory-observation-store';
+export * from './domain/installed-equipment';
+export * from './store/installed-base';
 export * from './fixtures/synthetic';
 export * from './fixtures/seed';
