@@ -242,6 +242,7 @@ Stack and key decisions (grounded in the official QVAC Expo tutorial and docs):
 
 - Custom model training or on-device fine-tuning as a product feature (mention as roadmap only).
 - Cloud sync, multi-tenant backend, enterprise auth, exhaustive device taxonomy.
+- Text-to-speech / voice assistant read-back of follow-up questions (roadmap only; transcription is the capture mechanism, never synthesis).
 - Autonomous fuzzy dedup — suggestions only, never silent confirmation.
 
 ---
