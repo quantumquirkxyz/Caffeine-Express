@@ -4,15 +4,27 @@ The project turns what a field collaborator observes in a hospital into structur
 
 ## Language
 
+### Actors and occasions
+
+**Collaborator**
+: The field worker (service engineer, salesperson, specialist) who visits a Site and reports what they observe. The source of Field notes and the anchor of independent confirmation: a confirmations is independent only if it comes from a different Collaborator, or from a plate/label photo.
+_Use when_: referring to who observes and reports equipment.
+_Avoid_: User (unless the app-level actor is meant), observer, reporter.
+
+**Visit**
+: A single occasion a Collaborator spends at a Site, grouping the Field notes captured during that trip. Evidence from separate Visits (ideally by separate Collaborators) strengthens independence; the same Collaborator repeating a claim within one Visit is not independent.
+_Use when_: referring to the occasion, not the utterance.
+_Avoid_: Session, trip (unless the travel itself is meant) — reserve "visit" for the on-site occasion.
+
 ### Field observation
 
 **Field note**
-: The free-text report a collaborator speaks or types after a visit, in natural language. It is the raw evidence and the link to voice and photo capture; it yields one or more Observations.
+: The free-text, natural-language report a Collaborator speaks or types during a Visit to a Site. It is the raw uncleaned input utterance and the link to voice and photo capture; it yields one or more Observations. Dictation transcribed on-device is a Field note; voice is only a capture mechanism.
 _Use when_: referring to the uncleaned input utterance.
 _Avoid_: Report, visit note (unless the visit-level grouping is meant, not the utterance).
 
 **Observation**
-: A persisted structured record for one mentioned equipment group, carrying modality, brand, model, age, quantity, and a state. The Field note renders into 1..n Observations.
+: A persisted structured record for one equipment group at a Site, keyed by Site × Modality × brand × model, carrying modality, brand, model, age, quantity, and a state. The Field note renders into 1..n Observations — the model decides the count based on how specifically the collaborator distinguishes equipment (e.g. "two MRI machines" = one Observation with quantity=2; "one Siemens MRI and one GE MRI" = two distinct Observations).
 _Use when_: referring to the structured, state-carrying data record.
 _Avoid_: Item, loose record — each Observation is the unit that carries a state.
 
@@ -24,19 +36,19 @@ _Avoid_: Equipment type (if a brand-specific line is meant), generic equipment �
 ### Institutions and locations
 
 **Client**
-: The health organization/account that owns equipment — the row dimension of the installed-base view. May hold one or more Sites.
-_Use when_: referring to the organization that buys and owns the equipment.
+: The health organization or commercial account that owns equipment — the row dimension of the installed-base view. A Client may hold one or more Sites (e.g. "DemoCare Health Group" owns "Hospital DemoCare Pacific" and "Hospital DemoCare Norte").
+_Use when_: referring to the organization that buys and owns the equipment, not the specific building.
 _Avoid_: Hospital (if a specific campus location is meant), account (unless the commercial account is meant).
 
 **Site**
-: The physical building or campus where a collaborator observes equipment; the anchor of each Observation, which inherits the Client, city, and country.
+: A distinct physical location — a building or campus — where a collaborator observes equipment; the anchor of each Observation, which inherits the Client, city, and country. A Client may have multiple Sites.
 _Use when_: referring to the concrete place a visit happened.
-_Avoid_: Headquarters, branch, hospital (unless the building itself is meant) — reserve "site" for the visit anchor.
+_Avoid_: Headquarters, branch, hospital (if the owning organization is meant) — reserve "site" for the visit anchor.
 
 ### Observation state
 
 **State**
-: Provenance of an Observation, not its quality. One of Reported, Estimated, Confirmed, or Unknown; by precedence the least firm of its fields (Confirmed > Reported > Estimated > Unknown).
+: Provenance of an Observation, not its quality. One of Reported, Estimated, Confirmed, or Unknown; calculated as the least firm of its fields (Confirmed > Reported > Estimated > Unknown). The Observation-level State reflects the worst-case provenance across all its fields.
 _Use when_: referring to the record-level state of an Observation.
 _Avoid_: Status, quality, validity — the state says where the data came from, not how good it is.
 
@@ -64,7 +76,7 @@ _Use when_: referring to the deduplicated device/group that appears in the insta
 _Avoid_: Item, asset, serialized physical unit (unless distinct beyond the group key), inventory.
 
 **Independent confirmation**
-: A corroboration of Installed equipment from a separate source: a second collaborator in a different Field note, or a plate/label photo read. The evidence that raises a record to Confirmed.
+: A corroboration of Installed equipment from a separate source: a second collaborator in a different Field note, or a plate/label photo read. The evidence that raises a record to Confirmed. Matching requires all four key fields (Site × Modality × brand × model) to overlap; a report missing any field creates a new Installed equipment entry until the gap is filled.
 _Use when_: counting what corroborates a record.
 _Avoid_: Match (the reconciliation act is not the corroboration itself), "like", "double-check" (casual reading).
 
