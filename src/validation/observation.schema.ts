@@ -3,6 +3,7 @@ import type { AgeRange } from '../domain/age';
 import { normalizeModality, type Modality } from '../domain/modality';
 import type { Provenance } from '../domain/provenance';
 import type { Observation } from '../domain/observation';
+import type { Site } from '../domain/site';
 
 const provenanceSchema = z.enum([
   'Confirmed',
@@ -84,12 +85,7 @@ const observationInputSchema = z.object({
 });
 
 export interface ObservationInput {
-  readonly site: {
-    readonly client: { readonly name: string };
-    readonly name: string;
-    readonly city: string;
-    readonly country: string;
-  };
+  readonly site: Site;
   readonly modality: string;
   readonly modalityProvenance: Provenance;
   readonly brand?: string | null;
@@ -178,21 +174,30 @@ function buildObservation(
     modality: input.modality,
     modalityProvenance: input.modalityProvenance,
     brand,
-    brandProvenance: brand === null ? 'Unknown' : (input.brandProvenance ?? 'Reported'),
+    brandProvenance: withFieldProvenance(brand, input.brandProvenance),
     model,
-    modelProvenance: model === null ? 'Unknown' : (input.modelProvenance ?? 'Reported'),
+    modelProvenance: withFieldProvenance(model, input.modelProvenance),
     quantity: input.quantity,
     quantityProvenance: input.quantityProvenance,
     age,
-    ageProvenance: age === null ? 'Unknown' : (input.ageProvenance ?? 'Estimated'),
+    ageProvenance: withFieldProvenance(age, input.ageProvenance),
     use,
-    useProvenance: use === null ? null : (input.useProvenance ?? 'Reported'),
+    useProvenance: use === null ? null : withFieldProvenance(use, input.useProvenance),
     comment: input.comment ?? null,
     fieldNote: input.fieldNote ?? null,
     collaborator: input.collaborator ?? null,
     visitDate: input.visitDate,
     createdAt: now.toISOString(),
   };
+}
+
+function withFieldProvenance(
+  value: unknown,
+  provenance: Provenance | null | undefined,
+): Provenance {
+  return value === null || value === undefined || provenance === undefined || provenance === null
+    ? 'Unknown'
+    : provenance;
 }
 
 function randomId(): string {

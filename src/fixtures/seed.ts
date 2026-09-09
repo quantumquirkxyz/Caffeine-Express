@@ -17,6 +17,9 @@ export function syntheticFixtureRows(): readonly SyntheticFixtureRow[] {
 
 export function toObservationInput(row: SyntheticFixtureRow): ObservationInput {
   const model = row.model ?? null;
+  const age = row.approximateAgeYears === null
+    ? null
+    : approximateAgeYears(row.approximateAgeYears);
   return {
     site: {
       client: { name: row.clientName },
@@ -32,10 +35,10 @@ export function toObservationInput(row: SyntheticFixtureRow): ObservationInput {
     modelProvenance: model === null ? 'Unknown' : (row.provenance.model ?? 'Reported'),
     quantity: row.quantity,
     quantityProvenance: row.provenance.quantity ?? 'Reported',
-    age: approximateAgeYears(row.approximateAgeYears),
-    ageProvenance: row.provenance.age ?? 'Estimated',
-    use: null,
-    useProvenance: null,
+    age,
+    ageProvenance: age === null ? 'Unknown' : (row.provenance.age ?? 'Estimated'),
+    use: row.use ?? null,
+    useProvenance: row.use === undefined ? null : (row.provenance.use ?? 'Reported'),
     comment: row.comment,
     fieldNote: row.fieldNote,
     collaborator: row.collaborator,

@@ -68,11 +68,44 @@ describe('observation validation', () => {
     expect(observation.ageProvenance).toBe('Unknown');
   });
 
+  it('normalizes omitted provenance to Unknown for a present value', () => {
+    const {
+      brandProvenance: _brandProvenance,
+      modelProvenance: _modelProvenance,
+      ageProvenance: _ageProvenance,
+      ...input
+    } = validInput();
+    const observation = createObservation(input, { id: 'obs-3b' });
+    expect(observation.brand).toBe('NovaMed');
+    expect(observation.brandProvenance).toBe('Unknown');
+    expect(observation.model).toBe('NM-MR 700');
+    expect(observation.modelProvenance).toBe('Unknown');
+    expect(observation.age).toEqual({ min: 6, max: 8 });
+    expect(observation.ageProvenance).toBe('Unknown');
+    expect(recordState(observation)).toBe('Unknown');
+  });
+
   it('sets an omitted brand to Unknown and forces Unknown provenance', () => {
     const { brand: _brand, ...input } = validInput();
     const observation = createObservation(input, { id: 'obs-4' });
     expect(observation.brand).toBeNull();
     expect(observation.brandProvenance).toBe('Unknown');
+  });
+
+  it('normalizes omitted provenance to Unknown for a present value', () => {
+    const {
+      brandProvenance: _brandProvenance,
+      modelProvenance: _modelProvenance,
+      ageProvenance: _ageProvenance,
+      ...input
+    } = validInput();
+    const observation = createObservation(input, { id: 'obs-10' });
+    expect(observation.brand).toBe('NovaMed');
+    expect(observation.brandProvenance).toBe('Unknown');
+    expect(observation.model).toBe('NM-MR 700');
+    expect(observation.modelProvenance).toBe('Unknown');
+    expect(observation.age).toEqual({ min: 6, max: 8 });
+    expect(observation.ageProvenance).toBe('Unknown');
   });
 
   it('preserves explicit Use hours with an optional period', () => {

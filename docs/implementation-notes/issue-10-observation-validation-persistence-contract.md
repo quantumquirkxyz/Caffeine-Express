@@ -50,7 +50,7 @@ spec (#3), the glossary in `CONTEXT.md`, and ADRs 0002, 0003, 0005, and 0007.
 | Age uses an inclusive min–max range or `Unknown` | `AgeRange | null` (`age.ts`); missing age → `null` + provenance `Unknown` (`observation.schema.test.ts`) |
 | Use stores explicit hours with an optional period | `Use { hours, period }` (`use.ts`); period optional/nullable; reversed period rejected |
 | Malformed extraction is rejected without invented values | `behavior observation.schema.test.ts`: zero/negative/fractional quantity, reversed/negative/text age, unknown modality, empty brand/model, negative hours, confidence labels as provenance, bad date format all rejected |
-| Synthetic fixtures are fictional and reproducible | `seed.test.ts`: 20 rows, known fictional brands, DemoCare-only clients/sites, deterministic under a fixed clock |
+| Synthetic fixtures are fictional and reproducible | `seed.test.ts`: 22 rows (20 workbook-parity rows `obs-001..obs-020`, plus `obs-021` Unknown Age and `obs-022` Use), known fictional brands, DemoCare-only clients/sites, deterministic under a fixed clock |
 
 ## Validation performed
 
