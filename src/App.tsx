@@ -129,7 +129,7 @@ export default function App() {
   const [fieldNote, setFieldNote] = useState('');
   const [captureState, setCaptureState] = useState<'empty' | 'loading' | 'error' | 'saved'>('empty');
   const [captureError, setCaptureError] = useState('');
-  const [captured, setCaptured] = useState<Observation | null>(null);
+  const [captured, setCaptured] = useState<readonly Observation[]>([]);
   const [demo, setDemo] = useState<DemoState>('loading');
   const [selectedModality, setSelectedModality] = useState<Modality | null>(null);
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
@@ -164,7 +164,10 @@ export default function App() {
       if (active) setQvacModelId(modelId);
       else void unloadQvacModel(modelId);
     }).catch(() => {
-      if (active) setCaptureError('QVAC could not load its on-device model.');
+      if (active) {
+        setCaptureError('QVAC could not load its on-device model.');
+        setCaptureState('error');
+      }
     });
     return () => { active = false; };
   }, []);
@@ -213,11 +216,11 @@ export default function App() {
     setCaptureError('');
     try {
       if (qvacModelId === null) throw new Error('QVAC is still loading its on-device model.');
-      const observation = await captureObservation(fieldNote, new QVACObservationExtractor(qvacModelId), store);
+      const observations = await captureObservation(fieldNote, new QVACObservationExtractor(qvacModelId), store);
       const next = new InstalledBase();
       (await store.all()).forEach((item) => next.update(item));
       setBase(next);
-      setCaptured(observation);
+      setCaptured(observations);
       setCaptureState('saved');
       setFieldNote('');
     } catch (error) {
@@ -245,14 +248,16 @@ export default function App() {
         {captureState === 'loading' ? <ActivityIndicator accessibilityLabel="Extracting Field note" /> : <Button disabled={store === null || qvacModelId === null} title="Extract and save" onPress={() => void saveFieldNote()} />}
         {store === null && <Text style={styles.captureHint}>Capture is unavailable while local data is loading or offline.</Text>}
         {captureState === 'error' && <Text accessibilityRole="alert" style={styles.error}>{captureError}</Text>}
-        {captureState === 'saved' && captured !== null && (
+        {captureState === 'saved' && captured.length > 0 && (
           <View style={styles.result}>
             <Text style={styles.resultTitle}>Saved Observation</Text>
-            <Text>{captured.site.client.name} / {captured.site.name}</Text>
-            <Text>{captured.modality} · {captured.brand ?? 'Unknown brand'} · {captured.model ?? 'Unknown model'}</Text>
-            <Text>Quantity: {captured.quantity} · Age: {formatAge(captured.age)} · Use: {captured.use === null ? 'Unknown' : formatUse(captured.use.hours)}</Text>
-            <Text>Comment: {captured.comment ?? 'None'}</Text>
-            <Text>Provenance: Modality {captured.modalityProvenance}, brand {captured.brandProvenance}, model {captured.modelProvenance}, quantity {captured.quantityProvenance}, Age {captured.ageProvenance}, Use {captured.useProvenance ?? 'Unknown'}</Text>
+            {captured.map((observation) => <View key={observation.id}>
+              <Text>{observation.site.client.name} / {observation.site.name}</Text>
+              <Text>{observation.modality} · {observation.brand ?? 'Unknown brand'} · {observation.model ?? 'Unknown model'}</Text>
+              <Text>Quantity: {observation.quantity} · Age: {formatAge(observation.age)} · Use: {observation.use === null ? 'Unknown' : formatUse(observation.use.hours)}</Text>
+              <Text>Comment: {observation.comment ?? 'None'}</Text>
+              <Text>Provenance: Modality {observation.modalityProvenance}, brand {observation.brandProvenance}, model {observation.modelProvenance}, quantity {observation.quantityProvenance}, Age {observation.ageProvenance}, Use {observation.useProvenance ?? 'Unknown'}</Text>
+            </View>)}
           </View>
         )}
       </View>

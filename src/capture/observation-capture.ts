@@ -3,7 +3,7 @@ import type { Observation } from '../domain/observation';
 import type { ObservationStore } from '../store/observation-store';
 
 export interface ObservationExtractor {
-  extract(fieldNote: string): Promise<ObservationInput>;
+  extract(fieldNote: string): Promise<readonly ObservationInput[]>;
 }
 
 export class ExtractionError extends Error {
@@ -14,7 +14,7 @@ export class ExtractionError extends Error {
 }
 
 export class DeterministicObservationExtractor implements ObservationExtractor {
-  async extract(fieldNote: string): Promise<ObservationInput> {
+  async extract(fieldNote: string): Promise<readonly ObservationInput[]> {
     const text = fieldNote.trim();
     const modality = text.match(/\b(MRI|MR|CT|ultrasound|US|x-ray|xray)\b/i)?.[1];
     const site = text.match(/(?:at|site)\s+([^,.;]+?)(?:,|\s+in\s+)/i)?.[1]?.trim();
@@ -31,7 +31,7 @@ export class DeterministicObservationExtractor implements ObservationExtractor {
       throw new ExtractionError('Include a modality, client, and site in the Field note.');
     }
 
-    return {
+    return [{
       site: { client: { name: client }, name: site, city: 'Unknown', country: 'Unknown' },
       modality,
       modalityProvenance: 'Reported',
@@ -47,7 +47,7 @@ export class DeterministicObservationExtractor implements ObservationExtractor {
       fieldNote: text,
       collaborator: null,
       visitDate: new Date().toISOString().slice(0, 10),
-    };
+    }];
   }
 }
 
@@ -56,9 +56,9 @@ export async function captureObservation(
   fieldNote: string,
   extractor: ObservationExtractor,
   store: ObservationStore,
-): Promise<Observation> {
+): Promise<readonly Observation[]> {
   if (fieldNote.trim() === '') throw new ExtractionError('Enter a Field note before extracting.');
-  const input = await extractor.extract(fieldNote);
-  const observation = createObservation(input);
-  return store.save(observation);
+  const inputs = await extractor.extract(fieldNote);
+  if (inputs.length === 0) throw new ExtractionError('QVAC returned no Observations.');
+  return Promise.all(inputs.map((input) => createObservation(input)).map((observation) => store.save(observation)));
 }

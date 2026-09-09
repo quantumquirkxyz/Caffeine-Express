@@ -11,11 +11,12 @@ describe('typed Observation capture', () => {
       store,
     );
 
-    expect(observation.modality).toBe('MRI');
-    expect(observation.quantity).toBe(2);
-    expect(observation.age).toBeNull();
-    expect(observation.ageProvenance).toBe('Unknown');
-    expect(observation.comment).toBe('planned replacement');
+    expect(observation).toHaveLength(1);
+    expect(observation[0]?.modality).toBe('MRI');
+    expect(observation[0]?.quantity).toBe(2);
+    expect(observation[0]?.age).toBeNull();
+    expect(observation[0]?.ageProvenance).toBe('Unknown');
+    expect(observation[0]?.comment).toBe('planned replacement');
     expect(await store.all()).toHaveLength(1);
   });
 
@@ -28,13 +29,13 @@ describe('typed Observation capture', () => {
 
   it('supports a deterministic injected QVAC seam', async () => {
     const store = new MemoryObservationStore();
-    const extractor = { extract: vi.fn(async () => ({
+    const extractor = { extract: vi.fn(async () => [{
       site: { client: { name: 'Client' }, name: 'Site', city: 'City', country: 'Country' },
       modality: 'MR', modalityProvenance: 'Estimated' as const, quantity: 1, quantityProvenance: 'Reported' as const,
       age: null, ageProvenance: 'Unknown' as const, visitDate: '2026-09-09',
-    })) };
+    }]) };
     const observation = await captureObservation('fixture', extractor, store);
-    expect(observation.modality).toBe('MRI');
+    expect(observation[0]?.modality).toBe('MRI');
     expect(extractor.extract).toHaveBeenCalledWith('fixture');
   });
 });
