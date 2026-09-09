@@ -227,7 +227,8 @@ export default function App() {
           placeholder="Two MRI machines at Pacific Hospital, client DemoCare, brand NovaMed, model N-1"
           style={styles.input}
         />
-        {captureState === 'loading' ? <ActivityIndicator accessibilityLabel="Extracting Field note" /> : <Button title="Extract and save" onPress={() => void saveFieldNote()} />}
+        {captureState === 'loading' ? <ActivityIndicator accessibilityLabel="Extracting Field note" /> : <Button disabled={store === null} title="Extract and save" onPress={() => void saveFieldNote()} />}
+        {store === null && <Text style={styles.captureHint}>Capture is unavailable while local data is loading or offline.</Text>}
         {captureState === 'error' && <Text accessibilityRole="alert" style={styles.error}>{captureError}</Text>}
         {captureState === 'saved' && captured !== null && (
           <View style={styles.result}>
@@ -235,7 +236,8 @@ export default function App() {
             <Text>{captured.site.client.name} / {captured.site.name}</Text>
             <Text>{captured.modality} · {captured.brand ?? 'Unknown brand'} · {captured.model ?? 'Unknown model'}</Text>
             <Text>Quantity: {captured.quantity} · Age: {formatAge(captured.age)} · Use: {captured.use === null ? 'Unknown' : formatUse(captured.use.hours)}</Text>
-            <Text>Provenance: {captured.ageProvenance} Age, {captured.quantityProvenance} quantity</Text>
+            <Text>Comment: {captured.comment ?? 'None'}</Text>
+            <Text>Provenance: Modality {captured.modalityProvenance}, brand {captured.brandProvenance}, model {captured.modelProvenance}, quantity {captured.quantityProvenance}, Age {captured.ageProvenance}, Use {captured.useProvenance ?? 'Unknown'}</Text>
           </View>
         )}
       </View>

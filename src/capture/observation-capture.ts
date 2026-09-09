@@ -25,6 +25,7 @@ export class DeterministicObservationExtractor implements ObservationExtractor {
     const model = text.match(/model\s+([^,.;]+)/i)?.[1]?.trim() ?? null;
     const age = text.match(/\b(\d+)\s+years?\s+old\b/i)?.[1];
     const hours = text.match(/\b(\d+(?:\.\d+)?)\s+hours?\b/i)?.[1];
+    const comment = text.match(/comment\s+([^.;]+)/i)?.[1]?.trim() ?? null;
 
     if (modality === undefined || site === undefined || client === undefined) {
       throw new ExtractionError('Include a modality, client, and site in the Field note.');
@@ -42,7 +43,7 @@ export class DeterministicObservationExtractor implements ObservationExtractor {
       ageProvenance: age === undefined ? 'Unknown' : 'Reported',
       use: hours === undefined ? null : { hours: Number(hours), period: null },
       useProvenance: hours === undefined ? null : 'Reported',
-      comment: null,
+      comment,
       fieldNote: text,
       collaborator: null,
       visitDate: new Date().toISOString().slice(0, 10),

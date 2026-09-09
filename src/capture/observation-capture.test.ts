@@ -6,7 +6,7 @@ describe('typed Observation capture', () => {
   it('extracts, validates, and persists a Field note while preserving Unknown Age', async () => {
     const store = new MemoryObservationStore();
     const observation = await captureObservation(
-      'Two MRI machines at Pacific Hospital, client DemoCare, brand NovaMed, model N-1, 1200 hours',
+      'Two MRI machines at Pacific Hospital, client DemoCare, brand NovaMed, model N-1, 1200 hours, comment planned replacement',
       new DeterministicObservationExtractor(),
       store,
     );
@@ -15,6 +15,7 @@ describe('typed Observation capture', () => {
     expect(observation.quantity).toBe(2);
     expect(observation.age).toBeNull();
     expect(observation.ageProvenance).toBe('Unknown');
+    expect(observation.comment).toBe('planned replacement');
     expect(await store.all()).toHaveLength(1);
   });
 
