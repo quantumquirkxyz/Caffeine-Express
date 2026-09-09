@@ -28,6 +28,32 @@ function formatUse(hours: number): string {
   return `${hours} h`;
 }
 
+function FilterChipRow<T extends string>({
+  options,
+  selected,
+  onSelect,
+}: {
+  readonly options: readonly (T | null)[];
+  readonly selected: T | null;
+  readonly onSelect: (value: T | null) => void;
+}) {
+  return (
+    <View style={styles.chipRow}>
+      {options.map((value) => (
+        <TouchableOpacity
+          key={value ?? 'All'}
+          accessibilityRole="button"
+          accessibilityLabel={value === null ? 'All' : `Filter by ${value}`}
+          onPress={() => onSelect(value)}
+          style={[styles.chip, selected === value && styles.chipActive]}
+        >
+          <Text style={[styles.chipText, selected === value && styles.chipTextActive]}>{value ?? 'All'}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+}
+
 function statusMessage(status: DashboardView['status']): { readonly title: string; readonly detail: string } {
   switch (status) {
     case 'loading':
@@ -96,6 +122,8 @@ export default function App() {
   const [base, setBase] = useState<InstalledBase | null>(null);
   const [demo, setDemo] = useState<DemoState>('loading');
   const [selectedModality, setSelectedModality] = useState<Modality | null>(null);
+  const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -131,9 +159,29 @@ export default function App() {
       case 'no-results':
         return dashboardView(source, { modality: 'CT', brand: 'not-installed' });
       case 'ready':
-        return dashboardView(source, selectedModality === null ? {} : { modality: selectedModality });
+        return dashboardView(source, {
+          ...(selectedModality === null ? {} : { modality: selectedModality }),
+          ...(selectedBrand === null ? {} : { brand: selectedBrand }),
+          ...(selectedModel === null ? {} : { model: selectedModel }),
+        });
     }
-  }, [demo, base, selectedModality]);
+  }, [demo, base, selectedModality, selectedBrand, selectedModel]);
+
+  const brandOptions = useMemo(() => {
+    const values = new Set<string>();
+    for (const record of base?.all() ?? []) {
+      if (record.brand !== null) values.add(record.brand);
+    }
+    return [...values].sort();
+  }, [base]);
+
+  const modelOptions = useMemo(() => {
+    const values = new Set<string>();
+    for (const record of base?.all() ?? []) {
+      if (record.model !== null) values.add(record.model);
+    }
+    return [...values].sort();
+  }, [base]);
 
   const status = statusMessage(view.status);
 
@@ -157,21 +205,13 @@ export default function App() {
       </View>
 
       {demo === 'ready' && (
-        <View style={styles.chipRow}>
-          {MODALITIES.map((modality) => (
-            <TouchableOpacity
-              key={modality ?? 'All'}
-              accessibilityRole="button"
-              accessibilityLabel={modality === null ? 'All modalities' : `Filter by ${modality}`}
-              onPress={() => setSelectedModality(modality)}
-              style={[styles.chip, selectedModality === modality && styles.chipActive]}
-            >
-              <Text style={[styles.chipText, selectedModality === modality && styles.chipTextActive]}>
-                {modality ?? 'All'}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        <FilterChipRow<Modality> options={MODALITIES} selected={selectedModality} onSelect={setSelectedModality} />
+      )}
+      {demo === 'ready' && brandOptions.length > 0 && (
+        <FilterChipRow options={brandOptions} selected={selectedBrand} onSelect={setSelectedBrand} />
+      )}
+      {demo === 'ready' && modelOptions.length > 0 && (
+        <FilterChipRow options={modelOptions} selected={selectedModel} onSelect={setSelectedModel} />
       )}
 
       <ScrollView style={styles.body}>
