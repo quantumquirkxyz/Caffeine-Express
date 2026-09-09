@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { captureObservation, DeterministicObservationExtractor } from './capture/observation-capture';
 import { dashboardView, type DashboardView } from './dashboard/dashboard';
 import type { AgeRange } from './domain/age';
 import type { Modality } from './domain/modality';
 import { loadSyntheticFixtures } from './fixtures/seed';
 import { InstalledBase } from './store/installed-base';
 import { MemoryObservationStore } from './store/memory-observation-store';
+import type { Observation } from './domain/observation';
 
 type DemoState = 'loading' | 'ready' | 'offline' | 'empty' | 'no-results';
 
@@ -120,6 +122,11 @@ function AggregationPanel({ view }: { readonly view: DashboardView }) {
 
 export default function App() {
   const [base, setBase] = useState<InstalledBase | null>(null);
+  const [store, setStore] = useState<MemoryObservationStore | null>(null);
+  const [fieldNote, setFieldNote] = useState('');
+  const [captureState, setCaptureState] = useState<'empty' | 'loading' | 'error' | 'saved'>('empty');
+  const [captureError, setCaptureError] = useState('');
+  const [captured, setCaptured] = useState<Observation | null>(null);
   const [demo, setDemo] = useState<DemoState>('loading');
   const [selectedModality, setSelectedModality] = useState<Modality | null>(null);
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
@@ -135,6 +142,7 @@ export default function App() {
           const next = new InstalledBase();
           observations.forEach((observation) => next.update(observation));
           setBase(next);
+          setStore(store);
           setDemo('ready');
         })
         .catch(() => {
@@ -185,10 +193,52 @@ export default function App() {
 
   const status = statusMessage(view.status);
 
+  async function saveFieldNote() {
+    if (store === null) return;
+    setCaptureState('loading');
+    setCaptureError('');
+    try {
+      const observation = await captureObservation(fieldNote, new DeterministicObservationExtractor(), store);
+      const next = new InstalledBase();
+      (await store.all()).forEach((item) => next.update(item));
+      setBase(next);
+      setCaptured(observation);
+      setCaptureState('saved');
+      setFieldNote('');
+    } catch (error) {
+      setCaptureError(error instanceof Error ? error.message : 'Could not extract this Field note.');
+      setCaptureState('error');
+    }
+  }
+
   return (
     <View style={styles.screen}>
       <Text style={styles.appTitle}>Caffeine Express</Text>
       <Text style={styles.subtitle}>Installed base dashboard (QVAC)</Text>
+
+      <View style={styles.captureCard}>
+        <Text style={styles.sectionTitle}>Capture a Field note</Text>
+        <Text style={styles.captureHint}>Type what you observed. Include client, site, and modality.</Text>
+        <TextInput
+          accessibilityLabel="Field note"
+          multiline
+          value={fieldNote}
+          onChangeText={(value) => { setFieldNote(value); if (captureState !== 'empty') setCaptureState('empty'); }}
+          placeholder="Two MRI machines at Pacific Hospital, client DemoCare, brand NovaMed, model N-1"
+          style={styles.input}
+        />
+        {captureState === 'loading' ? <ActivityIndicator accessibilityLabel="Extracting Field note" /> : <Button title="Extract and save" onPress={() => void saveFieldNote()} />}
+        {captureState === 'error' && <Text accessibilityRole="alert" style={styles.error}>{captureError}</Text>}
+        {captureState === 'saved' && captured !== null && (
+          <View style={styles.result}>
+            <Text style={styles.resultTitle}>Saved Observation</Text>
+            <Text>{captured.site.client.name} / {captured.site.name}</Text>
+            <Text>{captured.modality} · {captured.brand ?? 'Unknown brand'} · {captured.model ?? 'Unknown model'}</Text>
+            <Text>Quantity: {captured.quantity} · Age: {formatAge(captured.age)} · Use: {captured.use === null ? 'Unknown' : formatUse(captured.use.hours)}</Text>
+            <Text>Provenance: {captured.ageProvenance} Age, {captured.quantityProvenance} quantity</Text>
+          </View>
+        )}
+      </View>
 
       <View style={styles.chipRow}>
         {DEMO_STATES.map((state) => (
@@ -365,4 +415,25 @@ const styles = StyleSheet.create({
     color: '#555',
     textAlign: 'center',
   },
+  captureCard: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 12,
+    borderColor: '#d6e4f2',
+    borderWidth: 1,
+  },
+  captureHint: { fontSize: 12, color: '#555', marginBottom: 8 },
+  input: {
+    minHeight: 82,
+    borderColor: '#aaa',
+    borderWidth: 1,
+    borderRadius: 6,
+    padding: 10,
+    marginBottom: 8,
+    textAlignVertical: 'top',
+  },
+  error: { color: '#a12622', marginTop: 8 },
+  result: { marginTop: 10, gap: 3 },
+  resultTitle: { fontWeight: '700' },
 });
