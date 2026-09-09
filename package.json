@@ -4,17 +4,29 @@
   "private": true,
   "type": "module",
   "description": "MVP installed-base intelligence prototype: validated Observation persistence data plane.",
+  "main": "index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "export:web": "expo export --platform web"
   },
   "dependencies": {
+    "expo": "^57.0.21",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-web": "^0.21.2",
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
+    "@types/react": "~19.2.4",
+    "typescript": "~6.0.3",
     "vite": "^7.3.6",
     "vitest": "^3.2.7"
   }
