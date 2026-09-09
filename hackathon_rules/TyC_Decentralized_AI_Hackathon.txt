@@ -1,0 +1,502 @@
+Términos y Condiciones de Participación
+
+Decentralized AI Hackathon
+
+TÉRMINOS Y CONDICIONES DE PARTICIPACIÓN
+
+Decentralized AI Hackathon
+Sovereign Intelligence at the Edge
+
+Organiza: Zona Franca de la Innovación S.A. (ISD)
+Socio técnico: Tether (QVAC)
+Fechas: 9, 10 y 11 de septiembre de 2026
+Modalidad: Remota. La única jornada presencial es el 11 de septiembre, en la sede del ISD Summit, Ciudad de
+Panamá, y es voluntaria.
+Plataforma: Trydojo
+
+Aceptación individual
+Cada persona acepta estos términos por sí misma al completar su registro. Nadie los acepta en nombre
+de otro, ni siquiera el integrante que crea el equipo. Sin aceptación individual no hay participación válida
+ni derecho a premio.
+
+Página 1 de 10
+
+Términos y Condiciones de Participación
+
+Decentralized AI Hackathon
+
+1. Objeto
+Este documento regula la participación en el Decentralized AI Hackathon, competencia remota de desarrollo
+de cuarenta y ocho horas organizada por Zona Franca de la Innovación S.A. en el marco del ISD Summit, con
+Tether como socio técnico a traves de su plataforma QVAC.
+Estos términos constituyen el documento único y completo de la competencia. Sustituyen cualquier versión
+anterior de las bases y prevalecen sobre cualquier material promocional, publicación en redes sociales o
+comunicación informal que los contradiga.
+
+2. Organizador
+Zona Franca de la Innovación S.A., en adelante ISD, sociedad constituida bajo las leyes de la República de
+Panamá, con domicilio en Calle 54 Este, Casa 9, Marbella, corregimiento de Bella Vista, Ciudad de Panamá,
+Panamá. RUC [RUC].
+Correo de contacto para todos los efectos de este documento: gmdm@isdistrict.com.
+
+3. Aceptación
+El registro se realiza en la plataforma Trydojo. Al completarlo, cada participante declara haber leido estos
+términos y aceptarlos en su totalidad.
+La aceptación es personal e individual. El integrante que crea un equipo no obliga a los demás: cada miembro
+debe registrarse y aceptar por su cuenta. Un equipo cuyos integrantes no hayan aceptado individualmente no
+puede recibir premio.
+
+4. Elegibilidad
+a. Edad. Mayores de 18 años de edad cumplidos al 8 de septiembre de 2026, inclusive.
+b. Nacionalidad. Se admite cualquier nacionalidad y cualquier país de residencia, con la sola excepción de las
+jurisdicciones sujetas a sanciones internacionales y de las personas incluidas en listas restrictivas, según el
+artículo 17.
+c. Verificación. Al momento del registro basta la declaración del participante. ISD exige documento de
+identidad únicamente a los integrantes de equipos ganadores, antes de pagar.
+
+4.1 Personas que no pueden participar
+Quedan excluidas de la competencia:
+• Empleados, directivos, accionistas y contratistas de ISD.
+• Empleados, directivos, accionistas y contratistas de Tether.
+• Empleados, directivos, accionistas y contratistas de las cuatro empresas que publiquen un desafío
+corporativo.
+• Miembros del jurado, mentores e integrantes del comite técnico del evento, cualquiera sea su vínculo
+con las entidades anteriores.
+• Conyuges, convivientes y familiares en primer grado de consanguinidad o afinidad de todas las personas
+listadas arriba.
+
+Página 2 de 10
+
+Términos y Condiciones de Participación
+
+Decentralized AI Hackathon
+
+La exclusión no alcanza a los patrocinadores del nivel Ecosystem ni al socio de hardware, que no publican
+desafío corporativo. Su personal puede competir en igualdad de condiciones.
+
+5. Exclusión por inelegibilidad
+Cuando ISD verifica que una persona registrada no cumple los requisitos del artículo 4, la excluye de oficio. La
+exclusión opera en cualquier momento, incluso después de la premiación, y no constituye una baja voluntaria
+del equipo.
+a. El equipo continúa en competencia sin esa persona, siempre que conserve al menos un integrante elegible.
+b. Si el hallazgo ocurre después de la premiación, el equipo conserva el premio y la persona excluida queda
+fuera del reparto.
+c. Si la persona inelegible compite en solitario, la participación queda descalificada.
+
+6. Equipos
+Los equipos son de uno a cuatro integrantes. Se admite competir en solitario. No hay cupo máximo de equipos
+ni filtro de nivel para inscribirse.
+La composición del equipo queda cerrada el 9 de septiembre a las 8:00
+A partir del inicio del cronómetro no se admiten altas ni bajas de integrantes. La única modificación posible
+es la exclusión de oficio prevista en el artículo 5.
+
+Cada persona puede integrar un solo equipo. Registrarse en más de uno da lugar a la exclusión de todos ellos.
+
+7. Registro
+El registro es gratuito y se realiza en Trydojo hasta el 8 de septiembre de 2026 a las 23:59, hora de Panamá. No
+se requiere cuenta de pago ni suscripción en la plataforma.
+
+8. Modalidad y sede
+El hackathon es remoto. Las cuarenta y ocho horas de construcción, del 9 de septiembre a las 8:00 al 11 de
+septiembre a las 8:00, se desarrollan íntegramente a distancia. No hay sede física durante ese periodo, no
+existe ninguna actividad presencial obligatoria y la coordinación con la organización y los mentores ocurre por
+los canales en línea del evento.
+El 11 de septiembre, a partir de las 8:00, hay actividad presencial en la sede del ISD Summit, abierta a los
+participantes que hayan completado su entrega. Comprende dos momentos:
+a. Sala de robótica, desde las 8:00. Los equipos presentes pueden presentar sus proyectos a las empresas
+asistentes y se proyectan los videos entregados por los participantes.
+b. Premiación. A partir de las 14:00, en el salón principal del MET, con transmisión en vivo. El inicio se anuncia
+por la comunidad de WhatsApp del evento.
+La asistencia es voluntaria. No condiciona la evaluación, que se realiza sobre el repositorio y el video
+entregados, ni el derecho a los premios.
+
+9. Cronograma
+
+Página 3 de 10
+
+Términos y Condiciones de Participación
+
+Decentralized AI Hackathon
+
+Todos los horarios corresponden a la hora de Panamá, UTC menos cinco. Los bloques presenciales del 11 de
+septiembre son voluntarios y se rigen por el artículo 23.
+FECHA
+
+HORA
+
+HITO
+
+8 de septiembre
+
+08:00
+
+Publicación de los desafíos corporativos
+
+8 de septiembre
+
+23:59
+
+Cierre del registro de participantes
+
+9 de septiembre
+
+08:00
+
+Arranca el cronómetro. Se cierra la composición de los equipos
+
+11 de septiembre
+
+08:00
+
+Cierre de entregas. No hay prórroga
+
+11 de septiembre
+
+desde 08:00
+
+Sala de robótica: presentación de proyectos a las empresas y proyección
+de los videos. Presencial y voluntario
+
+11 de septiembre
+
+08:00 a 12:00
+
+Evaluación de las entregas
+
+11 de septiembre
+
+12:00 a 14:00
+
+Votación del jurado
+
+11 de septiembre
+
+desde 14:00
+
+Premiación en el salón principal del MET, con transmisión en vivo
+
+10. Requisito técnico obligatorio
+Toda solución presentada debe construirse sobre QVAC, la plataforma de inteligencia artificial local de Tether,
+disponible en qvac.tether.io, y ejecutar la inferencia en el dispositivo o delegada entre pares mediante P2P.
+La inferencia en la nube está prohibida
+Cualquier solución que enrute la inferencia a una API en la nube queda descalificada de forma directa. No
+se trata de una penalización en el puntaje: la entrega no compite por el ranking general, no compite por
+los desafíos corporativos y no puede recibir premio alguno, sin importar la calidad del resto del trabajo. El
+requisito existe porque el evento se define por lo que la ejecución local permite y una API en la nube no.
+
+El uso de servicios en la nube para funciones ajenas a la inferencia, como el alojamiento de una interfaz, el
+almacenamiento de datos no sensibles o la autenticación, no infringe esta regla.
+
+11. Trabajo previo y herramientas
+a. Base preexistente. Se permite el uso de librerías de terceros, plantillas públicas y componentes de código
+abierto.
+b. Trabajo dentro de la ventana. El producto sustancial debe construirse dentro de las cuarenta y ocho horas
+de competencia. No se admiten proyectos ya desarrollados que solo reciban ajustes durante el evento.
+c. Declaración. Toda base preexistente utilizada debe declararse en el archivo README del repositorio, con
+indicación de su origen. La omisión es causal de descalificación.
+d. Asistentes de IA. Se permite el uso de asistentes de programación basados en inteligencia artificial.
+
+12. Entregables
+
+Página 4 de 10
+
+Términos y Condiciones de Participación
+
+Decentralized AI Hackathon
+
+Cada equipo entrega dos elementos antes del 11 de septiembre a las 8:00. No hay prórroga y la plataforma
+cierra la recepción de forma automática.
+a. Repositorio. Debe estar accesible para el jurado durante todo el periodo de evaluación. No se exige adoptar
+una licencia abierta: el acceso se otorga para juzgar la entrega, no para publicarla.
+b. Video de demostración. Duración máxima de cinco minutos, en español. El alojamiento es indistinto
+mientras el enlace sea accesible sin credenciales. El video es lo primero que revisa el jurado.
+
+13. Evaluación
+Las entregas se evalúan contra cinco criterios ponderados. Los rótulos se mantienen en inglés por corresponder
+a los campos configurados en la plataforma.
+CRITERIO
+
+QUÉ MIDE
+
+PESO
+
+Technical
+
+Uso genuino de QVAC, con inferencia en el dispositivo o
+delegada P2P, y calidad de la implementación
+
+35%
+
+Innovation
+
+Originalidad del enfoque
+
+25%
+
+Impact
+
+Relevancia del problema abordado y potencial de la solución
+
+20%
+
+Design
+
+Experiencia de uso e interfaz
+
+10%
+
+Completion
+
+Demostración funcional y grado de terminación
+
+10%
+
+Existe un único ranking general. No hay categorías ni divisiones por tema.
+
+13.1 Desempate
+No hay ganadores compartidos: cada posición tiene un solo ganador. En caso de igualdad de puntaje se
+resuelve en este orden: mayor puntaje en Technical; si persiste, mayor puntaje en Impact; si persiste, voto de
+calidad del presidente del jurado.
+
+13.2 Posiciones desiertas
+El jurado puede declarar desierta una posición del podio si ninguna entrega alcanza el requisito técnico del
+artículo 10 o el nivel mínimo que la posición supone. El premio correspondiente no se redistribuye entre las
+demás posiciones.
+
+14. Premios
+PREMIO
+
+MONTO
+
+DECIDE
+
+Primer lugar
+
+3,000 USDT
+
+Jurado principal
+
+Segundo lugar
+
+2,000 USDT
+
+Jurado principal
+
+Tercer lugar
+
+1,000 USDT
+
+Jurado principal
+
+Desafío corporativo, cada uno de los
+cuatro
+
+1,500 USDT
+
+El miembro del jurado de la empresa
+que publica el desafío
+
+Total en juego
+
+12,000 USDT
+
+Página 5 de 10
+
+Términos y Condiciones de Participación
+
+Decentralized AI Hackathon
+
+Los premios son acumulables
+Un equipo puede ganar una posición del podio y uno o varios desafíos corporativos al mismo tiempo. No
+hay obligación de elegir ni penalización por perseguir varios. Un equipo que gane el segundo lugar y el
+desafío de una empresa cobra ambos premios.
+
+15. Desafíos corporativos
+Se publican cuatro desafíos corporativos el 8 de septiembre a las 8:00. Cada uno corresponde a un problema
+real de la empresa que lo propone.
+a. Acceso. Cualquier equipo puede intentar cualquier desafío, además de competir por el ranking general. No
+hay inscripción previa ni limite en la cantidad de desafíos que un equipo puede intentar.
+b. Decisión. El ganador de cada desafío lo determina el miembro del jurado designado por la empresa que lo
+publica, con sus propios criterios, aplicados únicamente sobre entregas que cumplan el requisito técnico
+del artículo 10.
+c. Desafío desierto. Si ninguna entrega califica, el desafío se declara desierto. Esa determinación corresponde
+a la empresa que lo publico y el premio no se reasigna.
+
+16. Pago de los premios
+ISD es el único obligado al pago frente a los participantes, incluidos los premios de los desafíos corporativos.
+Los acuerdos entre ISD y los patrocinadores que financian esos desafíos son ajenos a este documento y no
+pueden oponerse al equipo ganador.
+a. Moneda. Todos los premios se pagan en USDT. No se ofrece pago en otra moneda ni en efectivo.
+b. Billetera única. Cada equipo designa una sola billetera para recibir el premio completo. ISD no divide el pago
+entre integrantes.
+c. Red. La red de transferencia se declara al momento del pago. La comisión de red corre por cuenta de ISD.
+d. Plazo. Treinta días calendario contados desde la premiación, sujeto a la verificación del artículo 17.
+e. Reparto interno. El reparto del premio entre los integrantes del equipo es responsabilidad exclusiva del
+equipo. ISD no interviene, no media y no responde por desacuerdos internos. Con la transferencia a la
+billetera designada la obligación de pago queda cumplida en su totalidad.
+f. Billetera inválida. Si la billetera designada es incorrecta o no admite recepción en la red declarada, el equipo
+cuenta con quince días calendario desde la notificación para corregir los datos. Vencido ese plazo el premio
+se declara desierto.
+g. Impuestos. Cada ganador asume las obligaciones fiscales que correspondan en su jurisdicción. ISD no
+practica retención ni emite certificación fiscal.
+
+17. Verificación previa al pago
+Antes de transferir, ISD verifica a los integrantes de cada equipo ganador. La verificación comprende:
+• Documento de identidad vigente de cada integrante, para acreditar identidad y edad.
+• Consulta contra la lista OFAC SDN de la Oficina de Control de Activos Extranjeros de los Estados Unidos.
+• Consulta contra la lista consolidada de sanciones del Consejo de Seguridad de las Naciones Unidas.
+
+Página 6 de 10
+
+Términos y Condiciones de Participación
+
+Decentralized AI Hackathon
+
+• Consulta contra el régimen de sanciones de la Unión Europea.
+ISD puede retener el pago hasta completar la verificación. La coincidencia confirmada de un integrante con
+alguna de esas listas, o su residencia en una jurisdicción sancionada, determina su exclusión conforme al
+artículo 5 y la reducción proporcional o la retención del pago, según corresponda.
+
+18. Propiedad intelectual
+La propiedad intelectual permanece en el equipo
+ISD, Tether y las empresas patrocinadoras no adquieren titularidad, cesión ni licencia automática sobre
+las soluciones presentadas. Financiar un desafío corporativo no compra su resultado. La empresa
+patrocinadora obtiene visibilidad, acceso preferente a las entregas de su desafío y presentaciones con los
+equipos que consientan. Cualquier acuerdo comercial posterior se negocia de forma directa entre la
+empresa y el equipo, en los términos que ambos definan.
+
+19. Licencia sobre los videos de demostración
+Al entregar el video de demostración, el equipo otorga a ISD y a Tether una licencia no exclusiva, gratuita,
+mundial e indefinida para reproducirlo, comunicarlo públicamente y difundirlo con fines de promoción y
+documentación del evento, incluida su proyección ante el público y las empresas asistentes durante el ISD
+Summit del 11 de septiembre.
+Esta licencia no afecta la titularidad de la propiedad intelectual, no impide al equipo explotar su solución por
+cualquier vía ni le exige exclusividad de ningún tipo.
+
+20. Derechos de imagen
+La participación en el evento implica la autorización para captar, reproducir y difundir la imagen, la voz y el
+nombre del participante en fotografías, grabaciones y transmisiones vinculadas al hackathon y a la premiación.
+La autorización se otorga a ISD, a Tether y a las empresas patrocinadoras, con alcance indefinido en el tiempo,
+sin limitación territorial y sin contraprestación, para fines de comunicación, documentación y promoción del
+evento y de sus futuras ediciones.
+
+21. Protección de datos personales
+El responsable del tratamiento es Zona Franca de la Innovación S.A., conforme a la Ley 81 de 26 de marzo de
+2019 sobre protección de datos personales de la República de Panamá.
+
+21.1 Datos tratados y finalidad
+Se tratan los datos de registro, los datos de contacto, la información técnica de las entregas y, en el caso de los
+equipos ganadores, los documentos de identidad y la billetera designada. Las finalidades son la gestión de la
+inscripción, la organización y ejecución de la competencia, la evaluación de las entregas, la verificación de
+elegibilidad, el pago de los premios y la comunicación del evento.
+
+21.2 Terceros involucrados
+El tratamiento se apoya en Trydojo como plataforma de gestión del hackathon y en WhatsApp como canal de
+coordinación. Al usar esos servicios, el participante queda sujeto además a las políticas de cada proveedor.
+
+21.3 Derechos del titular
+
+Página 7 de 10
+
+Términos y Condiciones de Participación
+
+Decentralized AI Hackathon
+
+El participante puede ejercer sus derechos de acceso, rectificación, cancelación, oposición y portabilidad
+escribiendo a gmdm@isdistrict.com. La cancelación de los datos antes del cierre de la competencia implica el
+retiro de la participación, por resultar imposible evaluar o premiar sin ellos.
+
+21.4 Conservación
+Los datos se conservan por el plazo necesario para cumplir las finalidades descritas y las obligaciones legales y
+contables aplicables, y se eliminan o anonimizan una vez cumplido.
+
+22. Entrega de perfiles a las empresas patrocinadoras
+Las empresas patrocinadoras pueden recibir los perfiles profesionales de los participantes con fines de
+reclutamiento. Esta entrega requiere un consentimiento separado, expreso y revocable en cualquier momento.
+Ese consentimiento no forma parte de la aceptación de estos términos. No prestarlo, o revocarlo, no tiene
+ninguna consecuencia sobre la participación ni sobre el derecho a los premios.
+
+23. Acceso presencial del 11 de septiembre
+Los participantes que hayan completado su entrega antes del 11 de septiembre a las 8:00 tienen acceso de
+cortesía al ISD Summit de ese día. La admisión se realiza en la entrada presentando nombre y documento de
+identidad, que se cotejan contra la lista de entregas registradas. Es el único día con actividad presencial del
+hackathon.
+a. Sala de robótica. Desde las 8:00, los equipos presentes pueden presentar sus proyectos a las empresas
+asistentes y se proyectan los videos entregados. La presentación no forma parte de la evaluación ni otorga
+puntaje: es una instancia de exposición ante posibles socios y empleadores.
+b. Premiación. Desde las 14:00, en el salón principal del MET, con transmisión en vivo para quienes no asistan.
+c. Carácter. El acceso es personal e intransferible.
+d. Alcance. No cubre transporte, alojamiento, alimentación ni ningún otro gasto, que corren por cuenta del
+participante.
+e. Independencia del premio. Asistir es voluntario y no es condición para competir, ser evaluado ni cobrar. Los
+equipos ganadores reciben su premio con independencia de su presencia física, y ningún equipo queda en
+desventaja por participar solo de forma remota.
+
+24. Código de conducta
+Se espera de todos los participantes un trato respetuoso en los canales del evento, con los mentores, con el
+jurado y con la organización. Quedan prohibidos:
+• El acoso, la discriminación, las amenazas y el lenguaje ofensivo en cualquier canal del evento.
+• El plagio y la presentación como propio de trabajo ajeno.
+• El sabotaje del trabajo de otros equipos y el acceso no autorizado a sus sistemas, repositorios o entregas.
+• La manipulación de la plataforma, del proceso de evaluación o de los resultados.
+• La suplantación de identidad y el registro con datos falsos.
+Las conductas contrarias a este código se reportan a gmdm@isdistrict.com. ISD puede expulsar del evento a
+quien lo infrinja, en cualquier momento y sin obligación de reembolso, dado que la participación es gratuita.
+
+25. Descalificación
+Página 8 de 10
+
+Términos y Condiciones de Participación
+
+Decentralized AI Hackathon
+
+Son causales de descalificación de una entrega o de un equipo:
+• Enrutar la inferencia a una API en la nube, conforme al artículo 10.
+• Omitir la declaración de una base preexistente en el README, conforme al artículo 11.
+• Entregar fuera del plazo o de forma incompleta.
+• Incumplir el código de conducta del artículo 24.
+• Registrar datos falsos o suplantar la identidad de un tercero.
+La descalificación posterior a la premiación obliga a la restitución del premio recibido.
+
+26. Carácter de las decisiones
+Las decisiones del jurado principal y, en el caso de los desafíos corporativos, del miembro del jurado designado
+por cada empresa, son definitivas e inapelables. No se admite instancia de revisión ni impugnación de los
+resultados.
+
+27. Modificación, suspensión y cancelación
+ISD puede modificar el cronograma, la sede de la premiación, la modalidad o cualquier aspecto operativo del
+evento por causas de fuerza mayor, caso fortuito o razones ajenas a su control, informando por los canales
+oficiales con la mayor antelación posible.
+La participación es gratuita y en ningún caso el participante realiza pago alguno a ISD. En consecuencia, la
+modificación, suspensión o cancelación del evento no genera derecho a indemnización, reembolso ni
+compensación de ningún tipo.
+
+28. Limitación de responsabilidad
+ISD no responde por fallas de conectividad, de hardware o de software de los participantes, por interrupciones
+de la plataforma Trydojo o de servicios de terceros, ni por la pérdida de trabajo no respaldado.
+La participación no genera relación laboral, societaria, de servicios ni de agencia entre el participante y ISD,
+Tether o las empresas patrocinadoras. El trabajo realizado durante el evento es voluntario y no da lugar a
+remuneración distinta de los premios previstos en el artículo 14.
+
+29. Ley aplicable y jurisdicción
+Estos términos se rigen por las leyes de la República de Panamá. Cualquier controversia derivada de su
+interpretación o aplicación se somete a los tribunales competentes de la Ciudad de Panamá, con renuncia
+expresa a cualquier otro fuero.
+
+30. Idioma
+La versión en español de estos términos es la única vinculante. Cualquier traducción a otro idioma se ofrece
+como cortesía y carece de valor vinculante. En caso de discrepancia prevalece el texto en español.
+
+Consultas sobre estos términos: gmdm@isdistrict.com
+
+Página 9 de 10
+
+Términos y Condiciones de Participación
+
+Decentralized AI Hackathon
+
+Zona Franca de la Innovación S.A. Calle 54 Este, Casa 9, Marbella, Bella Vista, Ciudad de Panamá, Panamá.
+
+Página 10 de 10
+
+
