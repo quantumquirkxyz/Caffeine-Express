@@ -5,3 +5,5 @@ export * from './domain/age';
 export * from './domain/use';
 export * from './domain/observation';
 export * from './validation/observation.schema';
+export * from './store/observation-store';
+export * from './store/memory-observation-store';
