@@ -99,7 +99,7 @@ Every AI step maps to a QVAC task with a concrete, small model — keeping the p
 
 | Product step | QVAC task | Recommended model | Notes |
 |---|---|---|---|
-| Voice → Field note | Transcription (`transcribe()` / `transcribeStream()`) | **Parakeet TDT 0.6B** (multilingual, ~750 MB) | Spanish/Portuguese/English; streaming + end-of-utterance |
+| Voice → Field note | Transcription (ASR, speech→text: `transcribe()` / `transcribeStream()`) | **Parakeet TDT 0.6B** (multilingual, ~750 MB) | Spanish/Portuguese/English; streaming + end-of-utterance |
 | Field note → structured fields | Text generation (`completion()` + tool schema) | **LLAMA_3_2_1B_INST_Q4_0** or **QWEN3_600M_INST_Q4** | Tool-call JSON bridled by a Zod schema; KV cache per session |
 | Photo plate → text | OCR (`ocr()`) | **OCR_LATIN** (CRAFT + recognizer) | Returns blocks with text + bbox + confidence |
 | Photo → brand/model/age/read label | Multimodal (`completion()` + `projectionModelSrc`) | **VisionPsy-Nano 460M** + mmproj | Confirms or creates; image never leaves device |
