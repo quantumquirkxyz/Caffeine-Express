@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "Caffeine Express",
+    "slug": "caffeine-express",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "web": {
+      "bundler": "metro"
+    },
+    "platforms": ["ios", "android", "web"]
+  }
+}
