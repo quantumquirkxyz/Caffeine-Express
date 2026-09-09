@@ -24,7 +24,7 @@ _Use when_: referring to the uncleaned input utterance.
 _Avoid_: Report, visit note (unless the visit-level grouping is meant, not the utterance).
 
 **Observation**
-: A persisted structured record for one equipment group at a Site, keyed by Site × Modality × brand × model, carrying modality, brand, model, age, quantity, and a state. The Field note renders into 1..n Observations — the model decides the count based on how specifically the collaborator distinguishes equipment (e.g. "two MRI machines" = one Observation with quantity=2; "one Siemens MRI and one GE MRI" = two distinct Observations).
+: A persisted structured record for one equipment group at a Site, keyed by Site × Modality × brand × model, carrying modality, brand, model, age (a min–max range), quantity, and a state. The Field note renders into 1..n Observations — the model decides the count based on how specifically the collaborator distinguishes equipment (e.g. "two MRI machines" = one Observation with quantity=2; "one Siemens MRI and one GE MRI" = two distinct Observations).
 _Use when_: referring to the structured, state-carrying data record.
 _Avoid_: Item, loose record — each Observation is the unit that carries a state.
 
@@ -32,6 +32,16 @@ _Avoid_: Item, loose record — each Observation is the unit that carries a stat
 : The normalized equipment category from a controlled vocabulary (MRI, CT, ultrasound, …); aliases like "MR" resolve to the canonical term. The stable dimension queries, dedup, and aggregation compare against.
 _Use when_: referring to the normalized equipment type of an Observation or Installed equipment.
 _Avoid_: Equipment type (if a brand-specific line is meant), generic equipment — reserve Modality for the controlled category.
+
+**Age**
+: The equipment's time in service, captured as an inclusive min–max range in years: min is the youngest plausible value, max the oldest. An exact figure is the degenerate range min = max (e.g. "six years old" → 6–6). An approximation widens the range ("about eight" → 7–9; "8–10 years old" → 8–10; "relatively new" → a low young range). The range inherits its field provenance (Reported/Estimated/Confirmed); Unknown leaves it open. A manufacturing year read from a plate is a proxy that derives the range, not the Age itself.
+_Use when_: referring to how long the equipment has been installed or operating.
+_Avoid_: Age as a single point figure (false precision), installation year (a proxy for deriving the range).
+
+**Comment**
+: Free-text, non-structured context attached to an Observation — extra information that does not fit the equipment fields (modality, brand, model, age, quantity). It plays no role in matching, State, confidence, or renewal; it is captured from the same Field note/Evidence and stays visible in the evidence drill-down.
+_Use when_: the collaborator adds context beyond the structured fields ("they plan to replace it next quarter").
+_Avoid_: A Comment is not an Observation, not a structured field, and never a matching or dedup input.
 
 ### Institutions and locations
 
@@ -71,9 +81,14 @@ _Use when_: the Observation exists but a field could not be determined.
 ### Installed base
 
 **Installed equipment**
-: The resolved identity of equipment at a Site, keyed by Site × Modality × brand × model (group level, not serial number), carrying the best current quantity. Resolved from 1..n Observations that reconcile; created on the first unmatched report, strengthened to Confirmed by independent matching reports, and updated by pointed references ("one of the MRIs").
+: The resolved identity of equipment at a Site, keyed by Site × Modality × brand × model (group level, not serial number), carrying the best current quantity and the Age envelope. Resolved from 1..n Observations that reconcile; created on the first unmatched report, strengthened to Confirmed by independent matching reports, and updated by pointed references ("one of the MRIs"). Quantity reconciles by max; Age reconciles as the inclusive envelope — min of all reported mins, max of all reported maxs — never dropping information.
 _Use when_: referring to the deduplicated device/group that appears in the installed-base view.
 _Avoid_: Item, asset, serialized physical unit (unless distinct beyond the group key), inventory.
+
+**Conflicting observation**
+: An independent report whose Age range does not overlap the record's current envelope (the union of reconciled ranges). It does not change the record State; it derives a "verify" marker on the Installed equipment that the dashboard surfaces until a deciding report or plate photo resolves the gap by widening or confirming the envelope.
+_Use when_: referring to the disagreement signal between sources, not to the reconciliation rule.
+_Avoid_: Match (matching is the act of grouping), discrepancy (the envelope is a union, not a correction).
 
 **Independent confirmation**
 : A corroboration of Installed equipment from a separate source: a second collaborator in a different Field note, or a plate/label photo read. The evidence that raises a record to Confirmed. Matching requires all four key fields (Site × Modality × brand × model) to overlap; a report missing any field creates a new Installed equipment entry until the gap is filled.
@@ -86,11 +101,11 @@ _Use when_: referring to the product-level dataset, not a single report.
 _Avoid_: Inventory (implies physical audit), registry (implies single records).
 
 **Confidence score**
-: A product signal (0–100) for Installed equipment composed of completeness, freshness (time since the last confirmation), and independent confirmations; its weights are tuning parameters, not part of the domain model.
+: A product signal (0–100) for Installed equipment composed of completeness, freshness (time since the last confirmation), and independent confirmations; its weights are tuning parameters, not part of the domain model. High/Medium/Low labels shown in views are display buckets derived from the score, not a separate model.
 _Use when_: referring to how reliable a record is believed to be.
 _Avoid_: Quality (implies intrinsic merit, not provenance), validity.
 
 **Renewal opportunity**
-: A renewal candidate: Installed equipment whose age reaches a tuning threshold (default 8 years). Estimated age counts; unknown age does not.
+: A renewal candidate: Installed equipment whose Age envelope's lower bound (min) reaches a tuning threshold (default 8 years). Unknown age does not qualify; an Estimated range counts by its min. Dashboard queries for "older than N" use the same min semantics.
 _Use when_: referring to a device the model flags as replaceable.
 _Avoid_: Churn, upsell (commercial actions, not the candidate itself).
