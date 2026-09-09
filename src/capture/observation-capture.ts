@@ -51,6 +51,7 @@ export class DeterministicObservationExtractor implements ObservationExtractor {
   }
 }
 
+
 export async function captureObservation(
   fieldNote: string,
   extractor: ObservationExtractor,

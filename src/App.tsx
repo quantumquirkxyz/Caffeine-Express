@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { captureObservation, DeterministicObservationExtractor } from './capture/observation-capture';
+import { captureObservation } from './capture/observation-capture';
+import { QVACObservationExtractor } from './capture/qvac-extractor';
+import { loadQvacModel, unloadQvacModel } from './capture/qvac-runtime';
 import { dashboardView, type DashboardView } from './dashboard/dashboard';
 import type { AgeRange } from './domain/age';
 import type { Modality } from './domain/modality';
@@ -123,6 +125,7 @@ function AggregationPanel({ view }: { readonly view: DashboardView }) {
 export default function App() {
   const [base, setBase] = useState<InstalledBase | null>(null);
   const [store, setStore] = useState<MemoryObservationStore | null>(null);
+  const [qvacModelId, setQvacModelId] = useState<string | null>(null);
   const [fieldNote, setFieldNote] = useState('');
   const [captureState, setCaptureState] = useState<'empty' | 'loading' | 'error' | 'saved'>('empty');
   const [captureError, setCaptureError] = useState('');
@@ -153,6 +156,17 @@ export default function App() {
       active = false;
       clearTimeout(timer);
     };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    void loadQvacModel().then((modelId) => {
+      if (active) setQvacModelId(modelId);
+      else void unloadQvacModel(modelId);
+    }).catch(() => {
+      if (active) setCaptureError('QVAC could not load its on-device model.');
+    });
+    return () => { active = false; };
   }, []);
 
   const view = useMemo<DashboardView>(() => {
@@ -198,7 +212,8 @@ export default function App() {
     setCaptureState('loading');
     setCaptureError('');
     try {
-      const observation = await captureObservation(fieldNote, new DeterministicObservationExtractor(), store);
+      if (qvacModelId === null) throw new Error('QVAC is still loading its on-device model.');
+      const observation = await captureObservation(fieldNote, new QVACObservationExtractor(qvacModelId), store);
       const next = new InstalledBase();
       (await store.all()).forEach((item) => next.update(item));
       setBase(next);
@@ -227,7 +242,7 @@ export default function App() {
           placeholder="Two MRI machines at Pacific Hospital, client DemoCare, brand NovaMed, model N-1"
           style={styles.input}
         />
-        {captureState === 'loading' ? <ActivityIndicator accessibilityLabel="Extracting Field note" /> : <Button disabled={store === null} title="Extract and save" onPress={() => void saveFieldNote()} />}
+        {captureState === 'loading' ? <ActivityIndicator accessibilityLabel="Extracting Field note" /> : <Button disabled={store === null || qvacModelId === null} title="Extract and save" onPress={() => void saveFieldNote()} />}
         {store === null && <Text style={styles.captureHint}>Capture is unavailable while local data is loading or offline.</Text>}
         {captureState === 'error' && <Text accessibilityRole="alert" style={styles.error}>{captureError}</Text>}
         {captureState === 'saved' && captured !== null && (
