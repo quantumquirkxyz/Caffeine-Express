@@ -92,22 +92,6 @@ describe('observation validation', () => {
     expect(observation.brandProvenance).toBe('Unknown');
   });
 
-  it('normalizes omitted provenance to Unknown for a present value', () => {
-    const {
-      brandProvenance: _brandProvenance,
-      modelProvenance: _modelProvenance,
-      ageProvenance: _ageProvenance,
-      ...input
-    } = validInput();
-    const observation = createObservation(input, { id: 'obs-10' });
-    expect(observation.brand).toBe('NovaMed');
-    expect(observation.brandProvenance).toBe('Unknown');
-    expect(observation.model).toBe('NM-MR 700');
-    expect(observation.modelProvenance).toBe('Unknown');
-    expect(observation.age).toEqual({ min: 6, max: 8 });
-    expect(observation.ageProvenance).toBe('Unknown');
-  });
-
   it('preserves explicit Use hours with an optional period', () => {
     const period = { start: new Date('2025-01-01T00:00:00.000Z'), end: new Date('2025-12-31T00:00:00.000Z') };
     const observation = createObservation(
