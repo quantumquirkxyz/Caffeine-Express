@@ -11,7 +11,7 @@ Naming is an open decision — confirm or replace before the demo.
 
 ## 1. Mandatory rules — compliance before anything else
 
-These come from `hackathon_rules/Reglas_Decentralized_AI_Hackathon.txt` and `hackathon_rules/TyC_Decentralized_AI_Hackathon.txt`, and they decide what we build and how we present it.
+These come from the official hackathon rules and decide what we build and how we present it.
 
 | Rule | Consequence for the build |
 |---|---|
@@ -54,12 +54,22 @@ This repository already carries the refined domain model in `CONTEXT.md`, `docs/
 
 FieldSight is two surfaces over one shared, offline-first core:
 
-1. **Field app (Android/iOS)** — the collaborator's capture tool. Talk, type, or photograph; QVAC extracts structured evidence locally; nothing leaves the device.
-2. **Dashboard (web, local-first)** — the installed-base view for the organization: confidence per record, provenance drill-down, renewal radar, and natural-language queries — all resolved against data that lives on the user's machine.
+1. **Field app (Android/iOS)** — the collaborator's MVP capture tool. Type a natural-language Observation; QVAC extracts structured data locally; nothing leaves the device.
+2. **Dashboard (web, local-first)** — the MVP installed-base view for the organization: client-level equipment and basic aggregation across Clients.
 
-The demo tells one vertical slice end-to-end:
+The MVP demo tells one vertical slice end-to-end:
 
-> **One conversation + one photo → one traceable Observation → one Confirmed Installed equipment → one renewal decision.**
+> **One typed Observation → structured record → Installed base → client-level aggregation.**
+
+Voice, camera, OCR, follow-up, confirmation, P2P, and advanced analytics are post-MVP capabilities and are documented separately from the MVP flow (`ADR 0006`).
+
+```mermaid
+flowchart TB
+    Scope["FieldSight scope"] --> MVP["MVP: typed capture, QVAC extraction, persistence, Installed base, client aggregation"]
+    Scope --> Post["Post-MVP: dictation, camera, OCR, follow-up, confirmation, P2P, advanced analytics"]
+    MVP --> Demo["First demonstrable vertical slice"]
+    Demo -.unlocks.-> Post
+```
 
 ---
 
@@ -103,15 +113,17 @@ Every AI step maps to a QVAC task with a concrete, small model — keeping the p
 
 | Product step | QVAC task | Recommended model | Notes |
 |---|---|---|---|
-| Voice → Field note | Transcription (ASR, speech→text: `transcribe()` / `transcribeStream()`) | **Parakeet TDT 0.6B** (multilingual, ~750 MB) | Spanish/Portuguese/English; streaming + end-of-utterance |
-| Field note → structured fields | Text generation (`completion()` + tool schema) | **LLAMA_3_2_1B_INST_Q4_0** or **QWEN3_600M_INST_Q4** | Tool-call JSON bridled by a Zod schema; KV cache per session |
-| Photo plate → text | OCR (`ocr()`) | **OCR_LATIN** (CRAFT + recognizer) | Returns blocks with text + bbox + confidence |
-| Photo → brand/model/age/read label | Multimodal (`completion()` + `projectionModelSrc`) | **VisionPsy-Nano 460M** + mmproj | Confirms or creates; image never leaves device |
-| NL query → typed filter | Text generation (tool schema) | same 1B LLM | Never raw SQL — validated typed filter, deterministic query |
+| Voice → Field note (post-MVP) | Transcription (ASR, speech→text: `transcribe()` / `transcribeStream()`) | **Parakeet TDT 0.6B** (multilingual, ~750 MB) | Post-MVP dictation; streaming + end-of-utterance |
+| Field note → structured fields (MVP) | Text generation (`completion()` + tool schema) | **LLAMA_3_2_1B_INST_Q4_0** or **QWEN3_600M_INST_Q4** | Typed natural-language input; tool-call JSON validated by Zod |
+| Photo plate → text (post-MVP) | OCR (`ocr()`) | **OCR_LATIN** (CRAFT + recognizer) | Returns blocks with text + bbox + confidence |
+| Photo → brand/model/age/read label (post-MVP) | Multimodal (`completion()` + `projectionModelSrc`) | **VisionPsy-Nano 460M** + mmproj | Confirms or creates; image never leaves device |
+| NL query → typed filter (post-MVP) | Text generation (tool schema) | same 1B LLM | Never raw SQL — validated typed filter, deterministic query |
 | Speaker / field note separation | Transcription diarization (optional) | Parakeet Sortformer | Nice-to-have, not MVP |
 | Heavy inference on weak phones | Delegated inference P2P | `loadModel({ delegate: { providerPublicKey, fallbackToLocal: true } })` | Cold DHT bootstrap 15–45 s, then sub-second |
 
-### 5.2 Field capture flow
+### 5.2 MVP field capture flow
+
+The minimum path deliberately uses typed natural language. It proves the challenge's required capture, extraction, storage, and visualization loop without depending on voice, camera, or post-MVP reconciliation.
 
 ```mermaid
 sequenceDiagram
@@ -120,21 +132,39 @@ sequenceDiagram
     participant Q as QVAC on-device
     participant Store as Local store
     C->>App: "opens Visit at a Site - session context"
-    C->>App: "speaks Field note"
-    App->>Q: "transcribe() - Parakeet TDT"
-    Q-->>App: "Field note text"
+    C->>App: "types natural-language Observation"
     App->>Q: "completion() with tool schema - extraction"
-    Q-->>App: "structured fields + per-field provenance"
-    App->>App: "validate with Zod, map missing to Unknown"
-    App->>App: "render editable card, propose follow-up"
-    C->>App: "photographs nameplate"
-    App->>Q: "ocr() / multimodal completion"
-    Q-->>App: "brand, model, year read"
-    App->>Store: "persist Observation - immutable, with evidence"
-    App->>Store: "reconcile to Installed equipment or candidate"
+    Q-->>App: "Client/Site, Modality, brand, model, quantity, Age, Use"
+    App->>App: "validate with Zod, map missing Age to Unknown"
+    App->>Store: "persist Observation with provenance"
+    Store->>Store: "update Installed base"
+    App-->>C: "show saved record"
 ```
 
-### 5.3 Reconciliation and confirmation
+### 5.3 Post-MVP capture flow
+
+The following flow is intentionally separate. It adds capture mechanisms and automated enrichment only after the MVP path is complete.
+
+```mermaid
+sequenceDiagram
+    participant C as Collaborator
+    participant App as Field app
+    participant Q as QVAC on-device
+    participant Store as Local store
+    C->>App: "dictates Field note"
+    App->>Q: "transcribe() - Parakeet TDT"
+    Q-->>App: "Field note text"
+    App->>Q: "completion() - structured extraction"
+    Q-->>App: "fields with per-field provenance"
+    C->>App: "photographs equipment plate"
+    App->>Q: "ocr() / multimodal completion"
+    Q-->>App: "brand, model, manufacturing year"
+    App->>App: "ask follow-up for Unknown fields"
+    App->>Store: "persist evidence and update reconciliation"
+    Store->>Store: "confirmation, conflict, or P2P sync"
+```
+
+### 5.4 Reconciliation and confirmation
 
 Strict four-field matching (`ADR 0002`) with an explicit **unknown-field candidate** path, so partial reports never silently merge and never falsely confirm.
 
@@ -154,7 +184,7 @@ flowchart TD
     C2 -- no --> Y["State stays Reported/Estimated"]
 ```
 
-### 5.4 Follow-up conversation
+### 5.5 Follow-up conversation
 
 ```mermaid
 stateDiagram-v2
@@ -169,7 +199,7 @@ stateDiagram-v2
     Complete --> [*]
 ```
 
-### 5.5 Confidence score
+### 5.6 Confidence score
 
 A transparent, explainable formula — no second opaque signal.
 
@@ -187,7 +217,7 @@ flowchart LR
 
 Proposed weights (tuning parameters, not domain): 0.40 × completeness + 0.25 × freshness + 0.35 × confirmation. The UI always shows *why* a score is what it is.
 
-### 5.6 Data and lineage model
+### 5.7 Data and lineage model
 
 | Entity | Role |
 |---|---|
@@ -208,7 +238,8 @@ Stack and key decisions (grounded in the official QVAC Expo tutorial and docs):
 - **Physical device required** (engines do not run on emulators) — documented in README; demo deviceready plan from hour 1.
 - Local store: `expo-sqlite` for the structured dataset + `expo-file-system` for photos/audio/files.
 - Model distribution: `downloadAsset`/`loadModel` with `onProgress`, pause/resume, sharded models; models fetched from the **distributed model registry** or **peers** (no central AI service).
-- Session flow: open Visit at a Site → talk/type/photo → confirm card → follow-up → save.
+- MVP session flow: open Visit at a Site → type Observation → validate → save.
+- Post-MVP session flow: add dictation, photo, follow-up, confirmation, and synchronization after the MVP is complete.
 - Offline-first: everything runs with no connectivity; download + load is the only "ready" gate and is shown transparently in the UI.
 
 ---
@@ -216,7 +247,10 @@ Stack and key decisions (grounded in the official QVAC Expo tutorial and docs):
 ## 7. Dashboard — web (local-first) details
 
 - Hosted as a local web app (Node/Electron or Expo web) so QVAC inference stays on-device; the rules permit cloud interface hosting, but observations are sensitive, so data never leaves the user's machine unless shared P2P.
-- Views: **Installed base** (filter by Client/Site/Modality/State/Confidence), **Evidence drill-down** (Field notes, photos, Collaborators, Visits, provenance per field), **Renewal radar** (age, quantity, confidence, "why flagged", verify now), **Aggregations** by geography.
+- MVP views: **Installed base** (filter by Client/Site/Modality/brand/model and show quantity, Age, and Use when present), **basic aggregations** by Client and Site.
+- Post-MVP views: **Evidence drill-down** (Field notes, photos, Collaborators, Visits, provenance per field), **Renewal radar**, freshness, advanced Age/Use analytics, and natural-language queries.
+- Age is required in the Observation schema, but incomplete capture persists explicitly as `Unknown`; it never blocks the Field note from being saved.
+- Age aggregation keeps the original range visible and uses actionable bands: **Age unknown**, **Less than 8 years** (`max < 8`), **Renewal candidate** (`min >= 8`), and **Needs verification** when the range crosses the threshold (`min < 8 <= max`) or has an active conflict marker.
 - **Natural-language query**: QVAC converts the question to a validated typed filter (Zod); a deterministic local query executes it. Raw model SQL is never executed.
 - Recomputable: recalculation from Observations is supported, so rule changes don't strand materialized state.
 
@@ -224,23 +258,26 @@ Stack and key decisions (grounded in the official QVAC Expo tutorial and docs):
 
 ## 8. Delivery plan for the 48-hour window
 
-### Must (vertical slice first, in order)
+The current implementation focus is the MVP. Post-MVP work starts only after every MVP item below is complete.
+
+### MVP must (vertical slice first, in order)
 
 1. Expo app boots on a physical device with QVAC smoke test (model download → load → completion).
-2. Field note capture (text first, then voice) → transcription → structured extraction (tool-schema JSON + Zod).
+2. Typed natural-language Observation → structured extraction (tool-schema JSON + Zod), including required Age with `Unknown` when unresolved.
 3. Observation persist with per-field provenance and record State.
-4. Photo capture → plate read (OCR + VisionPsy) → completes brand/model/age.
-5. Reconciliation with strict four-field matching + candidate path; seeded second-collaborator data raises a record to Confirmed.
-6. Dashboard: installed base + evidence drill-down + confidence + renewal radar.
-7. Fixtures: DemoCare Health Group, several Sites, several Collaborators/Visits, mixed States — so the dashboard is populated the moment the demo starts.
-8. README with declared pre-existing base; 5-minute Spanish demo video.
+4. Observation updates Installed equipment and the dashboard shows the installed base per Client.
+5. Basic aggregation across Clients by Site, Modality, brand, model, quantity, Age, and Use when present.
+6. Fixtures: DemoCare Health Group, several Sites, typed Observations, and incomplete Age/Use — so the dashboard is populated the moment the demo starts.
+7. README with declared pre-existing base; 5-minute Spanish demo video.
 
-### If time permits
+### Post-MVP, after the MVP is complete
 
-- Streaming voice with end-of-turn; follow-up state machine fully wired to voice and photo.
-- Natural-language query on the dashboard.
-- P2P sync between two devices (collaborator phone ↔ office laptop) to show decentralized confirmation without a server.
-- Geographic visualization.
+- Dictation with Parakeet speech-to-text.
+- Camera capture of equipment plates.
+- OCR and VisionPsy extraction of brand, model, and manufacturing year.
+- Automatic follow-up for Unknown fields.
+- Independent confirmation, conflict handling, and P2P synchronization.
+- Natural-language queries, freshness, Age and Use analytics, and renewal opportunities.
 
 ### Won't (explicitly out of scope)
 
@@ -256,11 +293,11 @@ Stack and key decisions (grounded in the official QVAC Expo tutorial and docs):
 | Time | Beat |
 |---|---|
 | 0:00–0:35 | Problem: installed-equipment knowledge lives in personal notes; nothing is verified; renewals are guesses. |
-| 0:35–1:30 | Offline field capture: collaborator dictates a Field note at a Site; local transcription + structured extraction; missing model triggers a follow-up. |
-| 1:30–2:20 | Photo: collaborator photographs the nameplate; OCR + vision complete brand/model/age on-device; show the record card. |
-| 2:20–3:20 | Reconciliation: a second Collaborator's report from another Visit matches exactly → State Confirmed; confidence explained. |
-| 3:20–4:20 | Impact: installed-base dashboard, provenance drill-down, renewal radar, one NL query answered locally. |
-| 4:20–5:00 | Differentiation: all QVAC tasks on-device (text/audio/vision/OCR), no cloud endpoint, P2P path, offline guarantee. |
+| 0:35–1:30 | MVP capture: Collaborator types a natural-language Observation; local QVAC extraction returns structured fields, including Age/Use when present. |
+| 1:30–2:20 | Validation and storage: incomplete Age remains `Unknown`; the Observation is persisted and updates Installed equipment. |
+| 2:20–3:20 | Client view: dashboard shows equipment by Client, Site, Modality, brand/model, quantity, Age, and Use when present. |
+| 3:20–4:20 | Basic aggregation: show where a model or Modality is installed across several Clients and Sites. |
+| 4:20–5:00 | Differentiation: the MVP proves the local QVAC intelligence layer; voice, camera, and advanced reconciliation are clearly post-MVP. |
 
 ---
 
