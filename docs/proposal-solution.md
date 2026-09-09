@@ -36,7 +36,11 @@ This repository already carries the refined domain model in `CONTEXT.md`, `docs/
 | Installed-equipment matching is strict on all four key fields; a missing field creates a record until the gap fills | `CONTEXT.md` — Independent confirmation; `ADR 0002` |
 | Quantity reconciles by max; "one of the X" references the group, it is not a count | `CONTEXT.md` — Installed equipment; session Q16–18 |
 | Confidence (0–100) = completeness (non-Unknown ÷ required) + freshness (time since last independent confirmation) + independent confirmations; explainable weights | `CONTEXT.md` — Confidence score |
-| Age = years the equipment has been in service; plate year is a proxy → Estimated; renewal fires at ≥8 years (Estimated counts, Unknown does not) | `CONTEXT.md` — Renewal opportunity |
+| Age is an inclusive min–max range (an exact figure is the degenerate point); plate/installation year is a proxy that derives the range, never a separate field | `CONTEXT.md` — Age |
+| Installed equipment reconciles Age by envelope (union of ranges, never dropped); a non-overlapping independent report derives a "verify" conflict marker without touching the State | `CONTEXT.md` — Conflicting observation; `ADR 0005` |
+| Renewal fires when envelope min reaches the tuning threshold (default 8); "older than N" queries use the same min semantics | `CONTEXT.md` — Renewal opportunity; `ADR 0005` |
+| High/Medium/Low are display buckets derived from the 0–100 score, not a separate model | `CONTEXT.md` — Confidence score |
+| Comment is free text on the Observation with no role in matching/State/confidence/renewal | `CONTEXT.md` — Comment |
 | Follow-up asks one field per turn, highest-value first; the Observation persists immediately, never blocked | session Q9–10 |
 | Photo can create or confirm; plate photo + second collaborator are the only independent sources | session Q11 |
 | Transcription is a capture mechanism; the transcription *is* the Field note | session Q12 |
@@ -190,7 +194,7 @@ Proposed weights (tuning parameters, not domain): 0.40 × completeness + 0.25 ×
 | `Evidence` | Source artifact: field_note (transcription), photo, typed entry. Holds raw content + QVAC task/model used. |
 | `ExtractedValue` | One field value + provenance (Confirmed/Reported/Estimated/Unknown) + `evidenceId` + extraction confidence. |
 | `Observation` | Structured record for one equipment group (key Site×Modality×brand×model), carrying modality, brand, model, age, quantity and the derived record State. Immutable; each source appends. |
-| `Installed equipment` | Reconciled view per key, quantity = max, best current fields, confirmation count, last independent confirmation. Materialized incrementally, **recomputable from Observations**. |
+| `Installed equipment` | Reconciled view per key, quantity = max, Age envelope (union of ranges), best current fields, confirmation count, last independent confirmation. Materialized incrementally, **recomputable from Observations**. |
 | `Visit` / `Collaborator` | The independence backbone — only separate sources raise confirmed. |
 
 ---
