@@ -24,7 +24,7 @@ _Use when_: referring to the uncleaned input utterance.
 _Avoid_: Report, visit note (unless the visit-level grouping is meant, not the utterance).
 
 **Observation**
-: A persisted structured record for one equipment group at a Site, keyed by Site × Modality × brand × model, carrying modality, brand, model, age (a min–max range), quantity, and a state. The Field note renders into 1..n Observations — the model decides the count based on how specifically the collaborator distinguishes equipment (e.g. "two MRI machines" = one Observation with quantity=2; "one Siemens MRI and one GE MRI" = two distinct Observations).
+: A persisted structured record for one equipment group at a Site, keyed by Site × Modality × brand × model, carrying modality, brand, model, age (a min–max range), quantity, and a state. The Field note renders into 1..n Observations — the model decides the count based on how specifically the collaborator distinguishes equipment (e.g. "two MRI machines" = one Observation with quantity=2; "one NovaMed MRI and one Celeris MRI" = two distinct Observations).
 _Use when_: referring to the structured, state-carrying data record.
 _Avoid_: Item, loose record — each Observation is the unit that carries a state.
 

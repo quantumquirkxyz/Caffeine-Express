@@ -5,7 +5,7 @@ Date: 2026-09-09
 
 ## Context
 
-A Field note yields Observations keyed by Site × Modality × brand × model, and these Observations reconcile into Installed equipment. Independent confirmation — what raises a record to Confirmed — depends on whether two reports refer to the same physical equipment. A future reader might assume matching by a looser key (e.g. Site × Modality × brand only), because in the field collaborators rarely state the exact model. It would be cheaper, and would group "Siemens MRI" reports even when the model is never named.
+A Field note yields Observations keyed by Site × Modality × brand × model, and these Observations reconcile into Installed equipment. Independent confirmation — what raises a record to Confirmed — depends on whether two reports refer to the same physical equipment. A future reader might assume matching by a looser key (e.g. Site × Modality × brand only), because in the field collaborators rarely state the exact model. It would be cheaper, and would group "NovaMed MRI" reports even when the model is never named.
 
 ## Decision
 
@@ -13,6 +13,6 @@ Installed equipment is matched and reconciled strictly on all four key fields: S
 
 ## Consequences
 
-- Positive: precision — "Siemens MAGNETOM Vida" and "Siemens MAGNETOM Amira" are correctly kept apart; the system leverages QVAC's model extraction to distinguish distinct physical devices.
-- Negative: a partial Field note ("a Siemens MRI") does not match an existing entry that lacks a model, so reconciliation can lag until the model is captured; the same device may appear as duplicate entries when collaborators never state the model.
+- Positive: precision — "NovaMed Vanta" and "NovaMed Lumina" are correctly kept apart; the system leverages QVAC's model extraction to distinguish distinct physical devices.
+- Negative: a partial Field note ("a NovaMed MRI") does not match an existing entry that lacks a model, so reconciliation can lag until the model is captured; the same device may appear as duplicate entries when collaborators never state the model.
 - Follow-up: the automatic follow-up prompt (and photo capture) becomes the mechanism for filling the missing model field so strict matches can eventually consolidate; prototype the dedup UX to confirm partial reports do not strand records in an un-mergeable state.
