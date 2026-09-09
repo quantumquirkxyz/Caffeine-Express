@@ -11,3 +11,4 @@ export * from './domain/installed-equipment';
 export * from './store/installed-base';
 export * from './fixtures/synthetic';
 export * from './fixtures/seed';
+export * from './dashboard/dashboard';
