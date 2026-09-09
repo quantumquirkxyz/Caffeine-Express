@@ -9,7 +9,7 @@ The field collaborator captures observations while inside a hospital, frequently
 
 ## Decision
 
-All capture and extraction inference — interpreting the free-text Apunte de campo, speech-to-text dictation, and plate/label photo reading — runs on the device via QVAC or is delegated peer-to-peer. No inference is sent to a cloud API.
+All capture and extraction inference — interpreting the free-text Field note, speech-to-text dictation, and plate/label photo reading — runs on the device via QVAC or is delegated peer-to-peer. No inference is sent to a cloud API.
 
 ## Consequences
 

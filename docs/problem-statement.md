@@ -4,7 +4,7 @@ Build a prototype that turns what a field collaborator observes in a hospital in
 
 ## The problem
 
-Service engineers, sales people, and specialists visit hospitals and clinics every day. They see how many resonators, tomographs, or ultrasonographs each client has, which brands, and how old the equipment looks. Today that knowledge stays in personal notes, conversations, or memory: capturing it by hand takes time, descriptions are inconsistent, several people report the same equipment, and observations are usually partial. The result is an organization with little visibility into the real technological landscape of its clients.
+Service engineers, sales people, and specialists visit hospitals and clinics every day. They see how many MRI scanners, CT scanners, or ultrasound machines each client has, which brands, and how old the equipment looks. Today that knowledge stays in personal notes, conversations, or memory: capturing it by hand takes time, descriptions are inconsistent, several people report the same equipment, and observations are usually partial. The result is an organization with little visibility into the real technological landscape of its clients.
 
 ## Why on-device
 
@@ -14,15 +14,15 @@ The collaborator is inside a hospital, frequently without stable connectivity, a
 
 After a visit, the collaborator opens the app and says or types something like:
 
-> "Estoy en Hospital DemoCare Pacific, en Panamá. Hay un tomógrafo. Uno de los resonadores parece de unos ocho años."
+> "I'm at Hospital DemoCare Pacific in Panama. There's a CT scanner. One of the MRIs looks about eight years old."
 
-The prototype must interpret the message; extract cliente, ciudad, país, modalidad, cantidad, marca, modelo, and antigüedad when known; ask for what is missing; and store the observation in a structured repository. Over time those observations compose a live view of the installed base per client and per geography.
+The prototype must interpret the message; extract client, city, country, modality, quantity, brand, model, and age when known; ask for what is missing; and store the observation in a structured repository. Over time those observations compose a live view of the installed base per client and per geography.
 
 ## Minimum viable prototype
 
 - Natural-language capture of an observation.
 - AI extraction of structured equipment information, tolerating incomplete data.
-- Storage in a structured dataset, with a state per observation: Confirmado, Reportado, Estimado, or Desconocido.
+- Storage in a structured dataset, with a state per observation: Confirmed, Reported, Estimated, or Unknown.
 - Installed-base view at the client level.
 - Basic aggregation or visualization across several clients.
 
@@ -33,7 +33,7 @@ The prototype must interpret the message; extract cliente, ciudad, país, modali
 - Confidence score from completeness, freshness, and independent confirmations.
 - Alerts for information not recently verified.
 - Automatic follow-up questions for the most valuable missing datum.
-- Natural-language queries over the dataset ("clientes en Brasil con resonadores de más de siete años").
+- Natural-language queries over the dataset ("clients in Brazil with MRI scanners older than seven years").
 - Renewal opportunity identification.
 - Photo-assisted capture of labels or plates, subject to the available vision model's capabilities.
 
@@ -43,4 +43,4 @@ The solution must use **QVAC** with inference on the device or delegated peer-to
 
 ## Domain decisions
 
-The shared domain model behind this statement is captured in the **Language — Field equipment capture** glossary in `CONTEXT.md` (Apunte de campo, Observación, Modalidad, Cliente, Sitio, Estado, Equipo instalado, Confirmación independiente, Base instalada, Puntaje de confianza, Oportunidad de renovación) and the architecture decision in `docs/adr/`.
+The shared domain model behind this statement is captured in the **Language — Field equipment capture** glossary in `CONTEXT.md` (Field note, Observation, Modality, Client, Site, State, Installed equipment, Independent confirmation, Installed base, Confidence score, Renewal opportunity) and the architecture decision in `docs/adr/`.
