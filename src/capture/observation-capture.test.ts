@@ -38,4 +38,14 @@ describe('typed Observation capture', () => {
     expect(observation[0]?.modality).toBe('MRI');
     expect(extractor.extract).toHaveBeenCalledWith('fixture');
   });
+
+  it('persists every Observation returned for one Field note', async () => {
+    const store = new MemoryObservationStore();
+    const extractor = new DeterministicObservationExtractor();
+    const input = await extractor.extract('one MRI at Site, client Client, brand A, model One');
+    const two = { extract: vi.fn(async () => [...input, { ...input[0], brand: 'B', model: 'Two' }]) };
+    const observations = await captureObservation('two devices', two, store);
+    expect(observations).toHaveLength(2);
+    expect(await store.all()).toHaveLength(2);
+  });
 });
