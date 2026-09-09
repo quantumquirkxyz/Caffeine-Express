@@ -1,0 +1,21 @@
+{
+  "name": "caffeine-express",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "MVP installed-base intelligence prototype: validated Observation persistence data plane.",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^7.3.6",
+    "vitest": "^3.2.7"
+  }
+}
