@@ -149,3 +149,9 @@ _Avoid_: Quality (implies intrinsic merit, not provenance), validity.
 : A renewal candidate: Installed equipment whose Age envelope's lower bound (min) reaches a tuning threshold (default 8 years). Unknown age does not qualify; an Estimated range counts by its min. Dashboard queries for "older than N" use the same min semantics.
 _Use when_: referring to a device the model flags as replaceable.
 _Avoid_: Churn, upsell (commercial actions, not the candidate itself).
+
+## Hackathon dataset contract
+
+`docs/hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx` is a synthetic fixture and acceptance reference, not production customer data. Its `Dummy Installed Base` sheet contains 20 seed rows with geography, hospital, collaborator, visit date, modality, quantity, dummy brand/model, approximate age, estimated installation year, confidence bucket, state, source, field note, follow-up question/answer, and notes.
+
+The fixture seeds and replays the MVP dashboard and extraction tests. `Customer / Hospital` maps to Client/Site context, `Observer` to Collaborator, and `Visit Date` to Visit. `MR` is an input alias normalized to the canonical Modality term. Approximate age becomes an inclusive range; installation year is derived evidence, never a second Age field. Workbook confidence buckets are display fixtures only. Missing brand or model remains `Unknown` and never triggers automatic reconciliation.

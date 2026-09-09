@@ -28,6 +28,10 @@ The current implementation focus is this MVP. Post-MVP goals are intentionally d
 - Installed-base view at the client level.
 - Basic aggregation or visualization across several clients.
 
+## Hackathon fixture
+
+`docs/hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx` is the deterministic MVP seed and acceptance reference. Its 20 fictional rows cover multiple countries, Sites, modalities, quantities, approximate ages, estimated installation years, missing models, and Reported/Estimated states. Its voice prompts and follow-up columns are test vectors and post-MVP references, not a reason to move voice or automated follow-up into the MVP. Import normalization follows `docs/adr/0007-synthetic-workbook-as-mvp-fixture.md`.
+
 ## Post-MVP goals
 
 - Dictation with Parakeet speech-to-text.

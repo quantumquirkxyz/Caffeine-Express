@@ -47,6 +47,7 @@ This repository already carries the refined domain model in `CONTEXT.md`, `docs/
 | Collaborator and Visit are first-class: confirmation is independent only across different Collaborators/Visits | `CONTEXT.md` — Collaborator, Visit |
 | Field notes are accepted in any language; output normalizes to the English Modality canon | session Q18 |
 | Site resolves from the active session context; QVAC verifies if the Field note names another | session Q17 |
+| The supplied XLSX is a synthetic seed/acceptance fixture, not a production schema or customer data source | `ADR 0007` |
 
 ---
 
@@ -227,6 +228,10 @@ Proposed weights (tuning parameters, not domain): 0.40 × completeness + 0.25 ×
 | `Installed equipment` | Reconciled view per key, quantity = max, Age envelope (union of ranges), best current fields, confirmation count, last independent confirmation. Materialized incrementally, **recomputable from Observations**. |
 | `Visit` / `Collaborator` | The independence backbone — only separate sources raise confirmed. |
 
+### 5.8 Hackathon workbook adapter
+
+The workbook seeds the MVP with 20 deterministic synthetic rows. The adapter maps hospital/customer and geography into Client/Site, observer/date into Collaborator/Visit, normalizes `MR` to the canonical modality, converts scalar approximate age into an inclusive range, and preserves missing brand/model as `Unknown`. Its confidence labels are fixture presentation values only. `Agent Question Logic` and `Voice Test Prompts` are test vectors and post-MVP references; typed capture remains the MVP input.
+
 ---
 
 ## 6. Field app — mobile details (Android/iOS)
@@ -267,7 +272,7 @@ The current implementation focus is the MVP. Post-MVP work starts only after eve
 3. Observation persist with per-field provenance and record State.
 4. Observation updates Installed equipment and the dashboard shows the installed base per Client.
 5. Basic aggregation across Clients by Site, Modality, brand, model, quantity, Age, and Use when present.
-6. Fixtures: DemoCare Health Group, several Sites, typed Observations, and incomplete Age/Use — so the dashboard is populated the moment the demo starts.
+6. Load `Dummy_Installed_Base_Hackathon.xlsx` through the adapter so the dashboard starts with 20 deterministic synthetic rows.
 7. README with declared pre-existing base; 5-minute Spanish demo video.
 
 ### Post-MVP, after the MVP is complete
