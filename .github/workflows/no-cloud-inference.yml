@@ -1,0 +1,40 @@
+name: no-cloud-inference
+
+on:
+  pull_request:
+    branches: [mvp, main]
+  push:
+    branches: [mvp, main]
+
+concurrency:
+  group: no-cloud-inference-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  enforce-qvac-only:
+    name: QVAC-only inference guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: No-cloud-inference guard (deterministic)
+        run: node scripts/check-no-cloud-inference.mjs
+
+      - name: Typecheck
+        run: npx tsc -p tsconfig.json --noEmit
+
+      - name: Tests
+        run: npx vitest run
+
+      - name: ADR 0001 present
+        run: test -f docs/adr/0001-on-device-qvac-inference.md
