@@ -26,12 +26,18 @@ export const QVAC_MVP_MODEL = LLAMA_3_2_1B_INST_Q4_0;
 export const QVAC_REQUIRES_PHYSICAL_DEVICE_NOTE =
   'QVAC runs on a physical Android or iOS device; this emulator cannot run the on-device engine.';
 
+/** Must fit the extraction prompt plus the emitted JSON; the SDK default fails with "no room to generate". */
+export const QVAC_MVP_CONTEXT_SIZE = 4096;
+
 export class NativeQvacRuntime implements QvacRuntime {
   async loadModel(): Promise<string> {
     if (!Device.isDevice) {
       throw new QvacRuntimeUnavailableError(QVAC_REQUIRES_PHYSICAL_DEVICE_NOTE);
     }
-    return loadModel({ modelSrc: QVAC_MVP_MODEL });
+    return loadModel({
+      modelSrc: QVAC_MVP_MODEL,
+      modelConfig: { ctx_size: QVAC_MVP_CONTEXT_SIZE },
+    });
   }
 
   async complete(modelId: string, prompt: string): Promise<string> {
