@@ -45,13 +45,9 @@ export class NodeUnsupportedQvacRuntime implements QvacRuntime {
 }
 
 export async function loadQvacModel(): Promise<string> {
-  // The browser cannot run the native QVAC engine, but the shared capture
-  // flow still needs a ready local extractor handle.
-  return 'web-local-extractor';
+  throw new QvacRuntimeUnavailableError();
 }
 
 export async function unloadQvacModel(_modelId: string): Promise<void> {
-  // No-op on the non-native path: nothing was ever loaded. Kept for source
-  // compatibility with earlier callers; the smoke test uses the
-  // `QvacRuntime` interface directly and never reaches this fallback.
+  throw new QvacRuntimeUnavailableError();
 }

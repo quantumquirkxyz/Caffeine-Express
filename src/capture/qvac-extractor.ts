@@ -1,11 +1,10 @@
-import { DeterministicObservationExtractor, type ObservationExtractor } from './observation-capture';
+import type { ObservationExtractor } from './observation-capture';
+import { QvacRuntimeUnavailableError } from './qvac-runtime';
 
 export class QVACObservationExtractor implements ObservationExtractor {
-  private readonly fallback = new DeterministicObservationExtractor();
-
   constructor(_modelId: string) {}
 
   extract(fieldNote: string): ReturnType<ObservationExtractor['extract']> {
-    return this.fallback.extract(fieldNote);
+    return Promise.reject(new QvacRuntimeUnavailableError());
   }
 }
