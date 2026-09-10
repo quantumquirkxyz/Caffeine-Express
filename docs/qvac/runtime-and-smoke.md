@@ -103,6 +103,27 @@ The 1B model is small enough that it can miss quantities or usage ("Two",
 never invents a value (`age: null` stays null). That is the MVP contract:
 structure and provenance over recall.
 
+### Offline startup
+
+With the model cached, `loadModel` does not contact the network: the registry
+path validates the local file (size plus a full SHA-256, about 1.9 s for the 1B
+model) and loads it with llama.cpp (about 2.4 s). Measured on the physical
+device, the online and offline load timelines are identical — roughly 6 s from
+JS start to the model being registered, and about 10 s to the "ON-DEVICE" badge
+including app startup.
+
+The network is required to *provision* the model (the first 773 MB download, or
+after clearing the app cache). An offline load with an incomplete cache waits on
+the registry timeouts (`registryStreamTimeoutMs` 60 s,
+`registryDownloadMaxRetries` 3). For HTTP model sources the SDK also validates a
+cache hit with a freshness `HEAD` whose connect timeout is
+`httpConnectionTimeoutMs` (10 s by default), which a hanging network (WiFi
+connected without internet) would pay in full. Before the first QVAC call the
+app writes `qvac.config.json` into its documents directory
+(`src/capture/qvac-config.native.ts`) with `httpConnectionTimeoutMs: 3000` and
+console logging enabled, so that fallback is bounded and the load path is
+visible in `adb logcat`.
+
 ## No cloud inference path
 
 The MVP never calls a cloud inference endpoint. This is enforced by three

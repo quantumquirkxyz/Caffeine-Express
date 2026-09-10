@@ -19,6 +19,7 @@ import {
 } from '@qvac/sdk';
 import * as Device from 'expo-device';
 import { QvacRuntimeUnavailableError, type QvacRuntime } from './qvac-runtime';
+import { ensureQvacRuntimeConfig } from './qvac-config';
 
 /** The MVP text-generation model loaded by the on-device QVAC worker. */
 export const QVAC_MVP_MODEL = LLAMA_3_2_1B_INST_Q4_0;
@@ -34,6 +35,7 @@ export class NativeQvacRuntime implements QvacRuntime {
     if (!Device.isDevice) {
       throw new QvacRuntimeUnavailableError(QVAC_REQUIRES_PHYSICAL_DEVICE_NOTE);
     }
+    ensureQvacRuntimeConfig();
     return loadModel({
       modelSrc: QVAC_MVP_MODEL,
       modelConfig: { ctx_size: QVAC_MVP_CONTEXT_SIZE },
