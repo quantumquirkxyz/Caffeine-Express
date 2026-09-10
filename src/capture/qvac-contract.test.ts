@@ -187,9 +187,23 @@ describe('QVAC MVP extraction contract', () => {
     expect(() => extractObservationsFromContent(bad, { fieldNote: 'x' })).toThrow(ExtractionError);
   });
 
-  it('rejects a row missing a required field (no client) as malformed output', () => {
+  it('records a row without client or site as Unknown instead of rejecting it', () => {
+    const [input] = observationInputsFromModel([{ modality: 'MRI', quantity: 1 }], {
+      fieldNote: 'MRI at the site',
+    });
+
+    expect(input).toBeDefined();
+    expect(input!.site).toEqual({
+      client: { name: 'Unknown' },
+      name: 'Unknown',
+      city: 'Unknown',
+      country: 'Unknown',
+    });
+  });
+
+  it('rejects a row missing the required modality as malformed output', () => {
     const bad = JSON.stringify({
-      observations: [{ site: 'Pacific Hospital', modality: 'MRI', quantity: 1 }],
+      observations: [{ client: 'DemoCare', site: 'Pacific Hospital', quantity: 1 }],
     });
     expect(() => extractObservationsFromContent(bad, { fieldNote: 'x' })).toThrow(ExtractionError);
   });

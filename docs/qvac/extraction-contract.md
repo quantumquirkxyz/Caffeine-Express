@@ -57,8 +57,8 @@ deviation.
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
-| `client` | string | yes | Client (organization) name as stated in the note. |
-| `site` | string | yes | Site name as stated in the note. |
+| `client` | string \| null | optional | Client (organization) name as stated in the note; `null` records `"Unknown"` (a hole, never an invented name). |
+| `site` | string \| null | optional | Site (location) name as stated in the note; `null` records `"Unknown"` (a hole, never an invented name). |
 | `city` | string | optional | Defaults to `"Unknown"`. |
 | `country` | string | optional | Defaults to `"Unknown"`. |
 | `modality` | string | yes | Canonical term (MRI, CT, Ultrasound, X-Ray, Patient Monitoring, Image Guided Therapy, Other) or a documented alias (MR, scanner, US, xray, monitoring, IGT, ...). Unrecognized values are rejected. |
@@ -103,7 +103,7 @@ records `period: null` and a future Visit can attach a real period.
 
 | Observation input field | Source | Default provenance |
 |---|---|---|
-| `site` | required from the model | not per-field (lives on the Site) |
+| `site` | names from the model, `"Unknown"` when absent | not per-field (lives on the Site) |
 | `modality` | normalized from the model | `Reported` |
 | `brand` | trimmed string or `null` | `Reported` if present, `Unknown` if `null` |
 | `model` | trimmed string or `null` | `Reported` if present, `Unknown` if `null` |
@@ -268,7 +268,7 @@ Any of the following is rejected and surfaced as `ExtractionError`:
 - `{ "data": [...] }` (missing `observations` array)
 - `{ "observations": [] }` (empty array is a contract violation)
 - `{ "observations": [ { "client": "a", "site": "b", "modality": "MRI", "quantity": 1, "age": { "min": 9, "max": 4 } } ] }` (reversed Age range)
-- `{ "observations": [ { "site": "b", "modality": "MRI", "quantity": 1 } ] }` (missing required `client`)
+- `{ "observations": [ { "client": "a", "site": "b", "quantity": 1 } ] }` (missing required `modality`)
 - `{ "observations": [ { "client": "a", "site": "b", "modality": "MRI", "quantity": 0 } ] }` (non-positive quantity)
 - `{ "observations": [ { "client": "a", "site": "b", "modality": "MRI", "quantity": 1, "use": { "hours": -1 } } ] }` (negative Use hours)
 - `{ "observations": [ { "client": "a", "site": "b", "modality": "MRI", "quantity": 1, "invented": "value" } ] }` (unknown key, the parser is strict)
