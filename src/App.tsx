@@ -247,7 +247,7 @@ export default function App() {
         />
         {captureState === 'loading' ? <ActivityIndicator accessibilityLabel="Extracting Field note" /> : <Button disabled={store === null || qvacModelId === null} title="Extract and save" onPress={() => void saveFieldNote()} />}
         {store === null && <Text style={styles.captureHint}>Capture is unavailable while local data is loading or offline.</Text>}
-        {captureState === 'error' && <Text accessibilityRole="alert" style={styles.error}>{captureError}</Text>}
+        {captureError !== '' && <Text accessibilityRole="alert" style={styles.error}>{captureError}</Text>}
         {captureState === 'saved' && captured.length > 0 && (
           <View style={styles.result}>
             <Text style={styles.resultTitle}>Saved Observation</Text>

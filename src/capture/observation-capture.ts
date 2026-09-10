@@ -6,6 +6,20 @@ export interface ObservationExtractor {
   extract(fieldNote: string): Promise<readonly ObservationInput[]>;
 }
 
+export function parseObservationsJson(contentText: string): readonly ObservationInput[] {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(contentText);
+  } catch {
+    throw new ExtractionError('QVAC returned malformed JSON.');
+  }
+  const observations = (parsed as { readonly observations?: unknown }).observations;
+  if (!Array.isArray(observations)) {
+    throw new ExtractionError('QVAC returned no observations array.');
+  }
+  return observations as readonly ObservationInput[];
+}
+
 export class ExtractionError extends Error {
   constructor(message: string) {
     super(message);

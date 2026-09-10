@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { captureObservation, DeterministicObservationExtractor, ExtractionError } from './observation-capture';
+import { captureObservation, DeterministicObservationExtractor, ExtractionError, parseObservationsJson } from './observation-capture';
 import { MemoryObservationStore } from '../store/memory-observation-store';
 import type { ObservationInput } from '../validation/observation.schema';
 
@@ -49,5 +49,19 @@ describe('typed Observation capture', () => {
     const observations = await captureObservation('two devices', two, store);
     expect(observations).toHaveLength(2);
     expect(await store.all()).toHaveLength(2);
+  });
+
+  it('parses the QVAC wrapper object into an observations array', () => {
+    const observations = parseObservationsJson('{"observations":[{"modality":"MRI"}]}');
+    expect(observations).toHaveLength(1);
+    expect(observations[0]?.modality).toBe('MRI');
+  });
+
+  it('rejects QVAC output without an observations array', () => {
+    expect(() => parseObservationsJson('{"data":[{"modality":"MRI"}]}')).toThrow(ExtractionError);
+  });
+
+  it('rejects malformed QVAC JSON', () => {
+    expect(() => parseObservationsJson('not json')).toThrow(ExtractionError);
   });
 });
