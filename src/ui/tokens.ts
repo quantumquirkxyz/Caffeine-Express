@@ -1,1 +1,3 @@
-export { borders, colors, radius, shadows, spacing, textStyles, theme, typography } from './theme';
+export { radius, spacing, typography } from './theme';
+export { useTheme } from './ThemeProvider';
+export type { ThemeMode } from './palette';
