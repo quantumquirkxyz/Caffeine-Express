@@ -48,6 +48,15 @@ export interface DashboardView {
   readonly aggregation: DashboardAggregation | null;
 }
 
+export interface OverviewAggregation {
+  readonly clients: number;
+  readonly sites: number;
+  readonly units: number;
+  readonly byModality: readonly { readonly label: Modality; readonly value: number }[];
+  readonly byClient: readonly { readonly label: string; readonly value: number }[];
+  readonly sitesByClient: readonly { readonly label: string; readonly value: number }[];
+}
+
 function toEquipmentRow(record: InstalledEquipment): DashboardEquipmentRow {
   return {
     siteName: record.site.name,
@@ -105,5 +114,37 @@ export function dashboardView(
       quantity: sumQuantity(equipment),
       locations: equipment.map((item) => ({ clientName: item.site.client.name, siteName: item.site.name, quantity: item.quantity })),
     },
+  };
+}
+
+export function overviewAggregation(base: InstalledBase): OverviewAggregation {
+  const view = dashboardView(base);
+  const byModality = new Map<Modality, number>();
+  const byClient = new Map<string, number>();
+  const sitesByClient = new Map<string, number>();
+  let sites = 0;
+
+  for (const client of view.clients) {
+    byClient.set(client.clientName, client.quantity);
+    sitesByClient.set(client.clientName, client.sites.length);
+    sites += client.sites.length;
+    for (const site of client.sites) {
+      for (const equipment of site.equipment) {
+        byModality.set(equipment.modality, (byModality.get(equipment.modality) ?? 0) + equipment.quantity);
+      }
+    }
+  }
+
+  const sorted = <T extends string>(values: Map<T, number>) => [...values.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, value]) => ({ label, value }));
+
+  return {
+    clients: view.clients.length,
+    sites,
+    units: view.aggregation?.quantity ?? 0,
+    byModality: sorted(byModality),
+    byClient: sorted(byClient),
+    sitesByClient: sorted(sitesByClient),
   };
 }

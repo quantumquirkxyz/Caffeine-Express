@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { loadSyntheticFixtures } from '../fixtures/seed';
 import { MemoryObservationStore } from '../store/memory-observation-store';
 import { InstalledBase } from '../store/installed-base';
-import { dashboardView } from './dashboard';
+import { dashboardView, overviewAggregation } from './dashboard';
 
 async function seededBase(): Promise<InstalledBase> {
   const store = new MemoryObservationStore();
@@ -47,5 +47,16 @@ describe('dashboard view', () => {
     expect(dashboardView(base, {}, { offline: true }).status).toBe('offline');
     expect(dashboardView(new InstalledBase()).status).toBe('empty');
     expect(dashboardView(base, { modality: 'CT', brand: 'not-installed' }).status).toBe('no-results');
+  });
+
+  it('builds global summary aggregation independently of inventory filters', async () => {
+    const base = await seededBase();
+    const aggregation = overviewAggregation(base);
+    const filtered = dashboardView(base, { modality: 'MRI' });
+
+    expect(aggregation.units).toBeGreaterThan(filtered.aggregation?.quantity ?? 0);
+    expect(aggregation.byModality.find((entry) => entry.label === 'MRI')?.value).toBe(15);
+    expect(aggregation.byClient.length).toBeGreaterThan(1);
+    expect(aggregation.sitesByClient.length).toBe(aggregation.byClient.length);
   });
 });
