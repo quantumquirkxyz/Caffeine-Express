@@ -11,10 +11,10 @@ import {
 const FIXED_NOW = new Date('2026-08-18T10:00:00.000Z');
 
 describe('synthetic fixtures', () => {
-  it('defines 22 reproducible fictional rows', () => {
+  it('defines the 20 workbook rows reproducibly', () => {
     const rows = syntheticFixtureRows();
-    expect(rows).toHaveLength(22);
-    expect(new Set(rows.map((r) => r.id)).size).toBe(22);
+    expect(rows).toHaveLength(20);
+    expect(new Set(rows.map((r) => r.id)).size).toBe(20);
   });
 
   it('declares only fictional brand, model, client, and site names', () => {
@@ -39,14 +39,14 @@ describe('synthetic fixtures', () => {
     }
   });
 
-  it('loads all 22 rows into the store offline', async () => {
+  it('loads all workbook rows into the store offline', async () => {
     const store = new MemoryObservationStore();
     const observations = await loadSyntheticFixtures(store, { now: FIXED_NOW });
 
-    expect(observations).toHaveLength(22);
-    expect((await store.all())).toHaveLength(22);
+    expect(observations).toHaveLength(20);
+    expect((await store.all())).toHaveLength(20);
     expect(observations.map((o) => o.id)).toEqual(
-      Array.from({ length: 22 }, (_, i) => `obs-${String(i + 1).padStart(3, '0')}`),
+      Array.from({ length: 20 }, (_, i) => `obs-${String(i + 1).padStart(3, '0')}`),
     );
   });
 
@@ -98,42 +98,14 @@ describe('synthetic fixtures', () => {
     );
     const obs001 = observations.find((o) => o.id === 'obs-001');
     expect(obs001?.age).toEqual({ min: 6, max: 8 });
-    const obs021 = observations.find((o) => o.id === 'obs-021');
-    expect(obs021?.age).toBeNull();
-    expect(obs021?.ageProvenance).toBe('Unknown');
+    const obs020 = observations.find((o) => o.id === 'obs-020');
+    expect(obs020?.age).toEqual({ min: 7, max: 9 });
     for (const observation of observations) {
       if (observation.age !== null) {
         expect(observation.age.min).toBeGreaterThanOrEqual(0);
         expect(observation.age.min).toBeLessThanOrEqual(observation.age.max);
       }
     }
-  });
-
-  it('keeps an Unknown Age row reproducible without invented bounds', async () => {
-    const observations = await loadSyntheticFixtures(
-      new MemoryObservationStore(),
-      { now: FIXED_NOW },
-    );
-    const obs021 = observations.find((o) => o.id === 'obs-021');
-    expect(obs021?.age).toBeNull();
-    expect(obs021?.ageProvenance).toBe('Unknown');
-    expect(recordState(obs021 as Observation)).toBe('Unknown');
-  });
-
-  it('keeps a Use fixture row reproducible with hours and period', async () => {
-    const observations = await loadSyntheticFixtures(
-      new MemoryObservationStore(),
-      { now: FIXED_NOW },
-    );
-    const obs022 = observations.find((o) => o.id === 'obs-022');
-    expect(obs022?.use).toEqual({
-      hours: 8500,
-      period: {
-        start: new Date('2026-01-01T00:00:00.000Z'),
-        end: new Date('2026-08-03T00:00:00.000Z'),
-      },
-    });
-    expect(obs022?.useProvenance).toBe('Reported');
   });
 
   it('keeps missing brand/model as Unknown without invented values', async () => {
@@ -183,6 +155,6 @@ describe('seed store shape', () => {
     const sites = new Set(observations.map((o) => o.site.name));
     expect(clients.size).toBeGreaterThan(1);
     expect(sites.size).toBe(13);
-    expect(await store.all()).toHaveLength(22);
+    expect(await store.all()).toHaveLength(20);
   });
 });

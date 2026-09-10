@@ -42,6 +42,7 @@ describe('observation', () => {
   it('anchors the key by Site x Modality x brand x model', () => {
     const observation = baseObservation();
     expect(observationKey(observation)).toEqual({
+      clientName: 'DemoCare Health Group',
       siteName: 'Hospital DemoCare Pacific',
       modality: 'MRI',
       brand: 'NovaMed',

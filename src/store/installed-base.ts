@@ -13,7 +13,7 @@ function mergedState(observations: readonly Observation[]): Provenance {
 }
 
 function installedEquipmentKey(key: ObservationKey): string {
-  return JSON.stringify([key.siteName, key.modality, key.brand, key.model]);
+  return JSON.stringify([key.clientName, key.siteName, key.modality, key.brand, key.model]);
 }
 
 export class InstalledBase {
@@ -51,6 +51,7 @@ export class InstalledBase {
     return this.all().filter((record) =>
       (filter.clientName === undefined || record.site.client.name === filter.clientName) &&
       (filter.siteName === undefined || record.site.name === filter.siteName) &&
+      (filter.country === undefined || record.site.country === filter.country) &&
       (filter.modality === undefined || record.modality === filter.modality) &&
       (filter.brand === undefined || record.brand === filter.brand) &&
       (filter.model === undefined || record.model === filter.model),

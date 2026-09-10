@@ -20,6 +20,7 @@ export interface InstalledEquipment {
 export interface InstalledBaseFilter {
   readonly clientName?: string;
   readonly siteName?: string;
+  readonly country?: string;
   readonly modality?: Modality;
   readonly brand?: string;
   readonly model?: string;

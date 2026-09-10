@@ -29,6 +29,7 @@ export interface Observation {
 }
 
 export interface ObservationKey {
+  readonly clientName: string;
   readonly siteName: string;
   readonly modality: Modality;
   readonly brand: string | null;
@@ -37,6 +38,7 @@ export interface ObservationKey {
 
 export function observationKey(observation: Observation): ObservationKey {
   return {
+    clientName: observation.site.client.name,
     siteName: observation.site.name,
     modality: observation.modality,
     brand: observation.brand,
@@ -48,7 +50,7 @@ export function observationKeyEquals(
   a: ObservationKey,
   b: ObservationKey,
 ): boolean {
-  if (a.siteName !== b.siteName || a.modality !== b.modality) {
+  if (a.clientName !== b.clientName || a.siteName !== b.siteName || a.modality !== b.modality) {
     return false;
   }
   if (a.brand === null || b.brand === null || a.model === null || b.model === null) {

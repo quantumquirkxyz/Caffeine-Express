@@ -31,6 +31,15 @@ type Props = {
   readonly modelOptions: readonly string[];
   readonly selectedModel: string | null;
   readonly onModel: (value: string | null) => void;
+  readonly countryOptions: readonly string[];
+  readonly selectedCountry: string | null;
+  readonly onCountry: (value: string | null) => void;
+  readonly clientOptions: readonly string[];
+  readonly selectedClient: string | null;
+  readonly onClient: (value: string | null) => void;
+  readonly siteOptions: readonly string[];
+  readonly selectedSite: string | null;
+  readonly onSite: (value: string | null) => void;
   readonly onClear: () => void;
 };
 
@@ -65,6 +74,15 @@ export function InstalledBaseScreen({
   modelOptions,
   selectedModel,
   onModel,
+  countryOptions,
+  selectedCountry,
+  onCountry,
+  clientOptions,
+  selectedClient,
+  onClient,
+  siteOptions,
+  selectedSite,
+  onSite,
   onClear,
 }: Props) {
   const width = useWindowDimensions().width;
@@ -226,21 +244,21 @@ export function InstalledBaseScreen({
         >
           {filter(
             "País",
-            [...new Set(rows.map((row) => row.country))],
-            null,
-            () => undefined,
+            countryOptions,
+            selectedCountry,
+            onCountry,
           )}
           {filter(
             "Cliente",
-            [...new Set(rows.map((row) => row.clientName))],
-            null,
-            () => undefined,
+            clientOptions,
+            selectedClient,
+            onClient,
           )}
           {filter(
             "Sede",
-            [...new Set(rows.map((row) => row.siteName))],
-            null,
-            () => undefined,
+            siteOptions,
+            selectedSite,
+            onSite,
           )}
           {filter("Modalidad", modalities, selectedModality, onModality)}
           {filter("Marca", brandOptions, selectedBrand, onBrand)}

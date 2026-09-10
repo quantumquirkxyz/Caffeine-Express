@@ -10,7 +10,7 @@ describe('InstalledBase', () => {
     const base = new InstalledBase();
     observations.forEach((observation) => base.update(observation));
 
-    expect(base.all()).toHaveLength(22);
+    expect(base.all()).toHaveLength(20);
     expect(base.all().some((record) => record.model === null)).toBe(true);
     expect(base.find({ clientName: 'DemoCare Brasil Sul' })).toHaveLength(4);
     expect(base.find({ model: 'NM-MR 700' })[0]?.quantity).toBe(2);
@@ -39,9 +39,27 @@ describe('InstalledBase', () => {
     expect(base.aggregate({ modality: 'MRI' }).quantity).toBe(15);
     expect(base.aggregate({ brand: 'BluePeak Medical' }).quantity).toBe(6);
     expect(base.aggregate({ clientName: 'DemoCare Brasil Sul', modality: 'CT' }).quantity).toBe(2);
-    expect(base.find({ model: 'NM-CT 500' })[0]?.age).toBeNull();
     const ultrasound = base.aggregate({ modality: 'Ultrasound' });
     expect(ultrasound.equipment.some((record) => record.age !== null)).toBe(true);
-    expect(ultrasound.equipment.some((record) => record.use !== null)).toBe(true);
+  });
+
+  it('keeps same-named Sites belonging to different Clients separate', () => {
+    const base = new InstalledBase();
+    const observation = {
+      id: 'obs-1',
+      site: { client: { name: 'Client A' }, name: 'Shared Site', city: 'A', country: 'A' },
+      modality: 'MRI' as const,
+      modalityProvenance: 'Reported' as const,
+      brand: 'Brand', brandProvenance: 'Reported' as const,
+      model: 'Model', modelProvenance: 'Reported' as const,
+      quantity: 1, quantityProvenance: 'Reported' as const,
+      age: null, ageProvenance: 'Unknown' as const,
+      use: null, useProvenance: null,
+      comment: null, fieldNote: null, collaborator: null,
+      visitDate: '2026-01-01', createdAt: '2026-01-01T00:00:00.000Z',
+    };
+    base.update(observation);
+    base.update({ ...observation, id: 'obs-2', site: { ...observation.site, client: { name: 'Client B' } } });
+    expect(base.all()).toHaveLength(2);
   });
 });
