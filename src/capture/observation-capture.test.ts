@@ -21,6 +21,27 @@ describe('typed Observation capture', () => {
     expect(await store.all()).toHaveLength(1);
   });
 
+  it('extracts and persists multiple equipment lines from one Field note', async () => {
+    const store = new MemoryObservationStore();
+    const note = [
+      'One CT at Central Hospital, client DemoCare, brand Siemens, model Somatom X1',
+      'Two MRI machines at Pacific Hospital, client DemoCare, brand NovaMed, model N-1, 1200 hours',
+      'One ultrasound at North Clinic, client HealthFirst, brand GE, model Voluson P8, 5 years old',
+      'Three CT systems at General Hospital, client MedCare, brand Philips, model Incisive CT, 800 hours',
+      'One MRI at South Hospital, client DemoCare, brand Siemens, model Magnetom Aera, comment planned replacement',
+      'Two ultrasound devices at City Clinic, client HealthFirst, brand Mindray, model Resona 7',
+    ].join('\n');
+
+    const observations = await captureObservation(note, new DeterministicObservationExtractor(), store);
+
+    expect(observations).toHaveLength(6);
+    expect(observations.map((observation) => observation.quantity)).toEqual([1, 2, 1, 3, 1, 2]);
+    expect(observations.map((observation) => observation.modality)).toEqual([
+      'CT', 'MRI', 'Ultrasound', 'CT', 'MRI', 'Ultrasound',
+    ]);
+    expect(await store.all()).toHaveLength(6);
+  });
+
   it('surfaces extraction errors without persisting', async () => {
     const store = new MemoryObservationStore();
     await expect(captureObservation('The equipment is busy.', new DeterministicObservationExtractor(), store))
