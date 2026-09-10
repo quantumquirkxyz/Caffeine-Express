@@ -3,7 +3,7 @@
  *
  * Wires the `@qvac/sdk` worker to the `QvacRuntime` interface used by the
  * smoke test and the capture flow. The MVP uses the
- * `QWEN3_600M_INST_Q4` text-generation model and runs every inference
+ * `LLAMA_3_2_1B_INST_Q4_0` text-generation model and runs every inference
  * locally through the QVAC worker; no cloud inference endpoint is
  * referenced or reachable from this code path.
  *
@@ -15,15 +15,22 @@ import {
   loadModel,
   unloadModel,
   completion,
-  QWEN3_600M_INST_Q4,
+  LLAMA_3_2_1B_INST_Q4_0,
 } from '@qvac/sdk';
-import type { QvacRuntime } from './qvac-runtime';
+import * as Device from 'expo-device';
+import { QvacRuntimeUnavailableError, type QvacRuntime } from './qvac-runtime';
 
 /** The MVP text-generation model loaded by the on-device QVAC worker. */
-export const QVAC_MVP_MODEL = QWEN3_600M_INST_Q4;
+export const QVAC_MVP_MODEL = LLAMA_3_2_1B_INST_Q4_0;
+
+export const QVAC_REQUIRES_PHYSICAL_DEVICE_NOTE =
+  'QVAC runs on a physical Android or iOS device; this emulator cannot run the on-device engine.';
 
 export class NativeQvacRuntime implements QvacRuntime {
   async loadModel(): Promise<string> {
+    if (!Device.isDevice) {
+      throw new QvacRuntimeUnavailableError(QVAC_REQUIRES_PHYSICAL_DEVICE_NOTE);
+    }
     return loadModel({ modelSrc: QVAC_MVP_MODEL });
   }
 
@@ -41,4 +48,14 @@ export class NativeQvacRuntime implements QvacRuntime {
   async unloadModel(modelId: string): Promise<void> {
     await unloadModel({ modelId });
   }
+}
+
+const defaultRuntime = new NativeQvacRuntime();
+
+export function loadQvacModel(): Promise<string> {
+  return defaultRuntime.loadModel();
+}
+
+export function unloadQvacModel(modelId: string): Promise<void> {
+  return defaultRuntime.unloadModel(modelId);
 }
