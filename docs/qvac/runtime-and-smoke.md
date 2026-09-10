@@ -31,21 +31,77 @@ The non-native fallback in `qvac-runtime.ts` makes every `QvacRuntime`
 operation throw `QvacRuntimeUnavailableError` so the capture flow and the
 smoke test fail with a clear message in Node, web, and CI.
 
+### Why emulators cannot run the QVAC engine
+
+- **The QVAC engine binaries are `arm64-v8a` only.** `@qvac/llm-llamacpp`
+  and the other `@qvac/*` packages ship `prebuilds/android-arm64` (and
+  desktop `linux-x64`/`darwin-*`); there are no real `android-x64`
+  prebuilts. An `x86_64` emulator therefore has no engine to load.
+- **The engine binaries require Android API 29+.** The ELF
+  `.note.android.ident` in `libqvac__llm-llamacpp.so` records API `29`.
+- **The Android emulator cannot run `arm64` system images on an `x86_64`
+  host for API 28+.** The emulator's `main-emulator.cpp` hard-fails with
+  `Avd's CPU Architecture 'arm64' is not supported by the QEMU2 emulator
+  on x86_64 host` for `apiLevel >= 28`; only API ≤ 27 `arm64` images run
+  on `x86_64` hosts, and those are below the engine's API 29 floor.
+- **No cloud fallback.** Because the engine cannot run, the app must not
+  silently route inference to a cloud API. `NativeQvacRuntime.loadModel`
+  checks `Device.isDevice` (from `expo-device`) and throws a catchable
+  `QvacRuntimeUnavailableError` on an emulator, so `App.tsx` shows
+  "QVAC could not load its on-device model." and disables capture. The
+  `scripts/check-no-cloud-inference.mjs` guard is a CI gate proving there
+  is no cloud inference path in the source or the shipped bundle.
+
+Run the app on a physical Android (or iOS) device, API 29+, to exercise
+the QVAC engine. The engine also runs on the host through the Node
+runtime (`@qvac/sdk` + the `linux-x64` prebuilds), which is how the
+model and the extraction contract can be validated without a device.
+
 ## MVP model configuration
 
 | Setting | Value |
 |---|---|
-| Model constant | `QWEN3_600M_INST_Q4` (re-exported as `QVAC_MVP_MODEL` in `qvac-runtime.native.ts`) |
+| Model constant | `LLAMA_3_2_1B_INST_Q4_0` (re-exported as `QVAC_MVP_MODEL` in `qvac-runtime.native.ts`) |
 | Worker binding | `@qvac/sdk` `loadModel` / `completion` / `unloadModel` |
 | Engine | `llamacpp` (text generation), local to the device |
 | Streaming | Disabled for the MVP smoke and the extraction flow (`stream: false`) |
 | Output schema | `responseFormat: { type: 'json_object' }`, validated by the typed extraction contract (issue #5) |
-| Fallback model | `LLAMA_3_2_1B_INST_Q4_0` (documented in `docs/proposal-solution.md` §5.1; not enabled in the MVP) |
+| Fallback model | `QWEN3_600M_INST_Q4` (documented in `docs/proposal-solution.md` §5.1; smaller, but too weak for the typed extraction contract in practice) |
+
+The 1B instruct model was chosen after on-device-style evaluation: the
+600M model hallucinated an unrelated schema or emitted Qwen3 "thinking"
+text instead of the contract JSON, while `LLAMA_3_2_1B_INST_Q4_0` returned
+the contract shape with `age: null` (never an invented Age).
 
 The model constant and the worker binding are the only QVAC-side
 configuration the MVP depends on. Both are exported from
 `@qvac/sdk` and used directly by `NativeQvacRuntime`, so the configuration
 is reproducible across runs and across devices.
+
+### Host validation
+
+`scripts/qvac-host-smoke.mjs` runs the same model, the same
+`responseFormat: { type: 'json_object' }` schema, and the same typed
+contract on the Node runtime (`node scripts/qvac-host-smoke.mjs`, using
+the QVAC `linux-x64` prebuilds). It is the device-free way to prove the
+model loads and produces contract JSON with no cloud inference path.
+
+Recorded run (`LLAMA_3_2_1B_INST_Q4_0`):
+
+```
+[qvac-host-smoke] loading LLAMA_3_2_1B_INST_Q4_0 ...
+[qvac-host-smoke] loaded: bd4db59fb4120b52
+[qvac-host-smoke] completion output:
+{"observations": [ {"client": "DemoCare", "site": "Pacific Hospital",
+"modality": "MRI", "brand": "NovaMed", "model": "N-1", "quantity": 0,
+"age": null, "use": null, "comment": "planned replacement"} ]}
+[qvac-host-smoke] unloaded cleanly
+```
+
+The 1B model is small enough that it can miss quantities or usage ("Two",
+"1200 hours") in a zero-shot prompt, but it returns the contract shape and
+never invents a value (`age: null` stays null). That is the MVP contract:
+structure and provenance over recall.
 
 ## No cloud inference path
 

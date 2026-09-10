@@ -30,7 +30,7 @@ sub-issues cover all three.
 
 | Acceptance criterion (spec #4) | Delivered by |
 |---|---|
-| The chosen QVAC text-generation model loads in the supported MVP runtime. | #9 — `NativeQvacRuntime` + `QWEN3_600M_INST_Q4`, smoke test green. |
+| The chosen QVAC text-generation model loads in the supported MVP runtime. | #9 — `NativeQvacRuntime` + `LLAMA_3_2_1B_INST_Q4_0`, smoke test green. |
 | A typed Field note can be sent to QVAC and returns structured extraction output. | #5 — `extractObservationsFromContent` + `QVACObservationExtractor` (native). |
 | The output contract covers Client/Site, Modality, brand, model, quantity, Age, Use, and Comment when present. | #5 — the `ModelObservationRow` schema and the worked examples in `extraction-contract.md`. |
 | Required Age can be returned as `Unknown` without invented values. | #5 — `age: null` → `ageProvenance: 'Unknown'`; the contract tests assert no invented Age. |

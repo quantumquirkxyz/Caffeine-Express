@@ -6,12 +6,26 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "plugins": [
-      ["expo-build-properties", { "android": { "minSdkVersion": 29 } }],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 29
+          }
+        }
+      ],
       "@qvac/sdk/expo-plugin"
     ],
     "web": {
       "bundler": "metro"
     },
-    "platforms": ["ios", "android", "web"]
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "android": {
+      "package": "com.anonymous.caffeineexpress"
+    }
   }
 }
