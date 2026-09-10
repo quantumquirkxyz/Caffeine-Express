@@ -12,3 +12,4 @@ export * from './store/installed-base';
 export * from './fixtures/synthetic';
 export * from './fixtures/seed';
 export * from './dashboard/dashboard';
+export * from './capture/observation-capture';

@@ -5,6 +5,10 @@
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "plugins": [
+      ["expo-build-properties", { "android": { "minSdkVersion": 29 } }],
+      "@qvac/sdk/expo-plugin"
+    ],
     "web": {
       "bundler": "metro"
     },
