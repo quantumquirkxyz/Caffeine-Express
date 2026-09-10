@@ -29,7 +29,7 @@ export CI=1
 
 NDK_VERSION="29.0.14206865"
 SYSTEM_IMAGE="system-images;android-34;default;x86_64"
-AVD_NAME="caffeine-mvp"
+AVD_NAME="fieldsight-mvp"
 APK_PATH="$REPO_ROOT/android/app/build/outputs/apk/debug/app-debug.apk"
 HERMES_CHANNEL="discord:#general"
 LOG_DIR="/tmp/emu-setup"
@@ -129,7 +129,7 @@ install_and_launch() {
     exit 1
   fi
   log "--- relevant logcat (last 5s) ---"
-  adb logcat -d -t 5s 2>&1 | grep -iE "caffeine|qvac|reactnative|androidruntime" | tail -20 || true
+  adb logcat -d -t 5s 2>&1 | grep -iE "fieldsight|qvac|reactnative|androidruntime" | tail -20 || true
 }
 
 notify_success() {
@@ -137,11 +137,11 @@ notify_success() {
     log "Success. (Pass --notify to post a Discord message via Hermes.)"
     return
   fi
-  local msg="Caffeine Express MVP built and launched on the Android emulator."
+  local msg="FieldSight MVP built and launched on the Android emulator."
   msg="$msg NDK $NDK_VERSION, gradle assembleDebug produced $(du -h "$APK_PATH" | cut -f1) APK, app is running."
   msg="$msg Repo: mvp @ $(git -C "$REPO_ROOT" rev-parse --short HEAD)."
   log "Posting to $HERMES_CHANNEL via Hermes..."
-  hermes send --to "$HERMES_CHANNEL" -s "Caffeine Express MVP \xE2\x9C\x85" "$msg" 2>&1 | tail -5
+  hermes send --to "$HERMES_CHANNEL" -s "FieldSight MVP \xE2\x9C\x85" "$msg" 2>&1 | tail -5
 }
 
 ensure_ndk

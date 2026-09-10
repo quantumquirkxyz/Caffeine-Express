@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Caffeine Express",
-    "slug": "caffeine-express",
+    "name": "FieldSight",
+    "slug": "fieldsight",
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -25,7 +25,7 @@
       "web"
     ],
     "android": {
-      "package": "com.anonymous.caffeineexpress"
+      "package": "com.anonymous.fieldsight"
     }
   }
 }

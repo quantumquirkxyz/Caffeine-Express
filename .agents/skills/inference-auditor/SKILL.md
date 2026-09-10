@@ -1,6 +1,6 @@
 ---
 name: inference-auditor
-description: Audit the Caffeine-Express codebase to prove every inference path runs exclusively through QVAC on-device, and report violations of the no-cloud-inference guarantee. Use when reviewing changes that touch inference, models, capture, extraction, or any network/telemetry surface, or when asked to verify ADR 0001 is honored. Triggers: 'audit inference', 'inference auditor', 'QVAC only check', 'no cloud audit', 'verify ADR 0001', 'check inference path'.
+description: Audit the FieldSight codebase to prove every inference path runs exclusively through QVAC on-device, and report violations of the no-cloud-inference guarantee. Use when reviewing changes that touch inference, models, capture, extraction, or any network/telemetry surface, or when asked to verify ADR 0001 is honored. Triggers: 'audit inference', 'inference auditor', 'QVAC only check', 'no cloud audit', 'verify ADR 0001', 'check inference path'.
 ---
 
 # inference-auditor

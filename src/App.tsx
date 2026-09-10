@@ -335,7 +335,7 @@ export default function App() {
         <View style={styles.header}>
           <View style={styles.headerText}>
             <Text style={styles.kicker}>{copy.kicker}</Text>
-            <Text style={styles.appTitle}>Caffeine Express</Text>
+            <Text style={styles.appTitle}>FieldSight</Text>
             <Text style={styles.subtitle}>{copy.subtitle}</Text>
           </View>
           <View style={styles.headerActions}><View style={styles.languageToggle}>{(['en', 'es'] as const).map((value) => <TouchableOpacity key={value} onPress={() => setLanguage(value)} style={[styles.languageButton, language === value && styles.languageButtonActive]}><Text style={[styles.languageText, language === value && styles.languageTextActive]}>{value.toUpperCase()}</Text></TouchableOpacity>)}</View><View style={styles.liveBadge}><View style={styles.liveDot} /><Text style={styles.liveText}>{copy.local}</Text></View></View>

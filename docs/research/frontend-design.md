@@ -4,7 +4,7 @@ Date: 2026-09-09
 
 ## Scope
 
-Research for the Caffeine Express MVP: a Collaborator captures a Field note during a Visit, reviews structured Observations, and explores the Installed base by Client and Site. The interface must work on web and mobile, with local-first loading and offline states.
+Research for the FieldSight MVP: a Collaborator captures a Field note during a Visit, reviews structured Observations, and explores the Installed base by Client and Site. The interface must work on web and mobile, with local-first loading and offline states.
 
 ## Findings
 
