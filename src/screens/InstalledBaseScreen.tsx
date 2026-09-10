@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
 import {
+  Pressable,
   Text,
   TouchableOpacity,
   View,
   useWindowDimensions,
 } from "react-native";
+import { Boxes, Building2, CalendarClock, ChevronDown, Filter, Link, MapPin, PackageOpen, ScanLine, Tag, X } from "lucide-react-native";
 import type {
   DashboardEquipmentRow,
   DashboardView,
@@ -15,7 +17,7 @@ import { Card } from "../ui/components/Card";
 import { MetricCard } from "../ui/components/MetricCard";
 import { SectionHeader } from "../ui/components/SectionHeader";
 import { StatusBadge } from "../ui/components/StatusBadge";
-import { colors, radius, spacing, typography } from "../ui/tokens";
+import { radius, spacing, typography, useTheme } from "../ui/tokens";
 
 type Props = {
   readonly view: DashboardView;
@@ -85,10 +87,13 @@ export function InstalledBaseScreen({
   onSite,
   onClear,
 }: Props) {
+  const { colors } = useTheme();
+  const inventoryCopy = copy.inventory ?? { filters: "Filters", filter: "Filter", close: "Close", all: "All", country: "Country", client: "Client", site: "Site", modality: "Modality", brand: "Brand", model: "Model", equipment: "Equipment inventory", evidence: "Evidence and observations", linked: "Linked observations", select: "Select equipment to review its evidence.", unknownLocation: "No location available", unknownBrand: "Unknown brand", unknownModel: "Unknown model", years: "years", ageUnknown: "Unknown" };
   const width = useWindowDimensions().width;
   const compact = width < 768;
   const tablet = width >= 768 && width < 1200;
-  const [filtersOpen, setFiltersOpen] = useState(!compact);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [openFilter, setOpenFilter] = useState<string | null>(null);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const rows = useMemo(
     () =>
@@ -114,49 +119,27 @@ export function InstalledBaseScreen({
     ? `${selected.city}, ${selected.country}`
     : "Sin ubicación disponible";
   const filter = (
+    key: string,
     label: string,
+    icon: typeof Filter,
     options: readonly (string | null)[],
     value: string | null,
     onSelect: (next: string | null) => void,
-  ) => (
-    <View style={{ flex: 1, minWidth: compact ? "100%" : 150 }}>
-      <Text
-        style={{
-          color: colors.textSecondary,
-          fontSize: typography.sizes.xs,
-          marginBottom: spacing.xs,
-        }}
-      >
-        {label}
-      </Text>
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.xs }}>
-        {options.map((option) => (
-          <TouchableOpacity
-            key={option ?? "all"}
-            onPress={() => onSelect(option)}
-            style={{
-              paddingHorizontal: spacing.md,
-              paddingVertical: spacing.sm,
-              borderRadius: radius.sm,
-              backgroundColor:
-                value === option ? colors.primarySoft : colors.surface,
-              borderWidth: 1,
-              borderColor: value === option ? colors.primary : colors.border,
-            }}
-          >
-            <Text
-              style={{
-                color: value === option ? colors.primary : colors.textSecondary,
-                fontSize: typography.sizes.xs,
-              }}
-            >
-              {option ?? "Todos"}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
-  );
+  ) => {
+    const Icon = icon;
+     const selectedLabel = value ?? inventoryCopy.all;
+    return <View style={{ flex: 1, minWidth: compact ? "100%" : 180, zIndex: openFilter === key ? 2 : 1 }}>
+      <Text style={{ color: colors.textSecondary, fontSize: typography.sizes.xs, marginBottom: spacing.xs }}>{label}</Text>
+      <Pressable accessibilityRole="button" accessibilityLabel={`${label}: ${selectedLabel}`} onPress={() => setOpenFilter(openFilter === key ? null : key)} style={{ minHeight: 44, paddingHorizontal: spacing.md, borderRadius: radius.md, backgroundColor: colors.surface, borderWidth: 1, borderColor: value === null ? colors.border : colors.primary, flexDirection: "row", alignItems: "center", gap: spacing.sm }}>
+        <Icon size={16} color={value === null ? colors.textSecondary : colors.primary} />
+        <Text numberOfLines={1} style={{ flex: 1, color: value === null ? colors.textSecondary : colors.text, fontSize: typography.sizes.sm }}>{selectedLabel}</Text>
+        <ChevronDown size={16} color={colors.textSecondary} />
+      </Pressable>
+       {openFilter === key && <View style={{ marginTop: spacing.xs, padding: spacing.xs, borderRadius: radius.md, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, boxShadow: `0px 3px 8px ${colors.text}1A` }}>
+         {[null, ...options.filter((option): option is string => option !== null)].filter((option, index, all) => all.indexOf(option) === index).map((option) => <Pressable key={option ?? "all"} onPress={() => { onSelect(option); setOpenFilter(null); }} style={{ minHeight: 40, justifyContent: "center", paddingHorizontal: spacing.sm, borderRadius: radius.sm, backgroundColor: value === option ? colors.primarySoft : "transparent" }}><Text style={{ color: value === option ? colors.primary : colors.text, fontSize: typography.sizes.sm }}>{option ?? inventoryCopy.all}</Text></Pressable>)}
+      </View>}
+    </View>;
+  };
   return (
     <View style={{ paddingBottom: spacing.xxl }}>
       <View style={{ marginBottom: spacing.xl }}>
@@ -204,29 +187,32 @@ export function InstalledBaseScreen({
             new Set(rows.map((row) => `${row.clientName}/${row.siteName}`))
               .size,
             colors.primary,
+            MapPin,
           ],
           [
-            "Equipos",
+            copy.units ?? "Equipos",
             rows.reduce((sum, row) => sum + row.quantity, 0),
             colors.success,
+            PackageOpen,
           ],
-          ["Modalidades", modalitiesCount, colors.primary],
-        ].map(([label, value, accent]) => (
+          [copy.modality ?? "Modalidades", modalitiesCount, colors.primary, ScanLine],
+        ].map(([label, value, accent, Icon]) => (
           <MetricCard
             key={String(label)}
             label={String(label)}
             value={value as number}
             accent={String(accent)}
+            icon={Icon as typeof Filter}
             style={{ flex: 1, minWidth: tablet ? "48%" : undefined }}
           />
         ))}
       </View>
       <Card style={{ marginBottom: spacing.xl }}>
-        <SectionHeader
-          title="Filtros"
+          <SectionHeader
+            title={inventoryCopy.filters}
           subtitle="Refina la vista de Installed equipment"
-          action={
-            <TouchableOpacity onPress={() => (compact ? setFiltersOpen(!filtersOpen) : onClear())}>
+            action={
+            <TouchableOpacity onPress={() => setFiltersOpen(!filtersOpen)} accessibilityRole="button" accessibilityLabel="Mostrar filtros">
               <Text
                 style={{
                   color: colors.primary,
@@ -234,35 +220,32 @@ export function InstalledBaseScreen({
                   fontWeight: typography.weights.semibold,
                 }}
               >
-                {compact ? (filtersOpen ? "Cerrar" : "Abrir filtros") : "Limpiar"}
+                {filtersOpen ? inventoryCopy.close : inventoryCopy.filter}
               </Text>
             </TouchableOpacity>
           }
         />
-        {(!compact || filtersOpen) && <View
+        {filtersOpen && <View
           style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.lg }}
         >
-          {filter(
-            "País",
+          {filter("country", "País", MapPin,
             countryOptions,
             selectedCountry,
             onCountry,
           )}
-          {filter(
-            "Cliente",
+          {filter("client", "Cliente", Building2,
             clientOptions,
             selectedClient,
             onClient,
           )}
-          {filter(
-            "Sede",
+          {filter("site", "Sede", MapPin,
             siteOptions,
             selectedSite,
             onSite,
           )}
-          {filter("Modalidad", modalities, selectedModality, onModality)}
-          {filter("Marca", brandOptions, selectedBrand, onBrand)}
-          {filter("Modelo", modelOptions, selectedModel, onModel)}
+          {filter("modality", "Modalidad", ScanLine, modalities, selectedModality, onModality)}
+          {filter("brand", "Marca", Tag, brandOptions, selectedBrand, onBrand)}
+          {filter("model", "Modelo", Tag, modelOptions, selectedModel, onModel)}
         </View>}
       </Card>
       {view.status !== "ready" ? (
@@ -355,6 +338,7 @@ export function InstalledBaseScreen({
                   }}
                 >
                   <View style={{ flex: 2 }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.sm }}><Boxes size={17} color={active ? colors.primary : colors.textSecondary} />
                     <Text
                       style={{
                         color: colors.text,
@@ -374,6 +358,7 @@ export function InstalledBaseScreen({
                     >
                       {row.siteName}
                     </Text>
+                    </View>
                   </View>
                   <Text
                     style={{
@@ -421,7 +406,7 @@ export function InstalledBaseScreen({
                         fontSize: typography.sizes.xs,
                       }}
                     >
-                      Observaciones vinculadas
+                      <Link size={14} color={colors.textSecondary} /> Observaciones vinculadas
                     </Text>
                     <Text
                       style={{
@@ -437,7 +422,7 @@ export function InstalledBaseScreen({
                         fontSize: typography.sizes.xs,
                       }}
                     >
-                      Cantidad {selected.quantity} · Edad{" "}
+                      <CalendarClock size={14} color={colors.textSecondary} /> Cantidad {selected.quantity} · Edad{" "}
                       {ageLabel(selected.age)}
                     </Text>
                   </View>
