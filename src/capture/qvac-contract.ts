@@ -46,8 +46,18 @@ import { ExtractionError } from './observation-capture';
  */
 const modelObservationRowSchema = z
   .object({
-    client: z.string().trim().min(1, 'Client name is required'),
-    site: z.string().trim().min(1, 'Site name is required'),
+    client: z
+      .string()
+      .trim()
+      .min(1, 'Client cannot be empty when present')
+      .nullable()
+      .optional(),
+    site: z
+      .string()
+      .trim()
+      .min(1, 'Site cannot be empty when present')
+      .nullable()
+      .optional(),
     city: z.string().trim().min(1).optional(),
     country: z.string().trim().min(1).optional(),
     modality: z.string().trim().min(1, 'Modality is required'),
@@ -153,8 +163,10 @@ export function buildExtractionPrompt(fieldNote: string): string {
     '{ "observations": [ { ...row... }, ... ] }',
     '',
     'Each row MUST contain:',
-    '- "client": string, the Client (organization) name as stated in the note.',
-    '- "site": string, the Site name as stated in the note.',
+    '- "client": string or null. The Client (organization) name as stated in',
+    '  the note; null when the note does not state one (recorded as Unknown).',
+    '- "site": string or null. The Site (location) name as stated in the note;',
+    '  null when the note does not state one (recorded as Unknown).',
     '- "city": string or omit (defaults to "Unknown" downstream).',
     '- "country": string or omit (defaults to "Unknown" downstream).',
     '- "modality": string. Use the canonical term when you can: MRI, CT,',
@@ -288,8 +300,8 @@ export function observationInputsFromModel(
     }
     const input: ObservationInput = {
       site: {
-        client: { name: row.client },
-        name: row.site,
+        client: { name: row.client ?? 'Unknown' },
+        name: row.site ?? 'Unknown',
         city: row.city ?? 'Unknown',
         country: row.country ?? 'Unknown',
       },
