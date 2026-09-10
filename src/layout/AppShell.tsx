@@ -1,6 +1,6 @@
 import type { PropsWithChildren, RefObject } from "react";
 import { Animated, ScrollView, View, useWindowDimensions } from "react-native";
-import { colors, spacing } from "../ui/tokens";
+import { spacing, useTheme } from "../ui/tokens";
 import { DesktopSidebar, type AppSection } from "./DesktopSidebar";
 import { DesktopTopbar } from "./DesktopTopbar";
 import { MobileHeader } from "./MobileHeader";
@@ -20,12 +20,13 @@ export function AppShell({
   readonly scrollRef: RefObject<ScrollView | null>;
   readonly opacity: Animated.Value;
   readonly offset: Animated.Value;
-  readonly language?: "en" | "es";
-  readonly onLanguage?: (language: "en" | "es") => void;
+  readonly language?: "en" | "es" | "pt";
+  readonly onLanguage?: (language: "en" | "es" | "pt") => void;
 }>) {
+  const { colors } = useTheme();
   const width = useWindowDimensions().width;
   const desktop = width >= 1200;
-  const currentLanguage = language ?? "en";
+  const currentLanguage = language ?? "es";
   const changeLanguage = onLanguage ?? (() => undefined);
   return (
     <Animated.View
