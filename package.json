@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check:no-cloud": "node scripts/check-no-cloud-inference.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "start": "expo start",
