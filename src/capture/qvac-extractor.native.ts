@@ -8,10 +8,7 @@ export class QVACObservationExtractor implements ObservationExtractor {
   extract(fieldNote: string): ReturnType<ObservationExtractor['extract']> {
     const run = completion({
       modelId: this.modelId,
-      history: [
-        { role: 'system', content: buildExtractionPrompt('') },
-        { role: 'user', content: buildExtractionPrompt(fieldNote) },
-      ],
+      history: [{ role: 'user', content: buildExtractionPrompt(fieldNote) }],
       stream: false,
       responseFormat: { type: 'json_object' },
     });
