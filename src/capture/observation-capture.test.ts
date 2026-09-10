@@ -52,7 +52,9 @@ describe('typed Observation capture', () => {
   });
 
   it('parses the QVAC wrapper object into an observations array', () => {
-    const observations = parseObservationsJson('{"observations":[{"modality":"MRI"}]}');
+    const observations = parseObservationsJson(
+      '{"observations":[{"client":"DemoCare","site":"Pacific Hospital","modality":"MRI","quantity":1}]}',
+    );
     expect(observations).toHaveLength(1);
     expect(observations[0]?.modality).toBe('MRI');
   });
