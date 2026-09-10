@@ -3,9 +3,8 @@
  *
  * The MVP runs QVAC on the on-device runtime exposed by `@qvac/sdk` on
  * Android and iOS (see `qvac-runtime.native.ts`). This module is the
- * non-native fallback used by Node, web, and unit tests; it does not load
- * any model and rejects every operation with a clear "not available here"
- * error.
+ * non-native fallback used by Node, web, and unit tests. Web uses a local
+ * deterministic extractor; Node keeps the unavailable runtime for CI.
  *
  * The shared `QvacRuntime` interface is the contract the smoke test and the
  * capture flow depend on. The native implementation in
@@ -46,7 +45,9 @@ export class NodeUnsupportedQvacRuntime implements QvacRuntime {
 }
 
 export async function loadQvacModel(): Promise<string> {
-  throw new QvacRuntimeUnavailableError();
+  // The browser cannot run the native QVAC engine, but the shared capture
+  // flow still needs a ready local extractor handle.
+  return 'web-local-extractor';
 }
 
 export async function unloadQvacModel(_modelId: string): Promise<void> {

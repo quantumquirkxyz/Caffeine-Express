@@ -165,4 +165,11 @@ describe('QVAC non-native runtime fallback', () => {
     );
     await expect(runtime.unloadModel('id')).rejects.toBeInstanceOf(QvacRuntimeUnavailableError);
   });
+
+  it('keeps the web runtime available for the local capture fallback', async () => {
+    const { loadQvacModel, unloadQvacModel } = await import('./qvac-runtime');
+    const modelId = await loadQvacModel();
+    expect(modelId).toBe('web-local-extractor');
+    await expect(unloadQvacModel(modelId)).resolves.toBeUndefined();
+  });
 });

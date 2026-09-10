@@ -1,9 +1,11 @@
-import type { ObservationExtractor } from './observation-capture';
+import { DeterministicObservationExtractor, type ObservationExtractor } from './observation-capture';
 
 export class QVACObservationExtractor implements ObservationExtractor {
+  private readonly fallback = new DeterministicObservationExtractor();
+
   constructor(_modelId: string) {}
 
-  async extract(_fieldNote: string): Promise<never> {
-    throw new Error('QVAC extraction is available on Android and iOS only.');
+  extract(fieldNote: string): ReturnType<ObservationExtractor['extract']> {
+    return this.fallback.extract(fieldNote);
   }
 }

@@ -2,7 +2,7 @@
 
 FieldSight turns what a field collaborator observes in a hospital into structured, reliable data about installed medical equipment. A Collaborator types a natural-language Field note during a Visit; the QVAC on-device text-generation model extracts structured Observations (Client/Site, Modality, brand, model, quantity, Age, Use); the data is validated, persisted, and reconciled into the Installed base per Client and Site.
 
-The app is an Expo Web/Mobile project (`index.js` → `src/App.tsx`). All inference runs **on the device via QVAC** (`@qvac/sdk`); there is no cloud inference path (see [ADR 0001](docs/adr/0001-on-device-qvac-inference.md), enforced by [`scripts/check-no-cloud-inference.mjs`](scripts/check-no-cloud-inference.mjs) and the CI gate).
+The app is an Expo Web/Mobile project (`index.js` → `src/App.tsx`). Android/iOS use **on-device QVAC** (`@qvac/sdk`); web uses a local deterministic extractor because the native QVAC engine is not available in browsers. Neither path uses cloud inference (see [ADR 0001](docs/adr/0001-on-device-qvac-inference.md), enforced by [`scripts/check-no-cloud-inference.mjs`](scripts/check-no-cloud-inference.mjs) and the CI gate).
 
 ## Preexisting base (declaration)
 
