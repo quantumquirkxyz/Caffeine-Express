@@ -294,6 +294,15 @@ which:
    capture flow can show a clear error to the collaborator without
    persisting a partial record.
 
+Because the on-device model is stochastic, a single completion can emit a
+row the contract rejects (malformed JSON, a non-positive quantity, a
+string `"null"` Age). The extractor therefore runs the completion through
+[`extractObservationsFromContentWithRetry`](../../src/capture/qvac-contract.ts),
+which re-samples the completion up to 3 times and returns the first
+contract-compliant mapping. The contract is never weakened: the capture
+flow only ever sees schema-shaped output, and an exhausted retry surfaces
+the final `ExtractionError` prefixed with the attempt count.
+
 The capture flow then runs each `ObservationInput` through
 `createObservation` to produce the persisted `Observation` record (the
 typed data plane owned by issue **#10** and issue **#11**).

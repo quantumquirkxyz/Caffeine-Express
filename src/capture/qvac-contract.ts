@@ -192,6 +192,19 @@ export function buildExtractionPrompt(fieldNote: string): string {
     'or omit the field as documented above. The output is parsed deterministically',
     'and rejected on any deviation, so follow this contract exactly.',
     '',
+    'Distinguish count from usage hours: "quantity" is the NUMBER of named',
+    'devices ("two MRI machines" -> quantity: 2). Operating hours ("1200',
+    'hours") belong to "use" as use: { "hours": 1200 }. Never write hours',
+    'into quantity, and never write the device count into use.',
+    '',
+    'Worked example for the Field note "Two MRI machines at Pacific Hospital,',
+    'client DemoCare, brand NovaMed, model N-1, 1200 hours, comment planned',
+    'replacement":',
+    '{ "observations": [ { "client": "DemoCare", "site": "Pacific Hospital",',
+    '  "city": "Unknown", "country": "Unknown", "modality": "MRI",',
+    '  "brand": "NovaMed", "model": "N-1", "quantity": 2, "age": null,',
+    '  "use": { "hours": 1200 }, "comment": "planned replacement" } ] }',
+    '',
     `Field note: ${trimmed}`,
   ].join('\n');
 }
@@ -355,6 +368,46 @@ export function extractObservationsFromContent(
     throw new ExtractionError('QVAC returned no Observations.');
   }
   return observationInputsFromModel(rows, options);
+}
+
+export interface RetryExtractionOptions extends ObservationInputMappingOptions {
+  /** Max completion attempts, including the first. Defaults to 3. */
+  readonly maxAttempts?: number;
+}
+
+/**
+ * Run the QVAC completion and map its content through the typed contract,
+ * re-sampling the completion when the contract or the observation schema
+ * rejects the output.
+ *
+ * The on-device model is stochastic, so a single completion can emit a row
+ * the contract rejects (a malformed JSON, a non-positive quantity, a string
+ * `"null"` Age). Re-sampling is bounded and identical in shape to the first
+ * attempt: the capture flow still only ever sees contract-compliant
+ * `ObservationInput[]`, and the final rejection is the last `ExtractionError`
+ * prefixed with the attempt count. This raises the capture success rate
+ * without weakening the strict contract.
+ */
+export async function extractObservationsFromContentWithRetry(
+  completion: (attemptNumber: number) => Promise<string>,
+  options: RetryExtractionOptions,
+): Promise<readonly ObservationInput[]> {
+  const maxAttempts = options.maxAttempts ?? 3;
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const contentText = await completion(attempt);
+      return extractObservationsFromContent(contentText, options);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  if (lastError instanceof ExtractionError) {
+    throw new ExtractionError(
+      `QVAC extraction failed after ${maxAttempts} attempt(s): ${lastError.message}`,
+    );
+  }
+  throw lastError;
 }
 
 /**

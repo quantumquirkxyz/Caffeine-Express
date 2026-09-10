@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildExtractionPrompt,
   extractObservationsFromContent,
+  extractObservationsFromContentWithRetry,
   observationInputsFromModel,
   parseModelContent,
   type ModelObservationRow,
@@ -41,6 +42,9 @@ describe('QVAC MVP extraction contract', () => {
     expect(prompt).toContain('"use"');
     expect(prompt).toContain('null when unknown');
     expect(prompt).toContain('Never invent');
+    expect(prompt).toContain('Distinguish count from usage hours');
+    expect(prompt).toContain('"quantity": 2');
+    expect(prompt).toContain('"use": { "hours": 1200 }');
   });
 
   it('produces a complete schema-shaped ObservationInput for a complete Field note', () => {
@@ -259,5 +263,87 @@ describe('QVAC MVP extraction contract', () => {
       ],
     });
     expect(() => parseModelContent(strict)).toThrow(ExtractionError);
+  });
+});
+
+describe('extractObservationsFromContentWithRetry', () => {
+  it('returns the compliant completion on the first attempt', async () => {
+    const ok = JSON.stringify({ observations: [completeRow()] });
+    const attempts: number[] = [];
+    const inputs = await extractObservationsFromContentWithRetry(
+      async (attempt) => {
+        attempts.push(attempt);
+        return ok;
+      },
+      { fieldNote: VALID_FIELD_NOTE },
+    );
+    expect(inputs).toHaveLength(1);
+    expect(inputs[0]!.quantity).toBe(2);
+    expect(attempts).toEqual([1]);
+  });
+
+  it('re-samples a contract-violating completion and returns the first compliant one', async () => {
+    const bad = JSON.stringify({ observations: [{ modality: 'MRI', quantity: 0 }] });
+    const ok = JSON.stringify({ observations: [completeRow()] });
+    const attempts: number[] = [];
+    const inputs = await extractObservationsFromContentWithRetry(
+      async (attempt) => {
+        attempts.push(attempt);
+        return attempt === 1 ? bad : ok;
+      },
+      { fieldNote: VALID_FIELD_NOTE },
+    );
+    expect(inputs).toHaveLength(1);
+    expect(inputs[0]!.quantity).toBe(2);
+    expect(attempts).toEqual([1, 2]);
+  });
+
+  it('re-samples a string "null" Age completion and returns the compliant one', async () => {
+    const bad = JSON.stringify({
+      observations: [
+        { client: 'a', site: 'b', modality: 'MRI', quantity: 1, age: 'null' },
+      ],
+    });
+    const ok = JSON.stringify({ observations: [completeRow()] });
+    const inputs = await extractObservationsFromContentWithRetry(
+      async (attempt) => (attempt === 1 ? bad : ok),
+      { fieldNote: VALID_FIELD_NOTE },
+    );
+    expect(inputs).toHaveLength(1);
+    expect(inputs[0]!.age).toBeNull();
+  });
+
+  it('throws ExtractionError naming the attempt count after exhausting every completion', async () => {
+    let attempts = 0;
+    await expect(
+      extractObservationsFromContentWithRetry(
+        async () => {
+          attempts += 1;
+          return 'not json';
+        },
+        { fieldNote: 'x', maxAttempts: 2 },
+      ),
+    ).rejects.toThrow(ExtractionError);
+    await expect(
+      extractObservationsFromContentWithRetry(
+        async () => 'not json',
+        { fieldNote: 'x', maxAttempts: 2 },
+      ),
+    ).rejects.toThrow(/failed after 2 attempt\(s\)/);
+    expect(attempts).toBe(2);
+  });
+
+  it('propagates a completion-side runtime error only after retrying', async () => {
+    let attempts = 0;
+    await expect(
+      extractObservationsFromContentWithRetry(
+        async () => {
+          attempts += 1;
+          throw new Error('worker crashed');
+        },
+        { fieldNote: 'x', maxAttempts: 3 },
+      ),
+    ).rejects.toThrow('worker crashed');
+    expect(attempts).toBe(3);
   });
 });

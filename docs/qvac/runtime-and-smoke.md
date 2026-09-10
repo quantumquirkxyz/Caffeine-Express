@@ -80,28 +80,39 @@ is reproducible across runs and across devices.
 
 ### Host validation
 
-`scripts/qvac-host-smoke.mjs` runs the same model, the same
-`responseFormat: { type: 'json_object' }` schema, and the same typed
-contract on the Node runtime (`node scripts/qvac-host-smoke.mjs`, using
-the QVAC `linux-x64` prebuilds). It is the device-free way to prove the
-model loads and produces contract JSON with no cloud inference path.
+`scripts/qvac-host-smoke.mjs` runs the same model and the same
+`responseFormat: { type: 'json_object' }` schema on the Node runtime
+(`node scripts/qvac-host-smoke.mjs`, using the QVAC `linux-x64`
+prebuilds). It is the device-free way to prove the model loads, produces
+contract JSON with no cloud inference path, and that the strict contract
+gates the capture flow.
 
-Recorded run (`LLAMA_3_2_1B_INST_Q4_0`):
+The smoke prompt is byte-identical to the contract's
+`buildExtractionPrompt` for the fixed Field note (the contract module is
+the single source of truth). Each completion is graded against the
+contract row schema and the expected semantics of the Field note
+(quantity `2`, `use.hours` `1200`, Age `null`), with up to 3 re-sampled
+attempts — the same bounded retry the capture flow applies. The script
+exits non-zero when no attempt is both contract-compliant and
+semantically correct.
+
+Recorded run (`LLAMA_3_2_1B_INST_Q4_0`, 6 of 6 consecutive passes):
 
 ```
 [qvac-host-smoke] loading LLAMA_3_2_1B_INST_Q4_0 ...
 [qvac-host-smoke] loaded: bd4db59fb4120b52
-[qvac-host-smoke] completion output:
-{"observations": [ {"client": "DemoCare", "site": "Pacific Hospital",
-"modality": "MRI", "brand": "NovaMed", "model": "N-1", "quantity": 0,
-"age": null, "use": null, "comment": "planned replacement"} ]}
+[qvac-host-smoke] attempt 1/3: contract-compliant and semantically correct
 [qvac-host-smoke] unloaded cleanly
+[qvac-host-smoke] PASS: model runs locally and the extraction contract gates the output.
 ```
 
-The 1B model is small enough that it can miss quantities or usage ("Two",
-"1200 hours") in a zero-shot prompt, but it returns the contract shape and
-never invents a value (`age: null` stays null). That is the MVP contract:
-structure and provenance over recall.
+The extraction prompt now leads the 1B model with an explicit
+quantity-vs-usage-hours rule and a worked example ("two MRI machines" →
+`quantity: 2`; "1200 hours" → `use: { "hours": 1200 }`), which resolved
+the zero-shot confusion documented in the first iteration. A refusal
+(`ExtractionError`) re-samples the completion up to 3 times before
+surfacing, and the contract never admits a bad row: structure, integrity,
+and correctness over raw recall.
 
 ### Offline startup
 
