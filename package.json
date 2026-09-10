@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check:no-cloud": "node scripts/check-no-cloud-inference.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "start": "expo start",
@@ -21,6 +22,7 @@
     "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "^57.0.21",
     "expo-build-properties": "~57.0.17",
+    "expo-device": "~57.0.1",
     "lucide-react-native": "^1.43.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",

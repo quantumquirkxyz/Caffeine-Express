@@ -5,3 +5,6 @@ dist-web/
 coverage/
 *.tsbuildinfo
 *.log
+android/
+qvac/
+.gradle/
