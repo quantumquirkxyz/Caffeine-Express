@@ -16,7 +16,7 @@ const SLIDES: readonly Slide[] = [
   {
     eyebrow: 'LOCAL-FIRST FIELD INTELLIGENCE',
     title: 'Turn field observations into a reliable installed base.',
-    detail: 'FieldSite transforms natural field notes into structured evidence so teams can understand what equipment exists, where it is, and how reliable each observation is.',
+    detail: 'FieldSight transforms natural field notes into structured evidence so teams can understand what equipment exists, where it is, and how reliable each observation is.',
     metric: 'Field note → Observation → Installed base',
     icon: DatabaseZap,
   },
@@ -61,7 +61,7 @@ export function OnboardingScreen({ onFinish }: { readonly onFinish: () => void }
             <View style={{ width: 30, height: 30, borderRadius: 9, borderWidth: 1, borderColor: colors.borderStrong, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface }}>
               <View style={{ width: 9, height: 9, borderRadius: 3, backgroundColor: colors.primary }} />
             </View>
-            <Text style={{ color: colors.text, fontWeight: typography.weights.bold, fontSize: typography.sizes.md }}>FieldSite</Text>
+            <Text style={{ color: colors.text, fontWeight: typography.weights.bold, fontSize: typography.sizes.md }}>FieldSight</Text>
           </View>
           <Pressable onPress={onFinish} accessibilityRole="button"><Text style={{ color: colors.textSecondary, fontSize: typography.sizes.sm }}>Skip</Text></Pressable>
         </View>
@@ -101,7 +101,7 @@ export function OnboardingScreen({ onFinish }: { readonly onFinish: () => void }
               onPress={() => index === SLIDES.length - 1 ? onFinish() : move(index + 1)}
               style={({ pressed }) => ({ minHeight: 46, borderRadius: radius.md, paddingHorizontal: spacing.xl, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, backgroundColor: colors.text, opacity: pressed ? 0.82 : 1 })}
             >
-              <Text style={{ color: colors.background, fontWeight: typography.weights.semibold }}>{index === SLIDES.length - 1 ? 'Enter FieldSite' : 'Next'}</Text>
+              <Text style={{ color: colors.background, fontWeight: typography.weights.semibold }}>{index === SLIDES.length - 1 ? 'Enter FieldSight' : 'Next'}</Text>
               <ArrowRight size={17} color={colors.background} />
             </Pressable>
           </View>

@@ -1,4 +1,4 @@
-# FieldSite — Judging Guide
+# FieldSight — Judging Guide
 
 This guide maps the submission directly to the Decentralized AI Hackathon rubric and gives judges the shortest path to verify the critical claims.
 
@@ -14,7 +14,7 @@ This guide maps the submission directly to the Decentralized AI Hackathon rubric
 
 ## 1. Technical — 35%
 
-**Claim:** FieldSite performs its AI transformations through QVAC on the device and has no cloud inference fallback.
+**Claim:** FieldSight performs its AI transformations through QVAC on the device and has no cloud inference fallback.
 
 Evidence:
 
@@ -41,7 +41,7 @@ For the real native AI path, use a **physical Android/iOS device**. The browser 
 
 ## 2. Innovation — 25%
 
-FieldSite treats field speech as evidence, not as a database row. The pipeline has distinct trust boundaries:
+FieldSight treats field speech as evidence, not as a database row. The pipeline has distinct trust boundaries:
 
 ```text
 voice
@@ -55,7 +55,7 @@ That distinction matters because an LLM transformation is not silently treated a
 
 ## 3. Impact — 20%
 
-Field teams continuously observe equipment that is commercially and operationally valuable, but conventional capture is fragmented and burdensome. FieldSite turns that distributed knowledge into an Installed base with lower capture friction while keeping inference close to the sensitive source data.
+Field teams continuously observe equipment that is commercially and operationally valuable, but conventional capture is fragmented and burdensome. FieldSight turns that distributed knowledge into an Installed base with lower capture friction while keeping inference close to the sensitive source data.
 
 The resulting dataset supports Client/Site/geography views, equipment filtering, quantities, provenance/state, and downstream renewal/portfolio analysis.
 

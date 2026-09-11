@@ -1,6 +1,6 @@
-# Solution Proposal — FieldSite
+# Solution Proposal — FieldSight
 
-**Working title:** FieldSite ("the installed base, seen clearly from the field").
+**Working title:** FieldSight ("the installed base, seen clearly from the field").
 Naming is an open decision — confirm or replace before the demo.
 
 **Mission:** turn what a field collaborator observes in a hospital into structured, reliable data about installed medical equipment, with capture as simple as a conversation and every inference running on the device or between peers.
@@ -53,7 +53,7 @@ This repository already carries the refined domain model in `CONTEXT.md`, `docs/
 
 ## 3. Product overview
 
-FieldSite is two surfaces over one shared, offline-first core:
+FieldSight is two surfaces over one shared, offline-first core:
 
 1. **Field app (Android/iOS)** — the collaborator's MVP capture tool. Type a natural-language Observation; QVAC extracts structured data locally; nothing leaves the device.
 2. **Dashboard (web, local-first)** — the MVP installed-base view for the organization: client-level equipment and basic aggregation across Clients.
@@ -66,7 +66,7 @@ Multilingual voice dictation is implemented in the hackathon branch. Camera, OCR
 
 ```mermaid
 flowchart TB
-    Scope["FieldSite scope"] --> MVP["MVP: typed capture, QVAC extraction, persistence, Installed base, client aggregation"]
+    Scope["FieldSight scope"] --> MVP["MVP: typed capture, QVAC extraction, persistence, Installed base, client aggregation"]
     Scope --> Post["Implemented enhancement: dictation · Post-MVP: camera, OCR, follow-up, confirmation, P2P, advanced analytics"]
     MVP --> Demo["First demonstrable vertical slice"]
     Demo -.unlocks.-> Post

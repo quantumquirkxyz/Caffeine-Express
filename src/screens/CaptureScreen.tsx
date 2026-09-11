@@ -49,7 +49,7 @@ export function CaptureScreen({ copy, fieldNote, setFieldNote, captureState, cap
           <Text style={{ color: colors.primary, fontSize: typography.sizes.xs, fontWeight: typography.weights.bold, letterSpacing: 1.2 }}>CAPTURE AT THE EDGE</Text>
           <Badge tone="blue">QVAC · LOCAL AI</Badge>
         </View>
-        <Text style={{ color: colors.text, fontSize: compact ? 34 : typography.sizes.display, lineHeight: compact ? 40 : undefined, fontWeight: typography.weights.bold, marginTop: spacing.sm }}>Describe what you saw. FieldSite does the rest.</Text>
+        <Text style={{ color: colors.text, fontSize: compact ? 34 : typography.sizes.display, lineHeight: compact ? 40 : undefined, fontWeight: typography.weights.bold, marginTop: spacing.sm }}>Describe what you saw. FieldSight does the rest.</Text>
         <Text style={{ color: colors.textSecondary, fontSize: typography.sizes.md, marginTop: spacing.xs, maxWidth: 760, lineHeight: 23 }}>
           Type or dictate in natural language. QVAC transcribes, organizes, structures, and validates the observation without sending inference to the cloud.
         </Text>

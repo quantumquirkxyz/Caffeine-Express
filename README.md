@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="docs/assets/fieldsite-hero.svg" alt="FieldSite animated local-first field intelligence banner" width="100%" />
+  <img src="docs/assets/fieldsight-hero.svg" alt="FieldSight animated local-first field intelligence banner" width="100%" />
 </p>
 
-# FieldSite
+# FieldSight
 
 > **Sovereign installed-base intelligence: captured naturally, structured by QVAC, and kept on-device.**
 
-FieldSite turns what a field collaborator observes during a customer visit into structured, auditable installed-equipment data. A collaborator can type a Field note or dictate naturally; QVAC transcribes speech locally, organizes the note locally, extracts strict Observations, validates them, persists them, and reconciles them into a live Installed base.
+FieldSight turns what a field collaborator observes during a customer visit into structured, auditable installed-equipment data. A collaborator can type a Field note or dictate naturally; QVAC transcribes speech locally, organizes the note locally, extracts strict Observations, validates them, persists them, and reconciles them into a live Installed base.
 
 **Decentralized AI Hackathon · ISD Summit 2026 · Philips challenge · QVAC**
 
@@ -15,7 +15,7 @@ FieldSite turns what a field collaborator observes during a customer visit into 
 
 ## Challenge fit
 
-The Philips challenge is fundamentally an installed-base intelligence problem: field knowledge must become usable, structured information about equipment at customer sites without losing provenance or inventing missing facts. FieldSite addresses that workflow directly.
+The Philips challenge is fundamentally an installed-base intelligence problem: field knowledge must become usable, structured information about equipment at customer sites without losing provenance or inventing missing facts. FieldSight addresses that workflow directly.
 
 The implemented path captures Client/Site context, geography, Modality, brand, model, quantity, Age, Use, comments, uncertainty/provenance, and the relationship between repeated observations and reconciled installed equipment. The included challenge workbook is used only as a synthetic fixture/reference.
 
@@ -45,7 +45,7 @@ The local QVAC text model extracts one or more Observations through a strict con
 
 ### Reconcile
 
-Persisted Observations update the Installed base through deterministic reconciliation rules. FieldSite deliberately distinguishes raw evidence from resolved equipment knowledge.
+Persisted Observations update the Installed base through deterministic reconciliation rules. FieldSight deliberately distinguishes raw evidence from resolved equipment knowledge.
 
 ### Inspect
 
@@ -140,7 +140,7 @@ Model artifacts and development dependencies may require connectivity when they 
 
 | Overview | Mobile capture | Installed base |
 | --- | --- | --- |
-| ![FieldSite dashboard](docs/ui-reference/01-dashboard-light.png) | ![FieldSite capture](docs/ui-reference/02-capture-mobile-light.png) | ![FieldSite installed base](docs/ui-reference/03-installed-base-light.png) |
+| ![FieldSight dashboard](docs/ui-reference/01-dashboard-light.png) | ![FieldSight capture](docs/ui-reference/02-capture-mobile-light.png) | ![FieldSight installed base](docs/ui-reference/03-installed-base-light.png) |
 
 The current hackathon branch has evolved beyond these design-reference captures, particularly in onboarding, radial summary visualizations, and the unified voice/text Capture composer.
 
@@ -218,7 +218,7 @@ The project is designed around the competition's decisive technical constraint: 
 
 ## Evaluation map
 
-| Criterion | Weight | FieldSite evidence |
+| Criterion | Weight | FieldSight evidence |
 | --- | ---: | --- |
 | Technical | 35% | QVAC native inference, Parakeet dictation, strict validation, local persistence, no-cloud guard, tests, smoke path |
 | Innovation | 25% | Natural conversation to structured installed-base intelligence while retaining uncertainty and provenance |
@@ -284,4 +284,4 @@ Substantial hackathon solution work includes the installed-base domain contract,
 
 ---
 
-**FieldSite — useful field intelligence without surrendering field data.**
+**FieldSight — useful field intelligence without surrendering field data.**

@@ -14,7 +14,7 @@ That knowledge is valuable but difficult to operationalize. It commonly remains 
 
 The collaborator may be working with unstable connectivity and sensitive customer/site context. Requiring an external AI service would create both an availability dependency and an unnecessary inference boundary.
 
-FieldSite therefore treats **on-device QVAC inference as a system invariant**. The native capture path does not route speech or Field notes to a cloud inference API. This decision is formalized in [`adr/0001-on-device-qvac-inference.md`](adr/0001-on-device-qvac-inference.md) and enforced by the repository's no-cloud guard and CI workflow.
+FieldSight therefore treats **on-device QVAC inference as a system invariant**. The native capture path does not route speech or Field notes to a cloud inference API. This decision is formalized in [`adr/0001-on-device-qvac-inference.md`](adr/0001-on-device-qvac-inference.md) and enforced by the repository's no-cloud guard and CI workflow.
 
 ## User mission
 
@@ -22,7 +22,7 @@ A collaborator should be able to say or type a note such as:
 
 > “I am at DemoCare Pacific Hospital in Panama. There are two NovaMed N-1 MRI systems. One of the systems appears to be around eight years old, and the team reports 1,200 hours of use.”
 
-FieldSite should then produce structured evidence without inventing what was not stated. Dictation may be spoken in a supported language; the repository documentation remains English-only.
+FieldSight should then produce structured evidence without inventing what was not stated. Dictation may be spoken in a supported language; the repository documentation remains English-only.
 
 ```mermaid
 flowchart LR
@@ -62,7 +62,7 @@ See [`qvac/dictation.md`](qvac/dictation.md) for implementation details.
 
 ## Acceptance principles
 
-A successful FieldSite flow should satisfy all of the following:
+A successful FieldSight flow should satisfy all of the following:
 
 | Principle | Expected behavior |
 | --- | --- |

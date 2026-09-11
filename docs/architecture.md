@@ -1,4 +1,4 @@
-# FieldSite Architecture
+# FieldSight Architecture
 
 ## Purpose
 
@@ -6,7 +6,7 @@ This document describes the architecture of the hackathon submission path. It is
 
 ## Architectural constraints
 
-FieldSite is designed around four constraints:
+FieldSight is designed around four constraints:
 
 1. **Inference sovereignty.** AI inference must execute on the device through QVAC; a cloud inference fallback is not permitted.
 2. **Uncertain field evidence.** Missing or approximate information must remain explicit rather than being invented.
@@ -17,7 +17,7 @@ FieldSite is designed around four constraints:
 
 ```mermaid
 flowchart LR
-    C["Field collaborator"] -->|voice / text| APP["FieldSite mobile app"]
+    C["Field collaborator"] -->|voice / text| APP["FieldSight mobile app"]
     APP -->|local Observations| BASE["Installed base"]
     BASE --> DASH["Portfolio dashboard"]
     J["Judge / operator"] --> DASH
@@ -139,7 +139,7 @@ The host smoke path loads the real Llama model, executes the same extraction con
 
 ## Memory and latency considerations
 
-FieldSite intentionally does not keep every AI model resident. The text-generation model is loaded as the core native inference runtime. Parakeet is loaded only when dictation is needed and unloaded immediately after transcription. This trades some first-use latency for lower sustained device memory pressure, which is a better default for a hackathon prototype expected to run on heterogeneous phones.
+FieldSight intentionally does not keep every AI model resident. The text-generation model is loaded as the core native inference runtime. Parakeet is loaded only when dictation is needed and unloaded immediately after transcription. This trades some first-use latency for lower sustained device memory pressure, which is a better default for a hackathon prototype expected to run on heterogeneous phones.
 
 For a production version, model lifecycle management should become an explicit scheduler based on device RAM, thermal state, battery, and expected capture frequency.
 

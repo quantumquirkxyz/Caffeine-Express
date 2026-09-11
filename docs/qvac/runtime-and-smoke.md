@@ -3,7 +3,7 @@
 This document is the English specification of the QVAC model and local
 runtime seam required by the MVP typed extraction flow. It is delivered as
 part of issue **#9** in the parent spec
-[**#4 — QVAC model and local runtime seam**](https://github.com/quantumquirkxyz/FieldSite/issues/4).
+[**#4 — QVAC model and local runtime seam**](https://github.com/quantumquirkxyz/FieldSight/issues/4).
 
 The TypeScript implementation lives in
 [`src/capture/qvac-runtime.ts`](../../src/capture/qvac-runtime.ts),
