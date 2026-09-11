@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, ScrollView } from 'react-native';
+import { Animated, Platform, ScrollView } from 'react-native';
+import { normalizeFieldNote } from './capture/field-note-normalizer';
 import { captureObservation } from './capture/observation-capture';
 import { QVACObservationExtractor } from './capture/qvac-extractor';
 import { loadQvacModel, unloadQvacModel } from './capture/qvac-runtime';
+import { transcribeFieldAudio } from './capture/qvac-transcription';
+import type { DictationProcessingState } from './capture/DictationControl.native';
 import { dashboardView, overviewAggregation, type DashboardStatus, type DashboardView } from './dashboard/dashboard';
 import type { Modality } from './domain/modality';
 import type { Observation } from './domain/observation';
@@ -24,18 +27,49 @@ const MODALITIES: readonly (Modality | null)[] = [null, 'MRI', 'CT', 'Ultrasound
 function statusFor(status: DashboardView['status']) { return { loading: ['Loading', 'Reading the installed base…'], offline: ['Offline', 'Field data is unavailable. Try again when connected.'], empty: ['No installed base yet', 'Capture your first Observation to get started.'], 'no-results': ['No matching equipment', 'Nothing is installed for the selected filter.'], ready: ['Installed base', 'Reported equipment per Client and Site.'] }[status] as [string, string]; }
 
 export default function App() {
-  const [base, setBase] = useState<InstalledBase | null>(null); const [store, setStore] = useState<AsyncObservationStore | null>(null); const [qvacModelId, setQvacModelId] = useState<string | null>(null); const [fieldNote, setFieldNote] = useState(''); const [captureState, setCaptureState] = useState<'empty' | 'loading' | 'error' | 'saved'>('empty'); const [captureError, setCaptureError] = useState(''); const [captured, setCaptured] = useState<readonly Observation[]>([]); const [demo, setDemo] = useState<DemoState>('loading'); const [selectedModality, setSelectedModality] = useState<Modality | null>(null); const [selectedBrand, setSelectedBrand] = useState<string | null>(null); const [selectedModel, setSelectedModel] = useState<string | null>(null); const [selectedCountry, setSelectedCountry] = useState<string | null>(null); const [selectedClient, setSelectedClient] = useState<string | null>(null); const [selectedSite, setSelectedSite] = useState<string | null>(null); const [language, setLanguage] = useState<Language>('es'); const [themeMode, setThemeMode] = useState<ThemeMode>('system'); const [activeSection, setActiveSection] = useState<AppSection>('overview'); const opacity = useRef(new Animated.Value(1)).current; const offset = useRef(new Animated.Value(0)).current; const scrollRef = useRef<ScrollView>(null);
+  const [base, setBase] = useState<InstalledBase | null>(null); const [store, setStore] = useState<AsyncObservationStore | null>(null); const [qvacModelId, setQvacModelId] = useState<string | null>(null); const [qvacState, setQvacState] = useState<'web' | 'loading' | 'ready' | 'error'>(Platform.OS === 'web' ? 'web' : 'loading'); const [fieldNote, setFieldNote] = useState(''); const [captureState, setCaptureState] = useState<'empty' | 'loading' | 'error' | 'saved'>('empty'); const [captureError, setCaptureError] = useState(''); const [dictationState, setDictationState] = useState<DictationProcessingState>('idle'); const [dictationError, setDictationError] = useState(''); const [rawTranscript, setRawTranscript] = useState(''); const [captured, setCaptured] = useState<readonly Observation[]>([]); const [demo, setDemo] = useState<DemoState>('loading'); const [selectedModality, setSelectedModality] = useState<Modality | null>(null); const [selectedBrand, setSelectedBrand] = useState<string | null>(null); const [selectedModel, setSelectedModel] = useState<string | null>(null); const [selectedCountry, setSelectedCountry] = useState<string | null>(null); const [selectedClient, setSelectedClient] = useState<string | null>(null); const [selectedSite, setSelectedSite] = useState<string | null>(null); const [language, setLanguage] = useState<Language>('es'); const [themeMode, setThemeMode] = useState<ThemeMode>('system'); const [activeSection, setActiveSection] = useState<AppSection>('overview'); const opacity = useRef(new Animated.Value(1)).current; const offset = useRef(new Animated.Value(0)).current; const scrollRef = useRef<ScrollView>(null);
   useEffect(() => { void loadPreferences().then(preferences => { setLanguage(preferences.language); setThemeMode(preferences.themeMode); }); }, []);
   useEffect(() => { void savePreferences({ language, themeMode }); }, [language, themeMode]);
   useEffect(() => { let active = true; const timer = setTimeout(() => { const nextStore = new AsyncObservationStore(); void loadSyntheticFixtures(nextStore).catch(error => { if (error?.name !== 'ObservationAlreadyPersistedError') throw error; }).then(async () => { if (!active) return; const nextBase = new InstalledBase(); (await nextStore.all()).forEach(observation => nextBase.update(observation)); setBase(nextBase); setStore(nextStore); setDemo('ready'); }).catch(() => { if (active) setDemo('offline'); }); }, 500); return () => { active = false; clearTimeout(timer); }; }, []);
-  useEffect(() => { let active = true; void loadQvacModel().then(id => { if (active) setQvacModelId(id); else void unloadQvacModel(id); }).catch(error => { const message = error instanceof Error ? error.message : String(error); console.error('[QVAC] model load failed:', error); if (active) { setCaptureError(`QVAC could not load its on-device model: ${message}`); setCaptureState('error'); } }); return () => { active = false; }; }, []);
+  useEffect(() => {
+    if (Platform.OS === 'web') { setQvacState('web'); return undefined; }
+    let active = true;
+    setQvacState('loading');
+    void loadQvacModel().then(id => {
+      if (active) { setQvacModelId(id); setQvacState('ready'); }
+      else void unloadQvacModel(id);
+    }).catch(error => {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('[QVAC] model load failed:', error);
+      if (active) { setQvacState('error'); setCaptureError(`QVAC could not load its on-device model: ${message}`); }
+    });
+    return () => { active = false; };
+  }, []);
   const view = useMemo(() => { const source = base ?? new InstalledBase(); if (demo === 'loading') return dashboardView(source, {}, { loading: true }); if (demo === 'offline') return dashboardView(source, {}, { offline: true }); if (demo === 'empty') return dashboardView(new InstalledBase()); if (demo === 'no-results') return dashboardView(source, { modality: 'CT', brand: 'not-installed' }); return dashboardView(source, { ...(selectedCountry === null ? {} : { country: selectedCountry }), ...(selectedClient === null ? {} : { clientName: selectedClient }), ...(selectedSite === null ? {} : { siteName: selectedSite }), ...(selectedModality === null ? {} : { modality: selectedModality }), ...(selectedBrand === null ? {} : { brand: selectedBrand }), ...(selectedModel === null ? {} : { model: selectedModel }) }); }, [base, demo, selectedBrand, selectedClient, selectedCountry, selectedModel, selectedModality, selectedSite]);
   const copy = COPY[language]; const source = base ?? new InstalledBase(); const aggregation = overviewAggregation(source); const [statusTitle, statusDetail] = statusFor(view.status); const brandOptions = useMemo(() => [...new Set((base?.all() ?? []).flatMap(record => record.brand === null ? [] : [record.brand]))].sort(), [base]); const modelOptions = useMemo(() => [...new Set((base?.all() ?? []).flatMap(record => record.model === null ? [] : [record.model]))].sort(), [base]);
-  async function saveFieldNote() { if (store === null) return; setCaptureState('loading'); setCaptureError(''); try { if (qvacModelId === null) throw new Error('QVAC is still loading its on-device model.'); const observations = await captureObservation(fieldNote, new QVACObservationExtractor(qvacModelId), store); const next = new InstalledBase(); (await store.all()).forEach(item => next.update(item)); setBase(next); setCaptured(observations); setCaptureState('saved'); setFieldNote(''); } catch (error) { setCaptureError(error instanceof Error ? error.message : 'Could not extract this Field note.'); setCaptureState('error'); } }
+  async function processDictation(audio: Int16Array) {
+    setDictationError(''); setRawTranscript('');
+    try {
+      if (qvacModelId === null) throw new Error('El modelo QVAC todavía no está listo.');
+      setDictationState('transcribing');
+      const transcript = await transcribeFieldAudio(audio);
+      if (transcript.trim() === '') throw new Error('No se detectó voz utilizable en la grabación.');
+      setRawTranscript(transcript);
+      setDictationState('cleaning');
+      const cleaned = await normalizeFieldNote(qvacModelId, transcript);
+      setFieldNote(cleaned.trim() || transcript);
+      setCaptureState('empty');
+      setDictationState('ready');
+    } catch (error) {
+      setDictationError(error instanceof Error ? error.message : 'No se pudo procesar el dictado local.');
+      setDictationState('error');
+    }
+  }
+  async function saveFieldNote() { if (store === null) return; setCaptureState('loading'); setCaptureError(''); try { if (qvacModelId === null) throw new Error('QVAC is still loading its on-device model.'); const observations = await captureObservation(fieldNote, new QVACObservationExtractor(qvacModelId), store); const next = new InstalledBase(); (await store.all()).forEach(item => next.update(item)); setBase(next); setCaptured(observations); setCaptureState('saved'); setFieldNote(''); setRawTranscript(''); setDictationState('idle'); } catch (error) { setCaptureError(error instanceof Error ? error.message : 'Could not extract this Field note.'); setCaptureState('error'); } }
   function navigate(section: AppSection) { setActiveSection(section); scrollRef.current?.scrollTo({ y: 0, animated: false }); }
   const rows = base?.all() ?? [];
   const countryOptions = [...new Set(rows.map(record => record.site.country))].sort(); const clientOptions = [...new Set(rows.map(record => record.site.client.name))].sort(); const siteOptions = [...new Set(rows.map(record => record.site.name))].sort();
-  const captureProps = { copy, fieldNote, setFieldNote: (value: string) => { setFieldNote(value); if (captureState !== 'empty') setCaptureState('empty'); }, captureState, captureDisabled: store === null || qvacModelId === null || fieldNote.trim() === '', captureError, onSave: () => void saveFieldNote(), captured };
+  const captureProps = { copy, fieldNote, setFieldNote: (value: string) => { setFieldNote(value); if (captureState !== 'empty') setCaptureState('empty'); }, captureState, captureDisabled: store === null || qvacModelId === null || fieldNote.trim() === '', captureError, onSave: () => void saveFieldNote(), captured, qvacState, dictationState, dictationError, rawTranscript, onAudio: processDictation };
   const screen = activeSection === 'overview'
     ? <OverviewScreen copy={copy} aggregation={aggregation} />
     : activeSection === 'capture'
