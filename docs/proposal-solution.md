@@ -62,12 +62,12 @@ The MVP demo tells one vertical slice end-to-end:
 
 > **One typed Observation → structured record → Installed base → client-level aggregation.**
 
-Voice, camera, OCR, follow-up, confirmation, P2P, and advanced analytics are post-MVP capabilities and are documented separately from the MVP flow (`ADR 0006`).
+Multilingual voice dictation is implemented in the hackathon branch. Camera, OCR, automated follow-up, peer confirmation, P2P synchronization, and advanced analytics remain post-MVP capabilities (`ADR 0006`).
 
 ```mermaid
 flowchart TB
     Scope["FieldSite scope"] --> MVP["MVP: typed capture, QVAC extraction, persistence, Installed base, client aggregation"]
-    Scope --> Post["Post-MVP: dictation, camera, OCR, follow-up, confirmation, P2P, advanced analytics"]
+    Scope --> Post["Implemented enhancement: dictation · Post-MVP: camera, OCR, follow-up, confirmation, P2P, advanced analytics"]
     MVP --> Demo["First demonstrable vertical slice"]
     Demo -.unlocks.-> Post
 ```
@@ -114,7 +114,7 @@ Every AI step maps to a QVAC task with a concrete, small model — keeping the p
 
 | Product step | QVAC task | Recommended model | Notes |
 |---|---|---|---|
-| Voice → Field note (post-MVP) | Transcription (ASR, speech→text: `transcribe()` / `transcribeStream()`) | **Parakeet TDT 0.6B** (multilingual, ~750 MB) | Post-MVP dictation; streaming + end-of-utterance |
+| Voice → Field note (implemented) | Transcription (ASR, speech→text: `transcribe()` / `transcribeStream()`) | **Parakeet TDT 0.6B** (multilingual, ~750 MB) | Implemented local dictation path; PCM capture followed by local transcription |
 | Field note → structured fields (MVP) | Text generation (`completion()` + tool schema) | **LLAMA_3_2_1B_INST_Q4_0** or **QWEN3_600M_INST_Q4** | Typed natural-language input; tool-call JSON validated by Zod |
 | Photo plate → text (post-MVP) | OCR (`ocr()`) | **OCR_LATIN** (CRAFT + recognizer) | Returns blocks with text + bbox + confidence |
 | Photo → brand/model/age/read label (post-MVP) | Multimodal (`completion()` + `projectionModelSrc`) | **VisionPsy-Nano 460M** + mmproj | Confirms or creates; image never leaves device |
@@ -142,7 +142,7 @@ sequenceDiagram
     App-->>C: "show saved record"
 ```
 
-### 5.3 Post-MVP capture flow
+### 5.3 Extended capture flow (implemented voice + future vision)
 
 The following flow is intentionally separate. It adds capture mechanisms and automated enrichment only after the MVP path is complete.
 
@@ -243,8 +243,8 @@ Stack and key decisions (grounded in the official QVAC Expo tutorial and docs):
 - **Physical device required** (engines do not run on emulators) — documented in README; demo deviceready plan from hour 1.
 - Local store: `expo-sqlite` for the structured dataset + `expo-file-system` for photos/audio/files.
 - Model distribution: `downloadAsset`/`loadModel` with `onProgress`, pause/resume, sharded models; models fetched from the **distributed model registry** or **peers** (no central AI service).
-- MVP session flow: open Visit at a Site → type Observation → validate → save.
-- Post-MVP session flow: add dictation, photo, follow-up, confirmation, and synchronization after the MVP is complete.
+- Implemented session flow: open Capture → type or dictate a Field note → review → local QVAC extraction → validate → save.
+- Post-MVP extensions: add photo/OCR, automated follow-up, independent confirmation workflows, and synchronization.
 - Offline-first: everything runs with no connectivity; download + load is the only "ready" gate and is shown transparently in the UI.
 
 ---
