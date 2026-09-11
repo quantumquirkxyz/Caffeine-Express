@@ -49,9 +49,9 @@ export function CaptureScreen({ copy, fieldNote, setFieldNote, captureState, cap
           <Text style={{ color: colors.primary, fontSize: typography.sizes.xs, fontWeight: typography.weights.bold, letterSpacing: 1.2 }}>CAPTURE AT THE EDGE</Text>
           <Badge tone="blue">QVAC · LOCAL AI</Badge>
         </View>
-        <Text style={{ color: colors.text, fontSize: compact ? 34 : typography.sizes.display, lineHeight: compact ? 40 : undefined, fontWeight: typography.weights.bold, marginTop: spacing.sm }}>Describe lo que viste. FieldSight hace el resto.</Text>
+        <Text style={{ color: colors.text, fontSize: compact ? 34 : typography.sizes.display, lineHeight: compact ? 40 : undefined, fontWeight: typography.weights.bold, marginTop: spacing.sm }}>Describe what you saw. FieldSite does the rest.</Text>
         <Text style={{ color: colors.textSecondary, fontSize: typography.sizes.md, marginTop: spacing.xs, maxWidth: 760, lineHeight: 23 }}>
-          Escribe o dicta en lenguaje natural. QVAC transcribe, ordena, estructura y valida la observación sin enviar la inferencia a la nube.
+          Type or dictate in natural language. QVAC transcribes, organizes, structures, and validates the observation without sending inference to the cloud.
         </Text>
       </View>
 
@@ -60,13 +60,13 @@ export function CaptureScreen({ copy, fieldNote, setFieldNote, captureState, cap
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
             <View style={{ width: 38, height: 38, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySoft }}><Cpu size={19} color={colors.primary} /></View>
             <View>
-              <Text style={{ color: colors.text, fontWeight: typography.weights.semibold }}>Motor QVAC</Text>
+              <Text style={{ color: colors.text, fontWeight: typography.weights.semibold }}>QVAC engine</Text>
               <Text style={{ color: colors.textSecondary, fontSize: typography.sizes.xs }}>
-                {qvacState === 'ready' ? 'Listo para transcribir y extraer' : qvacState === 'loading' ? 'Cargando modelo local…' : qvacState === 'web' ? 'Vista web · inferencia disponible en móvil' : 'El runtime local requiere atención'}
+                {qvacState === 'ready' ? 'Ready to transcribe and extract' : qvacState === 'loading' ? 'Loading local model…' : qvacState === 'web' ? 'Web view · inference is available on mobile' : 'The local runtime requires attention'}
               </Text>
             </View>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}><LockKeyhole size={15} color={colors.primary} /><Text style={{ color: colors.primary, fontSize: typography.sizes.xs, fontWeight: typography.weights.semibold }}>Sin inferencia cloud</Text></View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}><LockKeyhole size={15} color={colors.primary} /><Text style={{ color: colors.primary, fontSize: typography.sizes.xs, fontWeight: typography.weights.semibold }}>No cloud inference</Text></View>
         </View>
 
         <View style={{ borderWidth: 1, borderColor: fieldNote ? colors.primary : colors.borderStrong, borderRadius: radius.lg, backgroundColor: colors.surfaceMuted, overflow: 'hidden' }}>
@@ -84,17 +84,17 @@ export function CaptureScreen({ copy, fieldNote, setFieldNote, captureState, cap
           />
           <View style={{ borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.surface, padding: spacing.md, flexDirection: compact ? 'column' : 'row', gap: spacing.sm, alignItems: compact ? 'stretch' : 'center', justifyContent: 'space-between' }}>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md, alignItems: 'center' }}>
-              <PipelineState label="Voz / texto" done={fieldNote.trim().length > 0 || rawTranscript.length > 0} />
-              <PipelineState label="Transcribir" active={dictationState === 'transcribing'} done={rawTranscript.length > 0} />
-              <PipelineState label="Ordenar" active={dictationState === 'cleaning'} done={dictationState === 'ready'} />
-              <PipelineState label="Extraer" active={captureState === 'loading'} done={captureState === 'saved'} />
+              <PipelineState label="Voice / text" done={fieldNote.trim().length > 0 || rawTranscript.length > 0} />
+              <PipelineState label="Transcribe" active={dictationState === 'transcribing'} done={rawTranscript.length > 0} />
+              <PipelineState label="Organize" active={dictationState === 'cleaning'} done={dictationState === 'ready'} />
+              <PipelineState label="Extract" active={captureState === 'loading'} done={captureState === 'saved'} />
             </View>
             <View style={{ flexDirection: compact ? 'column' : 'row', gap: spacing.sm, alignItems: 'stretch' }}>
               <DictationControl compact processingState={dictationState} disabled={!qvacReady} error={dictationError} onAudio={onAudio} />
               {captureState === 'loading' ? (
                 <View style={{ minHeight: 46, minWidth: 150, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: spacing.sm, backgroundColor: colors.primarySoft }}><ActivityIndicator color={colors.primary} /><Text style={{ color: colors.primary }}>{copy.processing}</Text></View>
               ) : (
-                <Button disabled={captureDisabled || dictationBusy} onPress={onSave}>Procesar con IA</Button>
+                <Button disabled={captureDisabled || dictationBusy} onPress={onSave}>Process with AI</Button>
               )}
             </View>
           </View>
@@ -102,9 +102,9 @@ export function CaptureScreen({ copy, fieldNote, setFieldNote, captureState, cap
 
         {rawTranscript ? (
           <View style={{ marginTop: spacing.md, padding: spacing.md, borderRadius: radius.md, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}><Mic size={14} color={colors.primary} /><Text style={{ color: colors.textSecondary, fontSize: typography.sizes.xs, fontWeight: typography.weights.bold, letterSpacing: 0.6 }}>TRANSCRIPCIÓN DEL DICTADO</Text></View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}><Mic size={14} color={colors.primary} /><Text style={{ color: colors.textSecondary, fontSize: typography.sizes.xs, fontWeight: typography.weights.bold, letterSpacing: 0.6 }}>DICTATION TRANSCRIPT</Text></View>
             <Text style={{ color: colors.text, fontSize: typography.sizes.sm, marginTop: spacing.sm, lineHeight: 21 }}>{rawTranscript}</Text>
-            {dictationState === 'cleaning' ? <Text style={{ color: colors.primary, fontSize: typography.sizes.xs, marginTop: spacing.sm }}>QVAC está ordenando el texto sin alterar los hechos…</Text> : <Text style={{ color: colors.textSecondary, fontSize: typography.sizes.xs, marginTop: spacing.sm }}>Puedes comparar esta transcripción con la Field note editable antes de guardar.</Text>}
+            {dictationState === 'cleaning' ? <Text style={{ color: colors.primary, fontSize: typography.sizes.xs, marginTop: spacing.sm }}>QVAC is organizing the text without changing the facts…</Text> : <Text style={{ color: colors.textSecondary, fontSize: typography.sizes.xs, marginTop: spacing.sm }}>Compare this transcript with the editable Field note before saving.</Text>}
           </View>
         ) : null}
 
@@ -115,7 +115,7 @@ export function CaptureScreen({ copy, fieldNote, setFieldNote, captureState, cap
         <Card>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.md }}>
             <View style={{ width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySoft }}><Check size={18} color={colors.primary} /></View>
-            <View style={{ flex: 1 }}><SectionHeader title={copy.saved} subtitle="Observation persistida y reconciliada con la base instalada." /></View>
+            <View style={{ flex: 1 }}><SectionHeader title={copy.saved} subtitle="Observation persisted and reconciled with the installed base." /></View>
           </View>
           {captured.map((observation) => (
             <View key={observation.id} style={{ paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border }}>
