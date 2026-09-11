@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 import { MicOff } from 'lucide-react-native';
 import { Card } from '../ui/components/Card';
-import { spacing, typography, useTheme } from '../ui/tokens';
+import { radius, spacing, typography, useTheme } from '../ui/tokens';
 
 export type DictationProcessingState = 'idle' | 'transcribing' | 'cleaning' | 'ready' | 'error';
 
@@ -9,11 +9,20 @@ type Props = {
   readonly processingState: DictationProcessingState;
   readonly disabled?: boolean;
   readonly error?: string;
+  readonly compact?: boolean;
   readonly onAudio: (audio: Int16Array) => Promise<void> | void;
 };
 
-export function DictationControl(_props: Props) {
+export function DictationControl({ compact = false }: Props) {
   const { colors } = useTheme();
+  if (compact) {
+    return (
+      <View style={{ minHeight: 46, borderRadius: radius.md, borderWidth: 1, borderColor: colors.borderStrong, backgroundColor: colors.surfaceMuted, paddingHorizontal: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, opacity: 0.72 }}>
+        <MicOff size={17} color={colors.textSecondary} />
+        <Text style={{ color: colors.textSecondary, fontSize: typography.sizes.sm, fontWeight: typography.weights.semibold }}>Dictado móvil</Text>
+      </View>
+    );
+  }
   return (
     <Card style={{ backgroundColor: colors.surfaceMuted }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
