@@ -19,7 +19,7 @@ export function DictationControl({ compact = false }: Props) {
     return (
       <View style={{ minHeight: 46, borderRadius: radius.md, borderWidth: 1, borderColor: colors.borderStrong, backgroundColor: colors.surfaceMuted, paddingHorizontal: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, opacity: 0.72 }}>
         <MicOff size={17} color={colors.textSecondary} />
-        <Text style={{ color: colors.textSecondary, fontSize: typography.sizes.sm, fontWeight: typography.weights.semibold }}>Dictado móvil</Text>
+        <Text style={{ color: colors.textSecondary, fontSize: typography.sizes.sm, fontWeight: typography.weights.semibold }}>Mobile dictation</Text>
       </View>
     );
   }
@@ -28,9 +28,9 @@ export function DictationControl({ compact = false }: Props) {
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
         <MicOff size={20} color={colors.textSecondary} />
         <View style={{ flex: 1 }}>
-          <Text style={{ color: colors.text, fontSize: typography.sizes.sm, fontWeight: typography.weights.semibold }}>Dictado QVAC disponible en móvil</Text>
+          <Text style={{ color: colors.text, fontSize: typography.sizes.sm, fontWeight: typography.weights.semibold }}>QVAC dictation is available on mobile</Text>
           <Text style={{ color: colors.textSecondary, fontSize: typography.sizes.xs, marginTop: spacing.xs }}>
-            La transcripción y el reordenamiento requieren un dispositivo físico Android o iOS. La web mantiene el dashboard y la revisión de datos.
+            Transcription and note organization require a physical Android or iOS device. The web build remains a dashboard and data-review surface.
           </Text>
         </View>
       </View>
