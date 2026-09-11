@@ -1,6 +1,6 @@
-<p align="center">
-  <img src="docs/assets/fieldsight-hero.svg" alt="FieldSight animated local-first field intelligence banner" width="100%" />
-</p>
+<div align="center">
+  <img src="docs/assets/fieldsight-hero.svg" alt="Animated FieldSight logo banner" width="100%" />
+</div>
 
 # FieldSight
 
@@ -136,14 +136,6 @@ Canonical terminology is defined in [`CONTEXT.md`](CONTEXT.md):
 
 Model artifacts and development dependencies may require connectivity when they are initially obtained. That provisioning step is distinct from inference; the product inference path does not call a cloud model API.
 
-## Screens
-
-| Overview | Mobile capture | Installed base |
-| --- | --- | --- |
-| ![FieldSight dashboard](docs/ui-reference/01-dashboard-light.png) | ![FieldSight capture](docs/ui-reference/02-capture-mobile-light.png) | ![FieldSight installed base](docs/ui-reference/03-installed-base-light.png) |
-
-The current hackathon branch has evolved beyond these design-reference captures, particularly in onboarding, radial summary visualizations, and the unified voice/text Capture composer.
-
 ## Run locally
 
 ### Requirements
@@ -244,15 +236,14 @@ FieldSight/
 │   ├── layout/        responsive application shell
 │   ├── screens/       onboarding, overview, capture, installed base
 │   ├── store/         persistence and reconciliation
-│   ├── ui/            design tokens and components
+│   ├── ui/            design tokens, components, and brand assets
 │   └── validation/    strict data validation
 ├── docs/
 │   ├── adr/           architecture decisions
 │   ├── assets/        README/product visual assets
 │   ├── hackathon_rules/ supplied challenge fixture/reference material
 │   ├── qvac/          QVAC execution documentation
-│   ├── research/      supporting research
-│   └── ui-reference/  design references
+│   └── research/      supporting research
 ├── scripts/           compliance and real-model verification
 ├── CONTEXT.md         canonical domain vocabulary
 ├── JUDGING.md         rubric and demo checklist
