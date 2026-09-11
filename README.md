@@ -1,21 +1,26 @@
 <div align="center">
   <table width="100%">
     <tr>
-      <td width="42%" align="left">
-        <img src="docs/assets/fieldsight-logo.png" alt="FieldSight logo" width="240" />
-        <br />
-        <sub><strong>LOCAL-FIRST INTELLIGENCE</strong></sub>
+      <td width="24%" align="center">
+        <img src="docs/assets/fieldsight-logo.png" alt="FieldSight logo" width="150" />
       </td>
-      <td width="58%" align="left">
-        <h3>FieldSight</h3>
-        <p><strong>Type or dictate field observations, structure them with QVAC, validate them locally, and reconcile them into installed-base intelligence.</strong></p>
-        <p><sub>No cloud inference fallback. Web mode is dashboard/review only.</sub></p>
+      <td width="46%" align="left">
+        <h1>FieldSight</h1>
+        <p><strong>Local-first installed-base intelligence.</strong></p>
+        <p><sub>Field observations → QVAC extraction → validated installed base</sub></p>
+      </td>
+      <td width="30%" align="center">
+        <img src="docs/assets/fieldsight-graph.gif" alt="Animated graph of local observations becoming structured records" width="260" />
       </td>
     </tr>
   </table>
 </div>
 
-# FieldSight
+<details>
+  <summary><strong>What the title banner encodes</strong></summary>
+  <br />
+  <p>The static PNG logo represents the FieldSight product identity. The animated graph represents local field notes flowing through QVAC into validated installed-base intelligence. This uses GitHub-safe README HTML plus PNG/GIF assets; GitHub Flavored Markdown does not execute embedded JavaScript or arbitrary CSS.</p>
+</details>
 
 > **Sovereign installed-base intelligence: captured naturally, structured by QVAC, and kept on-device.**
 
