@@ -1,137 +1,108 @@
-# FieldSight
+<p align="center">
+  <img src="docs/assets/fieldsite-hero.svg" alt="FieldSite animated local-first field intelligence banner" width="100%" />
+</p>
 
-> **Sovereign field intelligence for installed equipment — captured as a conversation, structured by QVAC, kept on-device.**
+# FieldSite
 
-FieldSight turns what a field collaborator observes during a customer visit into structured, auditable data about installed equipment. A collaborator can **type or dictate a multilingual Field note**; QVAC transcribes speech locally, cleans the note locally, extracts structured Observations, validates them, persists them, and reconciles them into a live Installed base.
+> **Sovereign installed-base intelligence: captured naturally, structured by QVAC, and kept on-device.**
 
-**Decentralized AI Hackathon · ISD Summit 2026 · QVAC**
+FieldSite turns what a field collaborator observes during a customer visit into structured, auditable installed-equipment data. A collaborator can type a Field note or dictate naturally; QVAC transcribes speech locally, organizes the note locally, extracts strict Observations, validates them, persists them, and reconciles them into a live Installed base.
+
+**Decentralized AI Hackathon · ISD Summit 2026 · Philips challenge · QVAC**
 
 > [!IMPORTANT]
-> **No cloud inference.** AI inference is performed with QVAC on a physical Android/iOS device. Field notes and microphone audio are never routed to an external inference API. The web build is intentionally a dashboard/review surface; native AI capture is demonstrated on a physical device.
+> **No cloud inference.** The AI path uses QVAC on a physical Android/iOS device. Field notes and microphone audio are not sent to an external inference API. The web build is intentionally a dashboard/review surface and does not provide a cloud AI fallback.
 
----
+## Challenge fit
 
-## The problem
+The Philips challenge is fundamentally an installed-base intelligence problem: field knowledge must become usable, structured information about equipment at customer sites without losing provenance or inventing missing facts. FieldSite addresses that workflow directly.
 
-Field teams continuously discover valuable information while visiting customer sites: what equipment is installed, how many units exist, which brands/models are present, how old the equipment appears to be, and how heavily it is used. In practice, this knowledge often remains fragmented across personal notes, chats, spreadsheets, and memory.
-
-That creates four systemic problems:
-
-1. **Capture friction** — structured forms are slow during real field work.
-2. **Inconsistent semantics** — the same equipment can be described differently by different people.
-3. **Partial or conflicting evidence** — observations are often incomplete and may disagree.
-4. **Sensitive context** — customer/site information should not have to leave the device simply to be transformed by AI.
-
-FieldSight treats those constraints as the product architecture, not as edge cases.
-
-## The solution
+The implemented path captures Client/Site context, geography, Modality, brand, model, quantity, Age, Use, comments, uncertainty/provenance, and the relationship between repeated observations and reconciled installed equipment. The included challenge workbook is used only as a synthetic fixture/reference.
 
 ```mermaid
 flowchart LR
-    A["Speak or type\nField note"] --> B["QVAC Parakeet TDT\nOn-device transcription"]
-    B --> C["QVAC LLM\nNote cleanup"]
-    C --> D["QVAC LLM\nStructured extraction"]
-    D --> E["Zod + domain\nvalidation"]
-    E --> F["Local Observation\nstore"]
-    F --> G["Installed-base\nreconciliation"]
-    G --> H["Dashboard\n& aggregation"]
-
-    classDef local fill:#eef6ff,stroke:#2563eb,color:#0f172a;
-    class B,C,D,E,F,G local;
+    A[Field collaborator] --> B[Type or dictate Field note]
+    B --> C[QVAC Parakeet transcription]
+    C --> D[QVAC LLM note organization]
+    D --> E[QVAC structured extraction]
+    E --> F[Typed validation]
+    F --> G[Observation persistence]
+    G --> H[Installed-base reconciliation]
+    H --> I[Portfolio dashboard]
 ```
 
-The collaborator stays in a conversational workflow while FieldSight converts the note into a strict domain model. Unknown information remains **Unknown** instead of being fabricated. Repeated reports strengthen the Installed base through deterministic reconciliation.
+Typed notes enter at the Field-note stage and skip transcription. Unknown data remains Unknown; the application does not fabricate values simply to complete a record.
 
-## Product experience
+## Product flow
 
-### 1. Capture naturally
+### Capture
 
-On a physical Android/iOS device, the collaborator can speak naturally. FieldSight captures microphone PCM locally and sends the in-memory audio directly to **QVAC Parakeet TDT** for multilingual on-device transcription. Typed capture remains available as the simplest deterministic path.
+The Capture screen provides one editor for typed and dictated input. On a physical mobile device the microphone control captures PCM audio in memory. QVAC Parakeet TDT transcribes it locally. The raw transcript remains visible, while the local text model can improve punctuation and ordering without changing factual claims. The user can edit the Field note before selecting **Process with AI**.
 
-### 2. Clean without changing the facts
+### Structure and validate
 
-The local text-generation model receives the raw transcript and removes speech disfluencies, repairs punctuation, and improves ordering. Its instruction explicitly forbids inventing facts and requires preservation of numbers, negations, uncertainty, brands, models, and locations. The cleaned Field note remains editable before extraction.
+The local QVAC text model extracts one or more Observations through a strict contract. Model output is validated before it can become persisted application data. This separates probabilistic extraction from deterministic domain integrity.
 
-### 3. Extract into a strict contract
+### Reconcile
 
-QVAC transforms the reviewed note into one or more structured Observations containing the fields the challenge requires, including Client/Site context, Modality, brand, model, quantity, Age, Use, and comments when available.
+Persisted Observations update the Installed base through deterministic reconciliation rules. FieldSite deliberately distinguishes raw evidence from resolved equipment knowledge.
 
-### 4. Validate, persist, reconcile
+### Inspect
 
-The model output is not trusted blindly. It passes through typed validation before persistence. Observations then update the local Installed base using deterministic reconciliation rules.
+The Overview and Installed-base screens expose useful portfolio signals, including equipment mix, client concentration, site footprint, geography, modality, brand/model, quantities, evidence, and provenance.
 
-### 5. Inspect the installed base
-
-The dashboard exposes per-Client/Site data, geography, modality, brand/model filters, quantities, state/provenance, confidence signals, and basic portfolio aggregation.
-
-## Screens
-
-| Overview | Mobile capture | Installed base |
-| --- | --- | --- |
-| ![FieldSight dashboard](docs/ui-reference/01-dashboard-light.png) | ![FieldSight capture](docs/ui-reference/02-capture-mobile-light.png) | ![FieldSight installed base](docs/ui-reference/03-installed-base-light.png) |
-
-> The capture screen in the current hackathon branch has been further refined to expose the new **Dictate → Transcribe → Clean → Extract** local-AI pipeline. The screenshots above remain design references for the overall visual system.
-
----
-
-## Why QVAC / why the edge
-
-A field collaborator may be working with unstable connectivity and sensitive customer context. Sending the note to a remote LLM would make availability and privacy depend on external infrastructure and would violate the hackathon's core technical constraint.
-
-FieldSight therefore has a hard inference boundary:
+## Trust boundary
 
 ```mermaid
 flowchart TB
-    subgraph DEVICE["Physical Android / iOS device"]
-      MIC[Microphone / typed note]
-      STT[QVAC Parakeet TDT]
-      LLM[QVAC Llama 3.2 1B]
-      VAL[Validation]
-      STORE[Local persistence]
-      MIC --> STT --> LLM --> VAL --> STORE
+    subgraph DEVICE[Physical Android or iOS device]
+        MIC[Microphone]
+        NOTE[Editable Field note]
+        STT[QVAC Parakeet TDT]
+        LLM[QVAC local LLM]
+        VALIDATE[Domain validation]
+        STORE[Local Observation store]
+        BASE[InstalledBase reconciliation]
+
+        MIC --> STT
+        STT --> NOTE
+        NOTE --> LLM
+        LLM --> VALIDATE
+        VALIDATE --> STORE
+        STORE --> BASE
     end
 
-    WEB["Web dashboard\nNo AI extraction"]
-    CLOUD[("Cloud inference API")]
+    WEB[Web dashboard and review]
+    CLOUD[Cloud inference API]
 
-    STORE --> WEB
-    MIC -. prohibited .-> CLOUD
-    LLM -. no route .-> CLOUD
+    BASE --> WEB
+    MIC -. no inference route .-> CLOUD
+    NOTE -. no inference route .-> CLOUD
+    LLM -. no inference route .-> CLOUD
 ```
 
-The boundary is both architectural and testable:
-
-- Native QVAC runtime: [`src/capture/qvac-runtime.native.ts`](src/capture/qvac-runtime.native.ts)
-- Multilingual transcription: [`src/capture/qvac-transcription.native.ts`](src/capture/qvac-transcription.native.ts)
-- Note cleanup: [`src/capture/field-note-normalizer.native.ts`](src/capture/field-note-normalizer.native.ts)
-- Structured extraction contract: [`src/capture/qvac-contract.ts`](src/capture/qvac-contract.ts)
-- No-cloud guard: [`scripts/check-no-cloud-inference.mjs`](scripts/check-no-cloud-inference.mjs)
-- Architecture decision: [`docs/adr/0001-on-device-qvac-inference.md`](docs/adr/0001-on-device-qvac-inference.md)
-- Runtime/smoke documentation: [`docs/qvac/runtime-and-smoke.md`](docs/qvac/runtime-and-smoke.md)
+The no-cloud requirement is also checked by `scripts/check-no-cloud-inference.mjs`, which rejects prohibited network/inference-client patterns in the QVAC source path.
 
 ## Architecture
 
 ```mermaid
 flowchart TD
-    UI["Expo React Native UI"] --> CAPTURE["Capture orchestration"]
-    CAPTURE --> TRANSCRIBE["QVAC transcription"]
-    CAPTURE --> NORMALIZE["QVAC note normalizer"]
-    CAPTURE --> EXTRACT["QVAC observation extractor"]
-    EXTRACT --> CONTRACT["Typed extraction contract"]
-    CONTRACT --> DOMAIN["Observation domain model"]
-    DOMAIN --> OBSSTORE["Async local Observation store"]
-    OBSSTORE --> BASE["InstalledBase reconciliation"]
-    BASE --> QUERY["Dashboard queries + aggregation"]
+    UI[Expo React Native UI] --> ORCH[Capture orchestration]
+    ORCH --> STT[QVAC transcription]
+    ORCH --> CLEAN[QVAC note normalizer]
+    ORCH --> EXTRACT[QVAC observation extractor]
+    EXTRACT --> CONTRACT[Typed extraction contract]
+    CONTRACT --> DOMAIN[Observation domain model]
+    DOMAIN --> STORE[Async local Observation store]
+    STORE --> RECON[InstalledBase reconciliation]
+    RECON --> QUERY[Dashboard queries and aggregation]
     QUERY --> UI
-
-    FIXTURE["Synthetic hackathon fixture"] --> OBSSTORE
+    FIXTURE[Synthetic challenge fixture] --> STORE
 ```
 
-For the rationale and component boundaries, see [`docs/architecture.md`](docs/architecture.md).
+Detailed component boundaries and trust assumptions are documented in [`docs/architecture.md`](docs/architecture.md).
 
 ## Domain model
-
-FieldSight deliberately distinguishes raw evidence from resolved knowledge:
 
 ```mermaid
 erDiagram
@@ -143,56 +114,54 @@ erDiagram
     OBSERVATION }o--|| INSTALLED_EQUIPMENT : reconciles_into
 ```
 
-Key concepts are defined precisely in [`CONTEXT.md`](CONTEXT.md):
+Canonical terminology is defined in [`CONTEXT.md`](CONTEXT.md):
 
-- **Field note** — raw typed or transcribed natural-language evidence.
-- **Observation** — one persisted structured claim about an equipment group.
-- **State** — provenance (`Reported`, `Estimated`, `Confirmed`, `Unknown`), not a generic quality score.
-- **Installed equipment** — reconciled Site × Modality × brand × model identity.
-- **Installed base** — live resolved view across Clients/Sites/geographies.
+- **Field note**: raw typed or transcribed natural-language evidence.
+- **Observation**: one persisted structured claim about an equipment group.
+- **State / provenance**: `Reported`, `Estimated`, `Confirmed`, or `Unknown`.
+- **Installed equipment**: reconciled Site × Modality × brand × model identity.
+- **Installed base**: the resolved portfolio view across clients, sites, and geographies.
 
 ## Native AI pipeline
 
-| Stage | Runtime | Model / mechanism | Network required for inference? |
+| Stage | Runtime | Mechanism | Cloud inference |
 | --- | --- | --- | --- |
 | Voice capture | Device | `expo-audio` PCM stream | No |
 | Transcription | QVAC | Parakeet TDT 0.6B | No |
-| Transcript cleanup | QVAC | Llama 3.2 1B Instruct Q4 | No |
+| Note organization | QVAC | Llama 3.2 1B Instruct Q4 | No |
 | Structured extraction | QVAC | Llama 3.2 1B Instruct Q4 | No |
 | Validation | Device | TypeScript + Zod/domain rules | No |
 | Persistence | Device | Async local store | No |
 | Dashboard | Device/Web | Deterministic application logic | No AI inference |
 
-The application may require connectivity the first time model artifacts or development dependencies are obtained. That is distinct from inference: once the runtime/model is available locally, the AI path does not call a cloud inference service.
+Model artifacts and development dependencies may require connectivity when they are initially obtained. That provisioning step is distinct from inference; the product inference path does not call a cloud model API.
 
----
+## Screens
+
+| Overview | Mobile capture | Installed base |
+| --- | --- | --- |
+| ![FieldSite dashboard](docs/ui-reference/01-dashboard-light.png) | ![FieldSite capture](docs/ui-reference/02-capture-mobile-light.png) | ![FieldSite installed base](docs/ui-reference/03-installed-base-light.png) |
+
+The current hackathon branch has evolved beyond these design-reference captures, particularly in onboarding, radial summary visualizations, and the unified voice/text Capture composer.
 
 ## Run locally
 
-### Prerequisites
+### Requirements
 
-- Node.js 24 recommended for parity with CI.
+- Node.js 24 recommended for CI parity.
 - npm.
-- For the dashboard only: a modern web browser.
-- For QVAC AI capture: **physical Android API 29+ or iOS device** and an Expo development/release build containing the native QVAC modules.
-- Microphone permission for dictation.
-
-### Install
+- A modern browser for dashboard/review mode.
+- A **physical Android API 29+ or iOS device** for native QVAC inference and microphone dictation.
 
 ```bash
 git clone https://github.com/quantumquirkxyz/FieldSight.git
 cd FieldSight
 git checkout hackathon-final-pass
 npm ci
-```
-
-### Start the Expo development server
-
-```bash
 npm start
 ```
 
-Then choose the target platform from Expo, or run explicitly:
+Explicit targets:
 
 ```bash
 npm run android
@@ -200,169 +169,119 @@ npm run ios
 npm run web
 ```
 
-### Web mode
-
-```bash
-npm run web
-```
-
-Web mode is useful for the Overview and Installed-base dashboard. It deliberately **does not emulate or replace QVAC inference**. The capture UI explains that native inference is available on a physical mobile device.
-
-### Native QVAC mode
-
-The text model is configured by `src/capture/qvac-config.native.ts` and loaded through `src/capture/qvac-runtime.native.ts`. On startup, the native app loads the QVAC text-generation model. Dictation additionally loads Parakeet for the transcription operation and unloads it after use to keep memory pressure bounded.
-
-A typical native demo path is:
-
-```text
-Open Capture
-   ↓
-Tap “Dictar observación”
-   ↓
-Speak naturally
-   ↓
-Stop recording
-   ↓
-Parakeet transcribes locally
-   ↓
-QVAC LLM cleans/reorders locally
-   ↓
-Review/edit Field note
-   ↓
-Extract structured Observation
-   ↓
-Open Installed base
-```
+Web mode intentionally does not emulate QVAC inference. Native AI capture requires the physical-device runtime.
 
 ## Verification
 
-Run the complete submission-facing verification suite:
+Run the complete deterministic submission gate:
 
 ```bash
 npm run verify
 ```
 
-Equivalent individual commands:
+It executes:
 
 ```bash
-npm run check:no-cloud   # deterministic cloud-inference boundary guard
-npm run typecheck        # TypeScript static verification
-npm test                 # contract/runtime/store/dashboard tests
-npm run export:web       # production-style Expo web export
-npm run build            # TypeScript emit
+npm run check:no-cloud
+npm run typecheck
+npm test
+npm run export:web
 ```
 
-### Real-model smoke test
+For repository-level review, also run:
 
-Where the QVAC host runtime is supported:
+```bash
+npx expo-doctor
+npm audit --audit-level=high
+```
+
+Where the QVAC host runtime is supported, the real-model extraction smoke path is:
 
 ```bash
 node scripts/qvac-host-smoke.mjs
 ```
 
-The smoke script loads `LLAMA_3_2_1B_INST_Q4_0`, executes the same structured extraction prompt used by the product, validates the returned JSON contract and expected semantics, retries within a bounded policy, unloads the model, and exits non-zero on failure.
+The host smoke script loads the configured Llama model, runs the same extraction contract, validates JSON and expected semantics, retries within a bounded policy, unloads the model, and exits non-zero on failure. Physical microphone + Parakeet execution must still be validated on the actual demo phone because generic CI cannot emulate the QVAC native worker and microphone hardware.
 
-The repository history includes successful repeated real-model smoke runs for the extraction contract; CI separately protects the deterministic no-cloud/type/test/web-build gates. Device-specific microphone + Parakeet behavior must still be validated on the physical device used for the demo because CI cannot emulate the native QVAC worker or microphone hardware.
+## Hackathon-rule alignment
 
----
+```mermaid
+flowchart LR
+    R1[QVAC required] --> E1[Native QVAC runtime]
+    R2[On-device or P2P inference] --> E2[Physical-device inference]
+    R3[No cloud inference] --> E3[Fail-closed platform split + static guard]
+    R4[Declare preexisting bases] --> E4[Explicit README declaration]
+    R5[Accessible submission] --> E5[Repository + reproducible commands]
+```
+
+The project is designed around the competition's decisive technical constraint: inference stays on-device/P2P and does not use a cloud model endpoint. The repository also explicitly declares preexisting foundations, as required by the hackathon rules.
+
+## Evaluation map
+
+| Criterion | Weight | FieldSite evidence |
+| --- | ---: | --- |
+| Technical | 35% | QVAC native inference, Parakeet dictation, strict validation, local persistence, no-cloud guard, tests, smoke path |
+| Innovation | 25% | Natural conversation to structured installed-base intelligence while retaining uncertainty and provenance |
+| Impact | 20% | Converts distributed field knowledge into actionable customer/site visibility without centralizing sensitive notes for AI inference |
+| Design | 10% | Responsive app, onboarding, focused capture composer, useful minimal analytics, explicit AI/privacy states |
+| Completion | 10% | Capture → validation → persistence → reconciliation → dashboard, backed by deterministic fixture/tests |
+
+See [`JUDGING.md`](JUDGING.md) for the judge-facing demo sequence and submission checklist.
+
+## Data and privacy
+
+The workbook under `docs/hackathon_rules/` is a synthetic challenge fixture, not production customer data. Missing information is represented explicitly instead of invented. Dictation audio is processed in memory by the native path and is not intentionally uploaded to an inference provider. Production deployment would still require the organization's normal access control, device management, data-retention, security, and regulatory review.
 
 ## Repository structure
 
 ```text
 FieldSight/
 ├── src/
-│   ├── capture/          # QVAC runtime, transcription, normalization, extraction
-│   ├── dashboard/        # installed-base projections and aggregation
-│   ├── domain/           # canonical business/domain model
-│   ├── fixtures/         # deterministic synthetic challenge seed
-│   ├── layout/           # responsive shell/navigation
-│   ├── screens/          # Overview, Capture, Installed Base
-│   ├── store/            # local Observation persistence + reconciliation
-│   ├── ui/               # design tokens and reusable components
-│   └── validation/       # validation rules
+│   ├── capture/       QVAC runtime, voice, normalization, extraction
+│   ├── dashboard/     projections and aggregation
+│   ├── domain/        canonical domain model
+│   ├── fixtures/      deterministic synthetic seed
+│   ├── layout/        responsive application shell
+│   ├── screens/       onboarding, overview, capture, installed base
+│   ├── store/         persistence and reconciliation
+│   ├── ui/            design tokens and components
+│   └── validation/    strict data validation
 ├── docs/
-│   ├── adr/              # architecture decision records
-│   ├── hackathon_rules/  # supplied challenge references/fixture
-│   ├── qvac/             # QVAC runtime and contract documentation
-│   ├── research/         # supporting research notes
-│   └── ui-reference/     # product UI references
-├── scripts/              # compliance and real-model verification tools
-├── CONTEXT.md            # canonical product/domain vocabulary
-├── JUDGING.md            # rubric mapping + demo checklist
+│   ├── adr/           architecture decisions
+│   ├── assets/        README/product visual assets
+│   ├── hackathon_rules/ supplied challenge fixture/reference material
+│   ├── qvac/          QVAC execution documentation
+│   ├── research/      supporting research
+│   └── ui-reference/  design references
+├── scripts/           compliance and real-model verification
+├── CONTEXT.md         canonical domain vocabulary
+├── JUDGING.md         rubric and demo checklist
 └── README.md
 ```
 
-## Hackathon evaluation map
-
-| Criterion | Weight | FieldSight evidence |
-| --- | ---: | --- |
-| **Technical** | **35%** | QVAC native inference, Parakeet dictation, strict contract validation, local persistence, no-cloud guard, tests, real-model smoke path |
-| **Innovation** | **25%** | Conversation → structured installed-base intelligence while retaining uncertainty/provenance |
-| **Impact** | **20%** | Converts distributed field knowledge into actionable account/site visibility without centralizing sensitive notes for AI inference |
-| **Design** | **10%** | Responsive dashboard, focused capture flow, editable AI intermediate result, explicit runtime/privacy state |
-| **Completion** | **10%** | End-to-end capture → validation → persistence → reconciliation → dashboard flow with deterministic fixture and judge-facing verification |
-
-See [`JUDGING.md`](JUDGING.md) for the recommended sub-five-minute evaluation flow.
-
-## Data and privacy posture
-
-- The included workbook is a **synthetic fixture**, not production customer data.
-- Missing information is represented explicitly instead of being invented.
-- Raw voice is processed in memory for the dictation path and is not intentionally uploaded to an inference provider.
-- The no-cloud guard is designed to detect prohibited inference-client patterns in the repository.
-- Production deployment would still require the organization's normal security, data-retention, access-control, device-management, and regulatory review.
-
-## Scope and roadmap
-
-### Implemented / submission path
-
-- Typed natural-language capture.
-- Multilingual on-device dictation pipeline.
-- Local transcript cleanup before extraction.
-- QVAC structured extraction.
-- Strict typed validation and incomplete-data handling.
-- Observation persistence.
-- Installed-base reconciliation.
-- Dashboard filtering and aggregation.
-- Synthetic fixture replay.
-- No-cloud compliance guard and automated verification.
-
-### Deliberately deferred
-
-- Camera/plate capture and OCR/VisionPsy.
-- Automatic follow-up dialogue for unresolved fields.
-- P2P synchronization and independent peer confirmation.
-- Advanced natural-language portfolio queries.
-- Production identity/access control and fleet deployment.
-
-Keeping these outside the critical submission path reduces demo risk while preserving a clear post-hackathon product direction.
-
----
-
 ## Preexisting base — required declaration
 
-Per the Decentralized AI Hackathon rules, the following preexisting bases/components are explicitly declared. The substantial challenge product work — domain contract, QVAC capture path, validation, persistence/reconciliation, dashboard, dictation integration, compliance guard, and judge-facing application flow — is developed as the hackathon solution.
+The following preexisting bases/components are explicitly declared for hackathon compliance. They are not presented as newly authored challenge product logic:
 
-- **quirk Skills workflow bundle** — `.agents/skills/`, `.claude/skills/`, and `skills-lock.json`; agent/tooling infrastructure, not product logic.
-- **Expo / React Native scaffold and third-party libraries** — including Expo, React, React Native/Web, Zod, Lucide, AsyncStorage, `expo-audio`, and project configuration.
-- **QVAC platform** — official challenge stack and model artifacts supplied through `@qvac/sdk`, including the configured Llama text model and Parakeet transcription model.
-- **Synthetic fixture workbook** — `docs/hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx`, supplied as challenge seed/acceptance reference.
-- **Repository foundations** — prior scaffold/history documented by this repository, including `docs/`, `CONTEXT.md`, and earlier branch history.
+- **quirk Skills workflow bundle**: `.agents/skills/`, `.claude/skills/`, and `skills-lock.json`; development/agent tooling rather than product runtime logic.
+- **Expo / React Native scaffold and third-party libraries**: Expo, React, React Native/Web, Zod, Lucide, AsyncStorage, `expo-audio`, `expo-asset`, `react-native-svg`, and related configuration.
+- **QVAC platform and model artifacts**: official stack used through `@qvac/sdk`, including the configured Llama text model and Parakeet transcription model.
+- **Synthetic challenge workbook**: `docs/hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx`, supplied as challenge seed/reference data.
+- **Repository foundations**: prior scaffold/history represented by the repository history, including prior documentation and application foundations.
 
-This section is intentionally explicit because omission of a preexisting base is a disqualifying condition in the competition rules.
+Substantial hackathon solution work includes the installed-base domain contract, QVAC capture/extraction path, strict validation, persistence/reconciliation, dashboard experience, multilingual voice integration, no-cloud compliance guard, and judge-facing product flow.
 
-## Documentation index
+## Documentation
 
-- [`docs/problem-statement.md`](docs/problem-statement.md) — problem and minimum challenge scope.
-- [`docs/proposal-solution.md`](docs/proposal-solution.md) — broader product proposal and design reasoning.
-- [`docs/architecture.md`](docs/architecture.md) — runtime/component/data-flow architecture.
+- [`docs/problem-statement.md`](docs/problem-statement.md) — challenge interpretation and minimum scope.
+- [`docs/proposal-solution.md`](docs/proposal-solution.md) — broader product proposal.
+- [`docs/architecture.md`](docs/architecture.md) — runtime, data-flow, and trust-boundary architecture.
+- [`docs/qvac/dictation.md`](docs/qvac/dictation.md) — native dictation path.
 - [`docs/qvac/runtime-and-smoke.md`](docs/qvac/runtime-and-smoke.md) — QVAC execution and smoke verification.
 - [`docs/adr/`](docs/adr/) — architecture decisions.
-- [`CONTEXT.md`](CONTEXT.md) — canonical domain vocabulary.
-- [`JUDGING.md`](JUDGING.md) — rubric evidence, demo order, and final submission checklist.
+- [`CONTEXT.md`](CONTEXT.md) — canonical vocabulary.
+- [`JUDGING.md`](JUDGING.md) — evaluation evidence and final checklist.
 
 ---
 
-### Built for the Decentralized AI Hackathon 2026
-
-**FieldSight — useful field intelligence without surrendering the field data.**
+**FieldSite — useful field intelligence without surrendering field data.**
