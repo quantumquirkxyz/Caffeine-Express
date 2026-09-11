@@ -2,7 +2,8 @@ import { Text, View } from 'react-native';
 import { MicOff } from 'lucide-react-native';
 import { Card } from '../ui/components/Card';
 import { spacing, typography, useTheme } from '../ui/tokens';
-import type { DictationProcessingState } from './DictationControl.native';
+
+export type DictationProcessingState = 'idle' | 'transcribing' | 'cleaning' | 'ready' | 'error';
 
 type Props = {
   readonly processingState: DictationProcessingState;
