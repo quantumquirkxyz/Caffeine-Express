@@ -10,6 +10,7 @@ type Props = {
   readonly processingState: DictationProcessingState;
   readonly disabled?: boolean;
   readonly error?: string;
+  readonly compact?: boolean;
   readonly onAudio: (audio: Int16Array) => Promise<void> | void;
 };
 
@@ -41,7 +42,7 @@ function resamplePcm16(input: Int16Array, fromRate: number, toRate = 16_000): In
   return output;
 }
 
-export function DictationControl({ processingState, disabled = false, error, onAudio }: Props) {
+export function DictationControl({ processingState, disabled = false, error, compact = false, onAudio }: Props) {
   const { colors } = useTheme();
   const chunks = useRef<Int16Array[]>([]);
   const sourceRate = useRef(16_000);
@@ -82,27 +83,27 @@ export function DictationControl({ processingState, disabled = false, error, onA
   }
 
   const label = isStreaming
-    ? 'Detener y transcribir'
+    ? 'Detener'
     : processingState === 'transcribing'
-      ? 'Transcribiendo con Parakeet…'
+      ? 'Transcribiendo…'
       : processingState === 'cleaning'
-        ? 'Ordenando con QVAC…'
-        : 'Dictar observación';
+        ? 'Ordenando…'
+        : compact ? 'Dictar' : 'Dictar observación';
 
   return (
-    <View style={{ gap: spacing.sm }}>
+    <View style={{ gap: spacing.xs, flexShrink: 1 }}>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={label}
         disabled={disabled || busy}
         onPress={() => void toggleRecording()}
         style={({ pressed }) => ({
-          minHeight: 58,
+          minHeight: compact ? 46 : 58,
           borderRadius: radius.md,
           borderWidth: 1,
-          borderColor: isStreaming ? colors.danger : colors.primary,
-          backgroundColor: isStreaming ? colors.surfaceMuted : colors.primarySoft,
-          paddingHorizontal: spacing.lg,
+          borderColor: isStreaming ? colors.danger : colors.borderStrong,
+          backgroundColor: isStreaming ? colors.dangerSoft : colors.surface,
+          paddingHorizontal: compact ? spacing.md : spacing.lg,
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
@@ -113,20 +114,14 @@ export function DictationControl({ processingState, disabled = false, error, onA
         {busy ? (
           <ActivityIndicator color={colors.primary} />
         ) : isStreaming ? (
-          <Square size={18} color={colors.danger} fill={colors.danger} />
+          <Square size={17} color={colors.danger} fill={colors.danger} />
         ) : (
-          <Mic size={20} color={colors.primary} />
+          <Mic size={18} color={colors.primary} />
         )}
-        <Text style={{ color: isStreaming ? colors.danger : colors.primary, fontSize: typography.sizes.sm, fontWeight: typography.weights.semibold }}>
-          {label}
-        </Text>
+        <Text style={{ color: isStreaming ? colors.danger : colors.text, fontSize: typography.sizes.sm, fontWeight: typography.weights.semibold }}>{label}</Text>
       </Pressable>
-      {isStreaming ? (
-        <Text style={{ color: colors.danger, fontSize: typography.sizes.xs, textAlign: 'center' }}>Grabando · el audio permanece en este dispositivo</Text>
-      ) : null}
-      {(captureError || error) ? (
-        <Text accessibilityRole="alert" style={{ color: colors.danger, fontSize: typography.sizes.xs }}>{captureError || error}</Text>
-      ) : null}
+      {isStreaming ? <Text style={{ color: colors.danger, fontSize: typography.sizes.xs }}>Grabando · audio local</Text> : null}
+      {(captureError || error) ? <Text accessibilityRole="alert" style={{ color: colors.danger, fontSize: typography.sizes.xs }}>{captureError || error}</Text> : null}
     </View>
   );
 }
