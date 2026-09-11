@@ -21,7 +21,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mapfile -t files < <(git grep -Il -e 'FieldSite' -e 'fieldsite' -e 'FIELDSITE' -- . || true)
+          mapfile -t files < <(git grep -Il -e 'FieldSite' -e 'fieldsite' -e 'FIELDSITE' -- . ':(exclude).github/workflows/fieldsight-brand-fix.yml' || true)
           if ((${#files[@]})); then
             python - "${files[@]}" <<'PY'
           from pathlib import Path
@@ -42,8 +42,8 @@ jobs:
             git mv docs/assets/fieldsite-hero.svg docs/assets/fieldsight-hero.svg
           fi
 
-          if git grep -n -I -e 'FieldSite' -e 'fieldsite' -e 'FIELDSITE' -- .; then
-            echo 'Residual FieldSite branding remains.' >&2
+          if git grep -n -I -e 'FieldSite' -e 'fieldsite' -e 'FIELDSITE' -- . ':(exclude).github/workflows/fieldsight-brand-fix.yml'; then
+            echo 'Residual legacy branding remains.' >&2
             exit 1
           fi
       - name: Commit branding correction
