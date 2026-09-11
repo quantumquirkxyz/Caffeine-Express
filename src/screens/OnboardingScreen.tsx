@@ -42,7 +42,7 @@ export function OnboardingScreen({ onFinish }: { readonly onFinish: () => void }
   const compact = width < 760;
   const [index, setIndex] = useState(0);
   const fade = useRef(new Animated.Value(1)).current;
-  const slide = SLIDES[index];
+  const slide = SLIDES[index] ?? SLIDES[0]!;
   const Icon = slide.icon;
 
   function move(next: number) {
