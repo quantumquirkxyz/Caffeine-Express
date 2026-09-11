@@ -1,5 +1,18 @@
 <div align="center">
-  <img src="docs/assets/fieldsight-hero.svg" alt="Animated FieldSight logo banner" width="100%" />
+  <table width="100%">
+    <tr>
+      <td width="42%" align="left">
+        <img src="docs/assets/fieldsight-logo.png" alt="FieldSight logo" width="240" />
+        <br />
+        <sub><strong>LOCAL-FIRST INTELLIGENCE</strong></sub>
+      </td>
+      <td width="58%" align="left">
+        <h3>FieldSight</h3>
+        <p><strong>Type or dictate field observations, structure them with QVAC, validate them locally, and reconcile them into installed-base intelligence.</strong></p>
+        <p><sub>No cloud inference fallback. Web mode is dashboard/review only.</sub></p>
+      </td>
+    </tr>
+  </table>
 </div>
 
 # FieldSight
