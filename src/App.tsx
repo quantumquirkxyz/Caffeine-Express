@@ -27,7 +27,7 @@ const MODALITIES: readonly (Modality | null)[] = [null, 'MRI', 'CT', 'Ultrasound
 function statusFor(status: DashboardView['status']) { return { loading: ['Loading', 'Reading the installed base…'], offline: ['Offline', 'Field data is unavailable. Try again when connected.'], empty: ['No installed base yet', 'Capture your first Observation to get started.'], 'no-results': ['No matching equipment', 'Nothing is installed for the selected filter.'], ready: ['Installed base', 'Reported equipment per Client and Site.'] }[status] as [string, string]; }
 
 export default function App() {
-  const [base, setBase] = useState<InstalledBase | null>(null); const [store, setStore] = useState<AsyncObservationStore | null>(null); const [qvacModelId, setQvacModelId] = useState<string | null>(null); const [qvacState, setQvacState] = useState<'web' | 'loading' | 'ready' | 'error'>(Platform.OS === 'web' ? 'web' : 'loading'); const [fieldNote, setFieldNote] = useState(''); const [captureState, setCaptureState] = useState<'empty' | 'loading' | 'error' | 'saved'>('empty'); const [captureError, setCaptureError] = useState(''); const [dictationState, setDictationState] = useState<DictationProcessingState>('idle'); const [dictationError, setDictationError] = useState(''); const [rawTranscript, setRawTranscript] = useState(''); const [captured, setCaptured] = useState<readonly Observation[]>([]); const [demo, setDemo] = useState<DemoState>('loading'); const [selectedModality, setSelectedModality] = useState<Modality | null>(null); const [selectedBrand, setSelectedBrand] = useState<string | null>(null); const [selectedModel, setSelectedModel] = useState<string | null>(null); const [selectedCountry, setSelectedCountry] = useState<string | null>(null); const [selectedClient, setSelectedClient] = useState<string | null>(null); const [selectedSite, setSelectedSite] = useState<string | null>(null); const [language, setLanguage] = useState<Language>('es'); const [themeMode, setThemeMode] = useState<ThemeMode>('system'); const [activeSection, setActiveSection] = useState<AppSection>('overview'); const opacity = useRef(new Animated.Value(1)).current; const offset = useRef(new Animated.Value(0)).current; const scrollRef = useRef<ScrollView>(null);
+  const [base, setBase] = useState<InstalledBase | null>(null); const [store, setStore] = useState<AsyncObservationStore | null>(null); const [qvacModelId, setQvacModelId] = useState<string | null>(null); const [qvacState, setQvacState] = useState<'web' | 'loading' | 'ready' | 'error'>(Platform.OS === 'web' ? 'web' : 'loading'); const [fieldNote, setFieldNote] = useState(''); const [captureState, setCaptureState] = useState<'empty' | 'loading' | 'error' | 'saved'>('empty'); const [captureError, setCaptureError] = useState(''); const [dictationState, setDictationState] = useState<DictationProcessingState>('idle'); const [dictationError, setDictationError] = useState(''); const [rawTranscript, setRawTranscript] = useState(''); const [captured, setCaptured] = useState<readonly Observation[]>([]); const [demo, setDemo] = useState<DemoState>('loading'); const [selectedModality, setSelectedModality] = useState<Modality | null>(null); const [selectedBrand, setSelectedBrand] = useState<string | null>(null); const [selectedModel, setSelectedModel] = useState<string | null>(null); const [selectedCountry, setSelectedCountry] = useState<string | null>(null); const [selectedClient, setSelectedClient] = useState<string | null>(null); const [selectedSite, setSelectedSite] = useState<string | null>(null); const [language, setLanguage] = useState<Language>('en'); const [themeMode, setThemeMode] = useState<ThemeMode>('system'); const [activeSection, setActiveSection] = useState<AppSection>('overview'); const opacity = useRef(new Animated.Value(1)).current; const offset = useRef(new Animated.Value(0)).current; const scrollRef = useRef<ScrollView>(null);
   useEffect(() => { void loadPreferences().then(preferences => { setLanguage(preferences.language); setThemeMode(preferences.themeMode); }); }, []);
   useEffect(() => { void savePreferences({ language, themeMode }); }, [language, themeMode]);
   useEffect(() => { let active = true; const timer = setTimeout(() => { const nextStore = new AsyncObservationStore(); void loadSyntheticFixtures(nextStore).catch(error => { if (error?.name !== 'ObservationAlreadyPersistedError') throw error; }).then(async () => { if (!active) return; const nextBase = new InstalledBase(); (await nextStore.all()).forEach(observation => nextBase.update(observation)); setBase(nextBase); setStore(nextStore); setDemo('ready'); }).catch(() => { if (active) setDemo('offline'); }); }, 500); return () => { active = false; clearTimeout(timer); }; }, []);
@@ -50,10 +50,10 @@ export default function App() {
   async function processDictation(audio: Int16Array) {
     setDictationError(''); setRawTranscript('');
     try {
-      if (qvacModelId === null) throw new Error('El modelo QVAC todavía no está listo.');
+      if (qvacModelId === null) throw new Error('The QVAC model is not ready yet.');
       setDictationState('transcribing');
       const transcript = await transcribeFieldAudio(audio);
-      if (transcript.trim() === '') throw new Error('No se detectó voz utilizable en la grabación.');
+      if (transcript.trim() === '') throw new Error('No usable speech was detected in the recording.');
       setRawTranscript(transcript);
       setFieldNote(transcript);
       setCaptureState('empty');
@@ -62,7 +62,7 @@ export default function App() {
       setFieldNote(cleaned.trim() || transcript);
       setDictationState('ready');
     } catch (error) {
-      setDictationError(error instanceof Error ? error.message : 'No se pudo procesar el dictado local.');
+      setDictationError(error instanceof Error ? error.message : 'Local dictation could not be processed.');
       setDictationState('error');
     }
   }
