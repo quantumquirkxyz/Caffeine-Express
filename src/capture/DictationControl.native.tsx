@@ -34,7 +34,9 @@ function resamplePcm16(input: Int16Array, fromRate: number, toRate = 16_000): In
     const left = Math.floor(source);
     const right = Math.min(left + 1, input.length - 1);
     const fraction = source - left;
-    output[i] = Math.round(input[left] * (1 - fraction) + input[right] * fraction);
+    const leftSample = input[left] ?? 0;
+    const rightSample = input[right] ?? leftSample;
+    output[i] = Math.round(leftSample * (1 - fraction) + rightSample * fraction);
   }
   return output;
 }
