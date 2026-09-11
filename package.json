@@ -15,7 +15,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "export:web": "expo export --platform web"
+    "export:web": "expo export --platform web",
+    "verify": "npm run check:no-cloud && npm run typecheck && npm test && npm run export:web"
   },
   "dependencies": {
     "@qvac/sdk": "^0.19.0",
