@@ -1,4 +1,4 @@
-import { Building2, MapPinned } from 'lucide-react-native';
+import { MapPinned } from 'lucide-react-native';
 import { Text, View, useWindowDimensions } from 'react-native';
 import type { OverviewAggregation } from '../dashboard/dashboard';
 import { Card } from '../ui/components/Card';
