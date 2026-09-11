@@ -35,9 +35,6 @@
     ],
     "ios": {
       "supportsTablet": true
-    },
-    "android": {
-      "package": "com.quantumquirkxyz.fieldsight"
     }
   }
 }
