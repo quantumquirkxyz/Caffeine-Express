@@ -263,11 +263,11 @@ FieldSight/
 
 The following preexisting bases/components are explicitly declared for hackathon compliance. They are not presented as newly authored challenge product logic:
 
-- **quirk Skills workflow bundle**: `.agents/skills/`, `.claude/skills/`, and `skills-lock.json`; development/agent tooling rather than product runtime logic.
-- **Expo / React Native scaffold and third-party libraries**: Expo, React, React Native/Web, Zod, Lucide, AsyncStorage, `expo-audio`, `expo-asset`, `react-native-svg`, and related configuration.
-- **QVAC platform and model artifacts**: official stack used through `@qvac/sdk`, including the configured Llama text model and Parakeet transcription model.
-- **Synthetic challenge workbook**: `docs/hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx`, supplied as challenge seed/reference data.
-- **Repository foundations**: prior scaffold/history represented by the repository history, including prior documentation and application foundations.
+- **quirk Skills workflow bundle**: `.agents/skills/`, `.claude/skills/`, and `skills-lock.json`; preexisting development/agent tooling already present in this repository before the hackathon build window, not product runtime logic. Origin: this repository's pre-hackathon Git history.
+- **Expo / React Native scaffold and third-party libraries**: Expo, React, React Native/Web, Zod, Lucide, AsyncStorage, `expo-audio`, `expo-asset`, `react-native-svg`, and related configuration. Origins: their public upstream npm/Open Source projects; versions are pinned in `package.json` / `package-lock.json`.
+- **QVAC platform and model artifacts**: official Tether QVAC stack used through `@qvac/sdk`, including the configured Llama text model and Parakeet transcription model. Origin: Tether QVAC SDK/model registry (`qvac.tether.io`).
+- **Synthetic challenge workbook**: `docs/hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx`, supplied by the Philips corporate challenge as seed/reference data. Origin: official hackathon challenge materials.
+- **Repository foundations**: prior scaffold/history already present in `quantumquirkxyz/FieldSight` before the 48-hour build window, including prior documentation and application foundations. Origin: this repository's Git history; these foundations are not claimed as newly authored hackathon work.
 
 Substantial hackathon solution work includes the installed-base domain contract, QVAC capture/extraction path, strict validation, persistence/reconciliation, dashboard experience, multilingual voice integration, no-cloud compliance guard, and judge-facing product flow.
 
