@@ -40,9 +40,6 @@ jobs:
 
           if [ -f docs/assets/fieldsite-hero.svg ]; then
             git mv docs/assets/fieldsite-hero.svg docs/assets/fieldsight-hero.svg
-            git grep -Il 'fieldsite-hero.svg' -- . | while IFS= read -r f; do
-              sed -i 's/fieldsite-hero\.svg/fieldsight-hero.svg/g' "$f"
-            done
           fi
 
           if git grep -n -I -e 'FieldSite' -e 'fieldsite' -e 'FIELDSITE' -- .; then
