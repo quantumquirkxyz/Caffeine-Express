@@ -3,6 +3,7 @@ import { Animated, Pressable, Text, View, useWindowDimensions } from 'react-nati
 import { ArrowRight, DatabaseZap, Mic2, ShieldCheck } from 'lucide-react-native';
 import { Button } from '../ui/components/Button';
 import { radius, spacing, typography, useTheme } from '../ui/tokens';
+import { FieldSightLockup } from '../ui/brand/FieldSightLogo';
 
 type Slide = {
   readonly eyebrow: string;
@@ -57,12 +58,7 @@ export function OnboardingScreen({ onFinish }: { readonly onFinish: () => void }
     <View style={{ flex: 1, backgroundColor: colors.background, minHeight: '100%' }}>
       <View style={{ flex: 1, width: '100%', maxWidth: 1180, alignSelf: 'center', paddingHorizontal: compact ? spacing.lg : spacing.xxl, paddingVertical: compact ? spacing.xl : 56 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
-            <View style={{ width: 30, height: 30, borderRadius: 9, borderWidth: 1, borderColor: colors.borderStrong, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface }}>
-              <View style={{ width: 9, height: 9, borderRadius: 3, backgroundColor: colors.primary }} />
-            </View>
-            <Text style={{ color: colors.text, fontWeight: typography.weights.bold, fontSize: typography.sizes.md }}>FieldSight</Text>
-          </View>
+          <FieldSightLockup markSize={38} />
           <Pressable onPress={onFinish} accessibilityRole="button"><Text style={{ color: colors.textSecondary, fontSize: typography.sizes.sm }}>Skip</Text></Pressable>
         </View>
 
