@@ -58,8 +58,8 @@ function ageLabel(age: DashboardEquipmentRow["age"]) {
   return age === null
     ? "Unknown"
     : age.min === age.max
-      ? `${age.min} años`
-      : `${age.min}-${age.max} años`;
+      ? `${age.min} years`
+      : `${age.min}-${age.max} years`;
 }
 
 export function InstalledBaseScreen({
@@ -117,7 +117,7 @@ export function InstalledBaseScreen({
   const client = view.clients[0];
   const location = selected
     ? `${selected.city}, ${selected.country}`
-    : "Sin ubicación disponible";
+    : "No location available";
   const filter = (
     key: string,
     label: string,
@@ -151,7 +151,7 @@ export function InstalledBaseScreen({
             letterSpacing: 1.2,
           }}
         >
-          BASE INSTALADA
+          INSTALLED BASE
         </Text>
         <Text
           style={{
@@ -190,12 +190,12 @@ export function InstalledBaseScreen({
             MapPin,
           ],
           [
-            copy.units ?? "Equipos",
+            copy.units ?? "Units",
             rows.reduce((sum, row) => sum + row.quantity, 0),
             colors.success,
             PackageOpen,
           ],
-          [copy.modality ?? "Modalidades", modalitiesCount, colors.primary, ScanLine],
+          [copy.modality ?? "Modalities", modalitiesCount, colors.primary, ScanLine],
         ].map(([label, value, accent, Icon]) => (
           <MetricCard
             key={String(label)}
@@ -210,9 +210,9 @@ export function InstalledBaseScreen({
       <Card style={{ marginBottom: spacing.xl }}>
           <SectionHeader
             title={inventoryCopy.filters}
-          subtitle="Refina la vista de Installed equipment"
+          subtitle="Refine the Installed equipment view"
             action={
-            <TouchableOpacity onPress={() => setFiltersOpen(!filtersOpen)} accessibilityRole="button" accessibilityLabel="Mostrar filtros">
+            <TouchableOpacity onPress={() => setFiltersOpen(!filtersOpen)} accessibilityRole="button" accessibilityLabel="Show filters">
               <Text
                 style={{
                   color: colors.primary,
@@ -228,24 +228,24 @@ export function InstalledBaseScreen({
         {filtersOpen && <View
           style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.lg }}
         >
-          {filter("country", "País", MapPin,
+          {filter("country", "Country", MapPin,
             countryOptions,
             selectedCountry,
             onCountry,
           )}
-          {filter("client", "Cliente", Building2,
+          {filter("client", "Client", Building2,
             clientOptions,
             selectedClient,
             onClient,
           )}
-          {filter("site", "Sede", MapPin,
+          {filter("site", "Site", MapPin,
             siteOptions,
             selectedSite,
             onSite,
           )}
-          {filter("modality", "Modalidad", ScanLine, modalities, selectedModality, onModality)}
-          {filter("brand", "Marca", Tag, brandOptions, selectedBrand, onBrand)}
-          {filter("model", "Modelo", Tag, modelOptions, selectedModel, onModel)}
+          {filter("modality", "Modality", ScanLine, modalities, selectedModality, onModality)}
+          {filter("brand", "Brand", Tag, brandOptions, selectedBrand, onBrand)}
+          {filter("model", "Model", Tag, modelOptions, selectedModel, onModel)}
         </View>}
       </Card>
       {view.status !== "ready" ? (
@@ -273,8 +273,8 @@ export function InstalledBaseScreen({
           <Card padded={false} style={{ flex: 1, overflow: "hidden" }}>
             <View style={{ padding: spacing.xl }}>
               <SectionHeader
-                title="Inventario de equipos"
-                subtitle={`${rows.length} registros de Installed equipment`}
+                title="Equipment inventory"
+                subtitle={`${rows.length} Installed equipment records`}
               />
             </View>
             {!compact && <View
@@ -293,7 +293,7 @@ export function InstalledBaseScreen({
                   fontWeight: typography.weights.bold,
                 }}
               >
-                Equipo / Modelo
+                Equipment / Model
               </Text>
               <Text
                 style={{
@@ -313,7 +313,7 @@ export function InstalledBaseScreen({
                   fontWeight: typography.weights.bold,
                 }}
               >
-                Estado
+                State
               </Text>
             </View>}
             {rows.map((row) => {
@@ -378,7 +378,7 @@ export function InstalledBaseScreen({
           </Card>
           <View style={{ width: compact || tablet ? "100%" : 320, gap: spacing.lg }}>
             <Card>
-              <SectionHeader title="Evidencia y observaciones" />
+              <SectionHeader title="Evidence and observations" />
               {selected ? (
                 <>
                   <Text
@@ -406,7 +406,7 @@ export function InstalledBaseScreen({
                         fontSize: typography.sizes.xs,
                       }}
                     >
-                      <Link size={14} color={colors.textSecondary} /> Observaciones vinculadas
+                      <Link size={14} color={colors.textSecondary} /> Linked observations
                     </Text>
                     <Text
                       style={{
@@ -422,14 +422,14 @@ export function InstalledBaseScreen({
                         fontSize: typography.sizes.xs,
                       }}
                     >
-                      <CalendarClock size={14} color={colors.textSecondary} /> Cantidad {selected.quantity} · Edad{" "}
+                      <CalendarClock size={14} color={colors.textSecondary} /> Quantity {selected.quantity} · Age{" "}
                       {ageLabel(selected.age)}
                     </Text>
                   </View>
                 </>
               ) : (
                 <Text style={{ color: colors.textSecondary }}>
-                  Selecciona un equipo para revisar su evidencia.
+                  Select equipment to review its evidence.
                 </Text>
               )}
             </Card>

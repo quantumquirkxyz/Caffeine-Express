@@ -1,16 +1,16 @@
 # QVAC model and local runtime seam
 
 This is the MVP delivery of the parent spec
-[**#4 — QVAC model and local runtime seam**](https://github.com/quantumquirkxyz/FieldSight/issues/4).
+[**#4 — QVAC model and local runtime seam**](https://github.com/quantumquirkxyz/FieldSite/issues/4).
 The seam is split into two work items:
 
-- [**#5 — QVAC: typed MVP extraction contract**](https://github.com/quantumquirkxyz/FieldSight/issues/5)
+- [**#5 — QVAC: typed MVP extraction contract**](https://github.com/quantumquirkxyz/FieldSite/issues/5)
   — the prompt, the JSON shape, the deterministic parser, and the
   contract tests.
   → [`docs/qvac/extraction-contract.md`](extraction-contract.md)
   → [`src/capture/qvac-contract.ts`](../../src/capture/qvac-contract.ts)
   → [`src/capture/qvac-contract.test.ts`](../../src/capture/qvac-contract.test.ts)
-- [**#9 — QVAC: configure MVP text-generation model and smoke test**](https://github.com/quantumquirkxyz/FieldSight/issues/9)
+- [**#9 — QVAC: configure MVP text-generation model and smoke test**](https://github.com/quantumquirkxyz/FieldSite/issues/9)
   — the supported runtime, the model configuration, the smoke test
   (load → complete → failure → unload), and the no-cloud-inference
   guarantee.

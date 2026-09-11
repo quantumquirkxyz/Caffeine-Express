@@ -10,7 +10,7 @@ The TypeScript implementation lives in
 contract tests live in
 [`src/capture/qvac-contract.test.ts`](../../src/capture/qvac-contract.test.ts).
 The contract is delivered as part of issue **#5** in the parent spec
-[**#4 — QVAC model and local runtime seam**](https://github.com/quantumquirkxyz/FieldSight/issues/4).
+[**#4 — QVAC model and local runtime seam**](https://github.com/quantumquirkxyz/FieldSite/issues/4).
 
 ## Goal
 

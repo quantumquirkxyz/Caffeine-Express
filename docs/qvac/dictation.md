@@ -43,7 +43,7 @@ A recording shorter than approximately one second is rejected before transcripti
 
 ## Transcription model
 
-FieldSight uses the QVAC SDK registry constant:
+FieldSite uses the QVAC SDK registry constant:
 
 ```ts
 PARAKEET_TDT_0_6B_V3_Q8_0
@@ -59,7 +59,7 @@ The registry constant carries the engine metadata required by the current QVAC S
 
 ## Transcript normalization
 
-Speech recognition output often contains filler words, repeated phrases, or punctuation artifacts. FieldSight uses the already-loaded local QVAC text-generation model to normalize the transcript before structured extraction.
+Speech recognition output often contains filler words, repeated phrases, or punctuation artifacts. FieldSite uses the already-loaded local QVAC text-generation model to normalize the transcript before structured extraction.
 
 The normalization instruction establishes a conservative transformation boundary:
 
@@ -93,7 +93,7 @@ The implemented pipeline contains no cloud ASR or cloud LLM client. Audio is cap
 
 Before recording the hackathon demo:
 
-1. Build/run FieldSight on the target physical Android/iOS device.
+1. Build/run FieldSite on the target physical Android/iOS device.
 2. Complete first-use downloads for the Llama and Parakeet model artifacts.
 3. Disable network connectivity after provisioning if you want to make the local-execution property visible during the demo.
 4. Open **Capture** and confirm the QVAC state reads as ready.
