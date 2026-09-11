@@ -1,3 +1,4 @@
+import Buffer from 'bare-buffer';
 import {
   loadModel,
   unloadModel,
@@ -7,8 +8,8 @@ import {
 
 /**
  * Transcribe 16 kHz mono PCM entirely on-device with QVAC Parakeet TDT.
- * QVAC's public transcription client accepts an in-memory Buffer, so the
- * Int16 PCM view captured by Expo is copied into an exact byte-sized Buffer
+ * QVAC's transcription client uses the Bare-compatible Buffer type, so the
+ * Int16 PCM view captured by Expo is copied into an exact byte-sized buffer
  * before crossing the worker boundary.
  */
 export async function transcribeFieldAudio(audio: Int16Array): Promise<string> {
