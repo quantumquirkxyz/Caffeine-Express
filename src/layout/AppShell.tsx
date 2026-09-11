@@ -4,6 +4,7 @@ import { spacing, useTheme } from "../ui/tokens";
 import { DesktopSidebar, type AppSection } from "./DesktopSidebar";
 import { DesktopTopbar } from "./DesktopTopbar";
 import { MobileHeader } from "./MobileHeader";
+import { COPY } from "../i18n/copy";
 
 export function AppShell({
   children,
@@ -42,6 +43,7 @@ export function AppShell({
           <DesktopSidebar
             activeSection={activeSection}
             onNavigate={onNavigate}
+            copy={COPY[currentLanguage]}
           />
         ) : null}
         <View style={{ flex: 1, minWidth: 0 }}>

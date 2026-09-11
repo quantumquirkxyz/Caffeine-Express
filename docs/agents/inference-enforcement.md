@@ -13,8 +13,8 @@ guarantee from drifting.
 ## Layer 1 — ADR 0001 (design decision)
 
 `ADR 0001` records the design decision: every inference runs on
-device via QVAC, and any cloud-inference path disqualifies the
-submission. A future reader who considers adding a cloud API must
+device via QVAC, and any cloud-inference path violates the product's
+architectural invariant. A future reader who considers adding a cloud API must
 raise a new ADR that supersedes 0001; the auditor and the CI gate
 flag the change as a violation until that ADR is merged.
 

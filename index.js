@@ -1,6 +1,6 @@
 import React from 'react';
 import { registerRootComponent } from 'expo';
-import App from './src/App';
+import Root from './src/Root';
 
 class AppErrorBoundary extends React.Component {
   state = { error: null };
@@ -15,4 +15,4 @@ class AppErrorBoundary extends React.Component {
   }
 }
 
-registerRootComponent(() => React.createElement(AppErrorBoundary, null, React.createElement(App)));
+registerRootComponent(() => React.createElement(AppErrorBoundary, null, React.createElement(Root)));

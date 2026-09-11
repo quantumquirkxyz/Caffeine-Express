@@ -1,50 +1,102 @@
 # Problem Statement — Field Equipment Capture
 
-Build a prototype that turns what a field collaborator observes in a hospital into structured, reliable data about installed medical equipment, with capture as simple as a conversation and inference running on the device.
+## Challenge
 
-## The problem
+Build a software product that turns what a field collaborator observes during a customer-site visit into structured, reliable data about installed equipment, with capture as simple as a conversation and AI inference running locally on the device. FieldSight was created from a challenge presented at ISD Summit.
 
-Service engineers, sales people, and specialists visit hospitals and clinics every day. They see how many MRI scanners, CT scanners, or ultrasound machines each client has, which brands, and how old the equipment looks. Today that knowledge stays in personal notes, conversations, or memory: capturing it by hand takes time, descriptions are inconsistent, several people report the same equipment, and observations are usually partial. The result is an organization with little visibility into the real technological landscape of its clients.
+## Problem
 
-## Why on-device
+Service engineers, salespeople, and specialists visit hospitals and clinics every day. They see how many MRI scanners, CT scanners, ultrasound systems, and other devices each client has, which brands and models are installed, how old equipment appears to be, and how intensely it is used.
 
-The collaborator is inside a hospital, frequently without stable connectivity, and what they see is sensitive client information. Capture and extraction must work without the internet and without sending the content to an external service. That is exactly what QVAC enables. This constraint is recorded as an accepted decision in `docs/adr/0001-on-device-qvac-inference.md`.
+That knowledge is valuable but difficult to operationalize. It commonly remains in personal notes, messages, spreadsheets, or memory. Manual capture is slow, descriptions are inconsistent, multiple people may report the same equipment, and observations are frequently incomplete. The organization therefore has limited visibility into the real installed technology landscape across its accounts.
 
-## The mission
+## Why local inference matters
 
-After a visit, the collaborator opens the app and says or types something like:
+The collaborator may be working with unstable connectivity and sensitive customer/site context. Requiring an external AI service would create both an availability dependency and an unnecessary inference boundary.
 
-> "I'm at Hospital DemoCare Pacific in Panama. There's a CT scanner. One of the MRIs looks about eight years old."
+FieldSight therefore treats **on-device QVAC inference as a system invariant**. The native capture path does not route speech or Field notes to a cloud inference API. This decision is formalized in [`adr/0001-on-device-qvac-inference.md`](adr/0001-on-device-qvac-inference.md) and enforced by the repository's no-cloud guard and CI workflow.
 
-The MVP must interpret the typed message; extract client, city, country, modality, quantity, brand, model, Age, and Use when present; persist unresolved required Age as `Unknown`; and store the Observation in a structured repository. Over time those observations compose a live view of the installed base per Client and per geography. Follow-up questions, voice, and photo-assisted capture are post-MVP extensions.
+## User mission
 
-## Minimum viable prototype
+A collaborator should be able to say or type a note such as:
 
-The current implementation focus is this MVP. Post-MVP goals are intentionally deferred until the MVP is complete.
+> “I am at DemoCare Pacific Hospital in Panama. There are two NovaMed N-1 MRI systems. One of the systems appears to be around eight years old, and the team reports 1,200 hours of use.”
 
-- Natural-language capture of an observation.
-- AI extraction of structured equipment information, tolerating incomplete data.
-- Storage in a structured dataset, with a state per observation: Confirmed, Reported, Estimated, or Unknown.
-- Installed-base view at the client level.
-- Basic aggregation or visualization across several clients.
+FieldSight should then produce structured evidence without inventing what was not stated. Dictation may be spoken in a supported language; the repository documentation remains English-only.
 
-## Hackathon fixture
+```mermaid
+flowchart LR
+    A["Voice / typed note"] --> B["Local transcription"]
+    B --> C["Reviewable Field note"]
+    C --> D["Structured extraction"]
+    D --> E["Validated Observation(s)"]
+    E --> F["Installed base"]
+```
 
-`docs/hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx` is the deterministic MVP seed and acceptance reference. Its 20 fictional rows cover multiple countries, Sites, modalities, quantities, approximate ages, estimated installation years, missing models, and Reported/Estimated states. Its voice prompts and follow-up columns are test vectors and post-MVP references, not a reason to move voice or automated follow-up into the MVP. Import normalization follows `docs/adr/0007-synthetic-workbook-as-mvp-fixture.md`.
+## Minimum product path
 
-## Post-MVP goals
+The deterministic core of the solution is:
 
-- Dictation with Parakeet speech-to-text.
-- Camera capture of equipment plates.
-- OCR and VisionPsy extraction of brand, model, and manufacturing year.
-- Automatic follow-up questions for Unknown fields.
-- Independent confirmation, conflict handling, and peer-to-peer synchronization.
-- Natural-language queries, freshness, Age and Use analytics, and renewal opportunity identification.
+- natural-language Field note capture;
+- QVAC structured extraction on-device;
+- extraction of Client/Site, geography when present, Modality, brand, model, quantity, Age, Use, and Comment;
+- explicit `Unknown` handling for unresolved required data;
+- typed validation before persistence;
+- Observation persistence;
+- reconciliation into an Installed base;
+- Client/Site/geography filtering and basic portfolio aggregation.
+
+## Product enhancement: multilingual dictation
+
+The project extends the minimum typed path with **multilingual on-device dictation**:
+
+1. `expo-audio` captures microphone PCM on the physical mobile device.
+2. QVAC Parakeet TDT transcribes the audio locally.
+3. The local QVAC text model cleans speech disfluencies and improves ordering while preserving facts, numbers, negations, uncertainty, brands, models, and locations.
+4. The collaborator reviews or edits the Field note.
+5. The normal structured-extraction pipeline runs.
+
+Voice is therefore an additional capture mechanism, not a separate source of truth. The structured contract and domain validation remain unchanged.
+
+See [`qvac/dictation.md`](qvac/dictation.md) for implementation details.
+
+## Acceptance principles
+
+A successful FieldSight flow should satisfy all of the following:
+
+| Principle | Expected behavior |
+| --- | --- |
+| Local AI | QVAC performs AI inference on the device |
+| No silent cloud fallback | Unsupported runtimes fail closed rather than calling a remote model |
+| Incomplete data tolerated | Missing facts remain Unknown/null according to the domain contract |
+| No false precision | Approximate Age remains a range/estimate rather than becoming an invented exact value |
+| Human review | Dictated text is visible/editable before structured extraction |
+| Deterministic system of record | Model output must pass validation before persistence |
+| Reconciliation | Multiple Observations contribute to a resolved Installed base |
+
+## Synthetic fixture
+
+`hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx` is the deterministic synthetic seed and acceptance reference. Its 20 fictional rows cover multiple countries, Sites, modalities, quantities, approximate ages, installation-year evidence, missing models, and provenance states.
+
+The workbook is **synthetic** and must not be represented as production customer data. Import normalization follows ADR 0007.
+
+## Future product extensions
+
+The following remain product extensions rather than requirements for the final demo:
+
+- camera capture of equipment plates;
+- OCR/VisionPsy-assisted brand/model/manufacturing-year evidence;
+- automatic follow-up dialogue for unresolved fields;
+- peer-to-peer synchronization and distributed confirmation;
+- advanced natural-language portfolio queries;
+- production authentication, tenancy, fleet/device management, and enterprise synchronization.
 
 ## Binding technical requirement
 
-The solution must use **QVAC** with inference on the device or delegated peer-to-peer. Solutions that send inference to a cloud API do not qualify for this challenge or the general ranking, regardless of result quality. ISD verifies this requirement before handing deliveries over to Philips. The MVP interface is the mobile/web app; voice and camera capture are post-MVP capabilities.
+The solution uses **QVAC** with inference on-device or delegated peer-to-peer. A cloud inference API is not an acceptable substitute. The web application exists as a dashboard/review surface; the AI capture path runs on a physical Android/iOS device.
 
 ## Domain decisions
 
-The shared domain model behind this statement is captured in the **Language — Field equipment capture** glossary in `CONTEXT.md` (Field note, Observation, Modality, Age, Comment, Client, Site, State, Installed equipment, Conflicting observation, Independent confirmation, Installed base, Confidence score, Renewal opportunity) and the architecture decisions in `docs/adr/`.
+The canonical product language is defined in [`../CONTEXT.md`](../CONTEXT.md), including Field note, Observation, Modality, Age, Use, Comment, Client, Site, State, Installed equipment, Conflicting observation, Independent confirmation, Installed base, Confidence score, and Renewal opportunity.
+
+System boundaries and trust assumptions are documented in [`architecture.md`](architecture.md).

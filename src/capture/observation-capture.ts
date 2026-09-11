@@ -21,20 +21,28 @@ export class DeterministicObservationExtractor implements ObservationExtractor {
     const notes = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
     if (notes.length === 0) throw new ExtractionError('Enter a Field note before extracting.');
 
+    let contextSite: string | undefined;
+    let contextClient: string | undefined;
     return notes.map((note) => {
-      const modality = note.match(/\b(MRI|MR|CT|ultrasound|US|x-ray|xray)\b/i)?.[1];
-      const site = note.match(/(?:at|site)\s+([^,.;]+?)(?:,|\s+in\s+)/i)?.[1]?.trim();
-      const client = note.match(/client\s+([^,.;]+?)(?:,|\s+site\s+)/i)?.[1]?.trim();
+      const modality = note.match(/\b(MRI|MR|CT|ultrasound|US|x-ray|xray|rayos\s+X|tomógrafo(?:s)?|tomografo(?:s)?|ecógrafo(?:s)?|ecografo(?:s)?|ultrasonido(?:s)?)\b/i)?.[1];
+      const detectedSite = note.match(/(?:at|en)\s+(?:el\s+|la\s+)?((?:hospital|cl[ií]nica|site|sitio)\s+[^,.;]+?)(?=\s+(?:observ|tiene|hay|encontr|pero|instalado|usa|planea|de aproximadamente)|,|$)/i)?.[1]?.trim()
+        ?? note.match(/(?:site|sitio)\s+([^,.;]+)/i)?.[1]?.trim()
+        ?? note.match(/(?:at|in)\s+([^,.;]+?)(?:,|\s+(?:in|site|client)\s+)/i)?.[1]?.trim();
+      const detectedClient = note.match(/(?:client|cliente)\s+([^,.;]+?)(?:,|\s+(?:site|sitio)\s+)/i)?.[1]?.trim();
+      if (detectedSite) contextSite = detectedSite;
+      if (detectedClient) contextClient = detectedClient;
+      const site = contextSite ?? 'Unknown';
+      const client = contextClient ?? 'Unknown';
       const quantityMatch = note.match(/\b(\d+|one|two|three|four|five)\s+(?=(?:units?|machines?|systems?|devices?|MRI|MR|CT|ultrasound|US)\b)/i)?.[1]?.toLowerCase();
       const quantity = quantityMatch === undefined ? 1 : ({ one: 1, two: 2, three: 3, four: 4, five: 5 }[quantityMatch] ?? Number(quantityMatch));
       const brand = note.match(/brand\s+([^,.;]+)/i)?.[1]?.trim() ?? null;
       const model = note.match(/model\s+([^,.;]+)/i)?.[1]?.trim() ?? null;
-      const age = note.match(/\b(\d+)\s+years?\s+old\b/i)?.[1];
+      const age = note.match(/\b(\d+)\s+(?:years?|años?)\s+(?:old|de antigüedad)?\b/i)?.[1] ?? (note.match(/\bhace\s+(\d+)\s+años?\b/i)?.[1]);
       const hours = note.match(/\b(\d+(?:\.\d+)?)\s+hours?\b/i)?.[1];
       const comment = note.match(/comment\s+([^.;]+)/i)?.[1]?.trim() ?? null;
 
-      if (modality === undefined || site === undefined || client === undefined) {
-        throw new ExtractionError('Include a modality, client, and site in each Field note line.');
+      if (modality === undefined) {
+        throw new ExtractionError('No equipment modality was recognized in this Field note.');
       }
 
       return {

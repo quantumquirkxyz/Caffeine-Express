@@ -1,0 +1,77 @@
+<svg width="1280" height="420" viewBox="0 0 1280 420" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">FieldSight hero banner</title>
+  <desc id="desc">Corrected static FieldSight vector logo and title on the left with animated local-first intelligence connections on the right.</desc>
+  <style>
+    .orbit { animation: orbit 12s linear infinite; transform-origin: 970px 210px; }
+    .orbit-slow { animation: orbitReverse 18s linear infinite; transform-origin: 970px 210px; }
+    .pixel-a { animation: floatA 3.8s ease-in-out infinite; }
+    .pixel-b { animation: floatB 4.6s ease-in-out infinite; }
+    .line-a { animation: draw 3.2s ease-in-out infinite alternate; stroke-dasharray: 220; stroke-dashoffset: 70; }
+    @keyframes orbit { to { transform: rotate(360deg); } }
+    @keyframes orbitReverse { to { transform: rotate(-360deg); } }
+    @keyframes floatA { 0%, 100% { transform: translateY(0); opacity: .88; } 50% { transform: translateY(-8px); opacity: 1; } }
+    @keyframes floatB { 0%, 100% { transform: translateY(0); opacity: .72; } 50% { transform: translateY(7px); opacity: 1; } }
+    @keyframes draw { from { stroke-dashoffset: 180; opacity: .24; } to { stroke-dashoffset: 0; opacity: .8; } }
+  </style>
+  <defs>
+    <linearGradient id="fsBlue" x1="250" y1="930" x2="900" y2="260" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#063A70"/>
+      <stop offset="0.62" stop-color="#084F9F"/>
+      <stop offset="1" stop-color="#0D73F6"/>
+    </linearGradient>
+    <linearGradient id="fsDark" x1="320" y1="950" x2="920" y2="390" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#273038"/>
+      <stop offset="1" stop-color="#050608"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(970 210) rotate(90) scale(174 260)">
+      <stop stop-color="#EEF3FA"/>
+      <stop offset="1" stop-color="#EEF3FA" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softShadow" x="40" y="70" width="1180" height="280" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#0B1524" flood-opacity="0.13"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="420" rx="30" fill="#FAFBFD"/>
+  <path d="M0 0H1280V420H0V0Z" fill="url(#halo)"/>
+
+  <g id="brand-lockup" filter="url(#softShadow)">
+    <svg x="70" y="86" width="178" height="178" viewBox="0 0 1254 1254" preserveAspectRatio="xMidYMid meet">
+      <g transform="translate(0 1254) scale(.1 -.1)">
+        <path d="M8862 8492 c-9 -6 -12 -44 -10 -153 l3 -144 145 0 145 0 0 150 0 150 -135 3 c-74 1 -141 -2 -148 -6z" fill="url(#fsBlue)"/>
+        <path d="M4212 7957 l-532 -532 0 -1620 0 -1620 515 515 515 515 0 1102 0 1103 1263 0 1262 0 233 233 232 232 0 303 0 302 -1478 0 -1477 0 -533 -533z" fill="url(#fsBlue)"/>
+        <path d="M8105 7887 c-3 -7 -4 -140 -3 -297 l3 -285 284 -3 c167 -1 289 2 294 7 12 12 17 538 6 569 l-9 22 -285 0 c-221 0 -287 -3 -290 -13z" fill="url(#fsBlue)"/>
+        <path d="M7265 7147 c-3 -7 -4 -152 -3 -322 l3 -310 325 0 325 0 3 300 c1 165 0 310 -3 323 l-5 22 -321 0 c-248 0 -321 -3 -324 -13z" fill="url(#fsBlue)"/>
+        <path d="M5412 6522 c-10 -7 -12 -99 -10 -428 l3 -419 423 -3 422 -2 8 22 c4 13 7 83 6 156 l-1 132 497 0 497 0 -2 -532 -2 -533 -1128 -3 -1129 -2 -403 -402 -403 -402 0 -103 0 -103 1568 0 1567 0 493 491 492 491 0 664 0 664 -1022 2 -1023 3 -2 144 c-1 80 -4 150 -7 158 -4 10 -84 13 -418 13 -227 0 -419 -4 -426 -8z" fill="url(#fsDark)"/>
+      </g>
+      <rect x="540" y="602" width="86" height="86" rx="7" fill="url(#fsBlue)"/>
+    </svg>
+    <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+      <text x="270" y="207" fill="#020407" font-size="70" font-weight="800" letter-spacing="-3.5">FieldSight</text>
+      <path d="M86 288H154" stroke="#AAB3BE" stroke-width="2"/>
+      <text x="175" y="295" fill="#8E98A6" font-size="17" font-weight="600" letter-spacing="8">LOCAL-FIRST INTELLIGENCE</text>
+    </g>
+  </g>
+
+  <g id="signal-scene" transform="translate(970 210)">
+    <circle r="142" fill="#F1F4F8" opacity=".42"/>
+    <circle class="orbit" r="178" stroke="#AAB6C4" stroke-width="1.3" stroke-dasharray="3 9"/>
+    <circle class="orbit-slow" r="126" stroke="#D7DDE5" stroke-width="1" stroke-dasharray="180 640"/>
+    <rect x="46" y="-61" width="170" height="122" rx="18" fill="#FFFFFF" stroke="#CBD3DD" stroke-width="1.2"/>
+    <rect x="72" y="-35" width="86" height="17" rx="8.5" fill="#7D858E"/>
+    <rect x="72" y="-4" width="116" height="14" rx="7" fill="#E1E5EA"/>
+    <rect x="72" y="26" width="91" height="14" rx="7" fill="#E8EBF0"/>
+    <path class="line-a" d="M-210 -62 C-130 -62 -110 -62 -79 -28 S-22 -2 0 -2" stroke="#A6B0BD" stroke-width="1.4" fill="none"/>
+    <path class="line-a" d="M-198 0 C-128 0 -111 2 -80 -20 S-20 0 0 0" stroke="#BAC2CC" stroke-width="1.4" fill="none"/>
+    <path class="line-a" d="M-180 82 C-110 82 -111 28 -79 13 S-19 0 0 0" stroke="#A6B0BD" stroke-width="1.4" fill="none"/>
+    <circle cx="0" cy="0" r="6" fill="#064789"/>
+    <circle class="pixel-a" cx="154" cy="128" r="6" fill="#064789"/>
+    <circle class="pixel-b" cx="-146" cy="-126" r="6" fill="#B8C0CA"/>
+    <rect class="pixel-a" x="-230" y="-75" width="25" height="25" rx="3" fill="#064789"/>
+    <rect class="pixel-b" x="-190" y="9" width="26" height="26" rx="3" fill="#FFFFFF" stroke="#064789"/>
+    <rect class="pixel-a" x="-260" y="60" width="31" height="31" rx="4" fill="#064789"/>
+    <rect class="pixel-b" x="-314" y="-108" width="14" height="14" rx="2" fill="#CBD1D8"/>
+    <rect class="pixel-a" x="-280" y="-14" width="14" height="14" rx="2" fill="#C7CED7"/>
+    <rect class="pixel-b" x="-190" y="105" width="14" height="14" rx="2" fill="#D9DEE5"/>
+  </g>
+</svg>

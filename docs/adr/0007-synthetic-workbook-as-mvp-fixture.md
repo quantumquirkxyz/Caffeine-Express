@@ -5,7 +5,7 @@ Date: 2026-09-09
 
 ## Context
 
-The hackathon supplies `docs/hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx` with 20 fictional installed-base rows, reference lists, follow-up logic, and voice prompts. Its tabular labels do not map one-to-one to the domain: it uses `Customer / Hospital`, `Observer`, scalar `Approx. Age`, optional `Model`, and display confidence buckets.
+The project includes `docs/hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx` as a synthetic development and acceptance fixture with 20 fictional installed-base rows, reference lists, follow-up logic, and voice prompts. Its tabular labels do not map one-to-one to the domain: it uses `Customer / Hospital`, `Observer`, scalar `Approx. Age`, optional `Model`, and display confidence buckets.
 
 ## Decision
 
@@ -15,7 +15,7 @@ The rows, reference values, and prompts are synthetic only and must not be prese
 
 ## Consequences
 
-- Positive: the dashboard and tests have deterministic, jury-replayable data.
+- Positive: the dashboard and tests have deterministic, reproducible data.
 - Positive: fixture convenience does not change Observation, State, Age, or matching contracts.
 - Negative: an adapter is required, and scalar age must be converted to preserve uncertainty.
 - Follow-up: implement fixture loading and extraction cases before post-MVP voice or follow-up automation.

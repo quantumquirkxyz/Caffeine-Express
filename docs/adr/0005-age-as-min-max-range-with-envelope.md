@@ -5,7 +5,7 @@ Date: 2026-09-09
 
 ## Context
 
-Field language expresses age as a band, not a point: a collaborator says "around 8–10 years old", "about eight", "six years old", or "relatively new". The challenge brief itself models age as *"Approximate age or installation year"* and its customer view shows *"Approx. Age 4–10 years"*. A future reader might model age as a single point figure, which forces a false-precision pick whenever the source is a band; or might store age *and* installation year as two competing fields. The renewal question (threshold, default 8 years) then becomes ambiguous: does "4–10 years" fire or not?
+Field language expresses age as a band, not a point: a collaborator says "around 8–10 years old", "about eight", "six years old", or "relatively new". The originating ISD Summit brief models age as *"Approximate age or installation year"* and its customer view shows *"Approx. Age 4–10 years"*. A future reader might model age as a single point figure, which forces a false-precision pick whenever the source is a band; or might store age *and* installation year as two competing fields. The renewal question (threshold, default 8 years) then becomes ambiguous: does "4–10 years" fire or not?
 
 ## Decision
 

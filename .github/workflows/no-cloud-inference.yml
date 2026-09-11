@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [mvp, main]
   push:
-    branches: [mvp, main]
+    branches: [mvp, main, hackathon-final-pass]
 
 concurrency:
   group: no-cloud-inference-${{ github.workflow }}-${{ github.ref }}
@@ -14,7 +14,7 @@ jobs:
   enforce-qvac-only:
     name: QVAC-only inference guard
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,6 +35,9 @@ jobs:
 
       - name: Tests
         run: npx vitest run
+
+      - name: Web export
+        run: npm run export:web
 
       - name: ADR 0001 present
         run: test -f docs/adr/0001-on-device-qvac-inference.md
