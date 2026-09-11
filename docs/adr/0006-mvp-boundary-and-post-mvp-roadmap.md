@@ -5,7 +5,7 @@ Date: 2026-09-09
 
 ## Context
 
-The challenge requires a minimum end-to-end prototype: natural-language capture, structured extraction, storage, a client-level installed-base view, and basic aggregation across clients. The broader concept also includes dictation, camera capture, OCR, multimodal extraction, follow-up questions, independent confirmation, P2P synchronization, natural-language analytics, freshness, and renewal opportunities. Putting all of those capabilities into the first flow makes the prototype boundary unclear and makes the minimum path difficult to demonstrate.
+The project requires a clear MVP: natural-language capture, structured extraction, storage, a client-level installed-base view, and basic aggregation across clients. The broader concept also includes dictation, camera capture, OCR, multimodal extraction, follow-up questions, independent confirmation, P2P synchronization, natural-language analytics, freshness, and renewal opportunities. Putting all of those capabilities into the first flow makes the product boundary unclear. The project was initiated from a challenge presented at ISD Summit.
 
 ## Decision
 
@@ -21,6 +21,6 @@ Only after that path is complete do we add post-MVP capabilities: Parakeet dicta
 
 ## Consequences
 
-- Positive: the MVP has a short, demonstrable path from text capture to customer intelligence; optional capabilities cannot obscure whether the minimum challenge is complete.
+- Positive: the MVP has a short, verifiable path from text capture to customer intelligence; optional capabilities cannot obscure whether the core product is complete.
 - Negative: the first demo does not showcase voice or camera capture; those capabilities require a second flow and separate validation.
 - Follow-up: keep the MVP and post-MVP diagrams separate, and do not promote a post-MVP capability into the MVP without revisiting this boundary.

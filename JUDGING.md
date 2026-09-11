@@ -1,6 +1,6 @@
-# FieldSight — Judging Guide
+# FieldSight — Project Verification Guide
 
-This guide maps the submission directly to the Decentralized AI Hackathon rubric and gives judges the shortest path to verify the critical claims.
+This guide gives maintainers and reviewers the shortest path to verify the project's critical technical and product claims. FieldSight was created from a challenge presented at ISD Summit.
 
 ## Evaluation map
 
@@ -71,7 +71,7 @@ The capture flow deliberately exposes the AI intermediate result instead of hidi
 
 ## 5. Completion — 10%
 
-The submission path is implemented end-to-end:
+The product path is implemented end-to-end:
 
 ```mermaid
 flowchart LR
@@ -84,7 +84,7 @@ flowchart LR
     G --> H[Dashboard]
 ```
 
-Typed capture remains a low-risk fallback **within the local QVAC path** when microphone demonstration is inconvenient. Camera/OCR, P2P synchronization, and advanced conversational portfolio analytics remain outside the submission-critical path.
+Typed capture remains a low-risk fallback **within the local QVAC path** when microphone demonstration is inconvenient. Camera/OCR, P2P synchronization, and advanced conversational portfolio analytics remain outside the MVP path.
 
 ---
 
@@ -132,12 +132,12 @@ Close on four differentiators:
 
 ---
 
-## Final submission checklist
+## Verification checklist
 
-- [ ] Repository remains accessible to judges throughout evaluation.
+- [ ] Repository remains accessible to project reviewers.
 - [ ] README retains the explicit **Preexisting base** declaration.
 - [ ] No remote inference provider/client has been introduced.
-- [ ] `npm run verify` succeeds on the submission commit.
+- [ ] `npm run verify` succeeds on the current project revision.
 - [ ] Physical-device QVAC text extraction is tested on the device used for the demo.
 - [ ] Physical-device microphone + Parakeet dictation is tested before recording.
 - [ ] First-use model downloads are completed before the demo so network latency does not interrupt it.

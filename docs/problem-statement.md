@@ -2,7 +2,7 @@
 
 ## Challenge
 
-Build a prototype that turns what a field collaborator observes during a customer-site visit into structured, reliable data about installed equipment, with capture as simple as a conversation and AI inference running locally on the device.
+Build a software product that turns what a field collaborator observes during a customer-site visit into structured, reliable data about installed equipment, with capture as simple as a conversation and AI inference running locally on the device. FieldSight was created from a challenge presented at ISD Summit.
 
 ## Problem
 
@@ -33,7 +33,7 @@ flowchart LR
     E --> F["Installed base"]
 ```
 
-## Minimum challenge path
+## Minimum product path
 
 The deterministic core of the solution is:
 
@@ -46,9 +46,9 @@ The deterministic core of the solution is:
 - reconciliation into an Installed base;
 - Client/Site/geography filtering and basic portfolio aggregation.
 
-## Hackathon enhancement: multilingual dictation
+## Product enhancement: multilingual dictation
 
-The submission branch extends the minimum typed path with **multilingual on-device dictation**:
+The project extends the minimum typed path with **multilingual on-device dictation**:
 
 1. `expo-audio` captures microphone PCM on the physical mobile device.
 2. QVAC Parakeet TDT transcribes the audio locally.
@@ -76,11 +76,11 @@ A successful FieldSight flow should satisfy all of the following:
 
 ## Synthetic fixture
 
-`hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx` is the deterministic challenge seed and acceptance reference. Its 20 fictional rows cover multiple countries, Sites, modalities, quantities, approximate ages, installation-year evidence, missing models, and provenance states.
+`hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx` is the deterministic synthetic seed and acceptance reference. Its 20 fictional rows cover multiple countries, Sites, modalities, quantities, approximate ages, installation-year evidence, missing models, and provenance states.
 
 The workbook is **synthetic** and must not be represented as production customer data. Import normalization follows ADR 0007.
 
-## Out of the submission-critical path
+## Future product extensions
 
 The following remain product extensions rather than requirements for the final demo:
 
@@ -93,7 +93,7 @@ The following remain product extensions rather than requirements for the final d
 
 ## Binding technical requirement
 
-The solution must use **QVAC** with inference on-device or delegated peer-to-peer. A cloud inference API is not an acceptable substitute. The web application exists as a dashboard/review surface; the real AI capture path is demonstrated on a physical Android/iOS device.
+The solution uses **QVAC** with inference on-device or delegated peer-to-peer. A cloud inference API is not an acceptable substitute. The web application exists as a dashboard/review surface; the AI capture path runs on a physical Android/iOS device.
 
 ## Domain decisions
 

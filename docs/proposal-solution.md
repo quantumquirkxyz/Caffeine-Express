@@ -11,15 +11,14 @@ Naming is an open decision — confirm or replace before the demo.
 
 ## 1. Mandatory rules — compliance before anything else
 
-These come from the official hackathon rules and decide what we build and how we present it.
+These constraints originate from the ISD Summit challenge that informed FieldSight and continue to guide the software architecture.
 
 | Rule | Consequence for the build |
 |---|---|
-| All inference must run on-device or P2P via QVAC; cloud inference disqualifies the submission outright | Every AI step (transcription, extraction, OCR, vision, NL→query) calls the QVAC SDK. No cloud API is ever invoked. Verified in README + a design that leaves no cloud path. |
+| All inference must run on-device or P2P via QVAC | Every AI step (transcription, extraction, OCR, vision, NL→query) calls the QVAC SDK. No cloud API is ever invoked. |
 | Cloud may be used for *non-inference* functions (interface hosting, non-sensitive storage) | The dashboard could be hosted as pure UI, but we keep all data local-first because observations are sensitive client data. |
-| Substantial product built within the 48h window; declared pre-existing base | We build our product code inside the window; README lists `create-expo-app`, `@qvac/sdk`, and open-source libraries as pre-existing. |
-| Deliver repo (jury-accessible) + ≤5-min demo video in Spanish | The demo script (section 9) fits in 5 minutes and the product is a single offline story. |
-| Evaluation: Technical 35% · Innovation 25% · Impact 20% · Design 10% · Completion 10% | We optimize for the three heavy criteria: genuine QVAC usage, a defensible novel angle, and a real commercial outcome (renewals). |
+| Maintain a reproducible and reviewable software project | The repository documents its foundations, runtime requirements, verification commands, and product boundaries. |
+| Demonstrate a complete offline-first flow | The project can be evaluated through its tests, local fixtures, and end-to-end product path. |
 
 ---
 
@@ -62,7 +61,7 @@ The MVP demo tells one vertical slice end-to-end:
 
 > **One typed Observation → structured record → Installed base → client-level aggregation.**
 
-Multilingual voice dictation is implemented in the hackathon branch. Camera, OCR, automated follow-up, peer confirmation, P2P synchronization, and advanced analytics remain post-MVP capabilities (`ADR 0006`).
+Multilingual voice dictation is implemented in the current project. Camera, OCR, automated follow-up, peer confirmation, P2P synchronization, and advanced analytics remain post-MVP capabilities (`ADR 0006`).
 
 ```mermaid
 flowchart TB
@@ -124,7 +123,7 @@ Every AI step maps to a QVAC task with a concrete, small model — keeping the p
 
 ### 5.2 MVP field capture flow
 
-The minimum path deliberately uses typed natural language. It proves the challenge's required capture, extraction, storage, and visualization loop without depending on voice, camera, or post-MVP reconciliation.
+The minimum path deliberately uses typed natural language. It proves the required capture, extraction, storage, and visualization loop without depending on voice, camera, or post-MVP reconciliation.
 
 ```mermaid
 sequenceDiagram
@@ -228,7 +227,7 @@ Proposed weights (tuning parameters, not domain): 0.40 × completeness + 0.25 ×
 | `Installed equipment` | Reconciled view per key, quantity = max, Age envelope (union of ranges), best current fields, confirmation count, last independent confirmation. Materialized incrementally, **recomputable from Observations**. |
 | `Visit` / `Collaborator` | The independence backbone — only separate sources raise confirmed. |
 
-### 5.8 Hackathon workbook adapter
+### 5.8 Synthetic workbook adapter
 
 The workbook seeds the MVP with 20 deterministic synthetic rows. The adapter maps hospital/customer and geography into Client/Site, observer/date into Collaborator/Visit, normalizes `MR` to the canonical modality, converts scalar approximate age into an inclusive range, and preserves missing brand/model as `Unknown`. Its confidence labels are fixture presentation values only. `Agent Question Logic` and `Voice Test Prompts` are test vectors and post-MVP references; typed capture remains the MVP input.
 
@@ -261,19 +260,18 @@ Stack and key decisions (grounded in the official QVAC Expo tutorial and docs):
 
 ---
 
-## 8. Delivery plan for the 48-hour window
+## 8. Delivery plan
 
 The current implementation focus is the MVP. Post-MVP work starts only after every MVP item below is complete.
 
-### MVP must (vertical slice first, in order)
+### MVP scope (vertical slice first, in order)
 
 1. Expo app boots on a physical device with QVAC smoke test (model download → load → completion).
 2. Typed natural-language Observation → structured extraction (tool-schema JSON + Zod), including required Age with `Unknown` when unresolved.
 3. Observation persist with per-field provenance and record State.
 4. Observation updates Installed equipment and the dashboard shows the installed base per Client.
 5. Basic aggregation across Clients by Site, Modality, brand, model, quantity, Age, and Use when present.
-6. Load `Dummy_Installed_Base_Hackathon.xlsx` through the adapter so the dashboard starts with 20 deterministic synthetic rows.
-7. README with declared pre-existing base; 5-minute Spanish demo video.
+6. Load the synthetic workbook through the adapter so the dashboard starts with 20 deterministic synthetic rows.
 
 ### Post-MVP, after the MVP is complete
 
@@ -310,13 +308,13 @@ The current implementation focus is the MVP. Post-MVP work starts only after eve
 
 | Risk | Mitigation |
 |---|---|
-| **Disqualification**: an inference path that touches a cloud API | Architecture with no cloud path; no SDK call can route to a remote provider; README documents the QVAC-only route. |
+| **Inference boundary violation**: an inference path that touches a cloud API | Architecture with no cloud path; no SDK call can route to a remote provider; README documents the QVAC-only route. |
 | Extraction returns unstable/invalid JSON | Tool-schema output + Zod validation + local retry; never invent values — map missing to Unknown/Estimated. |
 | Vision/OCR fails on a plate | Manual correction path (Reported), follow-up asks to re-photograph; OCR blocks carry confidence. |
 | Weak phone hardware / slow models | Model plan tiers (1B default, 600M fallback); P2P delegation with `fallbackToLocal`; model download progress UI. |
 | Expo/engines do not run on emulator | Physical device tested on day 1; README states the requirement. |
-| Scope creep over 48h | Vertical slice first; everything beyond "Must" is explicitly cut. |
-| Pre-existing work undeclared | README `Pre-existing work and sources` section written on day 1, listing templates and libraries. |
+| Scope creep | Vertical slice first; everything beyond the MVP is explicitly deferred. |
+| Unclear project foundations | README documents the project's sources, dependencies, and runtime boundaries. |
 
 ---
 
@@ -324,4 +322,4 @@ The current implementation focus is the MVP. Post-MVP work starts only after eve
 
 - `README.md`: product one-liner, run instructions, physical-device requirement, `Pre-existing work and sources`, QVAC capability map, and a note that every inference is on-device or P2P.
 - `docs/`: this proposal, `problem-statement.md`, `CONTEXT.md` glossary, ADRs.
-- Demo fixtures checked in so the jury can replay the story offline.
+- Synthetic fixtures checked in so the product flow can be reproduced offline.

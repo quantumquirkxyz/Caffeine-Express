@@ -8,14 +8,14 @@
 
 FieldSight turns what a field collaborator observes during a customer visit into structured, auditable installed-equipment data. A collaborator can type a Field note or dictate naturally; QVAC transcribes speech locally, organizes the note locally, extracts strict Observations, validates them, persists them, and reconciles them into a live Installed base.
 
-**Decentralized AI Hackathon · ISD Summit 2026 · Philips challenge · QVAC**
+**Software project based on an ISD Summit challenge · QVAC**
 
 > [!IMPORTANT]
 > **No cloud inference.** The AI path uses QVAC on a physical Android/iOS device. Field notes and microphone audio are not sent to an external inference API. The web build is intentionally a dashboard/review surface and does not provide a cloud AI fallback.
 
-## Challenge fit
+## Project context
 
-The Philips challenge is fundamentally an installed-base intelligence problem: field knowledge must become usable, structured information about equipment at customer sites without losing provenance or inventing missing facts. FieldSight addresses that workflow directly.
+The ISD Summit challenge was fundamentally an installed-base intelligence problem: field knowledge must become usable, structured information about equipment at customer sites without losing provenance or inventing missing facts. FieldSight addresses that workflow directly.
 
 The implemented path captures Client/Site context, geography, Modality, brand, model, quantity, Age, Use, comments, uncertainty/provenance, and the relationship between repeated observations and reconciled installed equipment. The included challenge workbook is used only as a synthetic fixture/reference.
 
@@ -148,7 +148,6 @@ Model artifacts and development dependencies may require connectivity when they 
 ```bash
 git clone https://github.com/quantumquirkxyz/FieldSight.git
 cd FieldSight
-git checkout hackathon-final-pass
 npm ci
 npm start
 ```
@@ -165,7 +164,7 @@ Web mode intentionally does not emulate QVAC inference. Native AI capture requir
 
 ## Verification
 
-Run the complete deterministic submission gate:
+Run the complete deterministic verification gate:
 
 ```bash
 npm run verify
@@ -195,18 +194,18 @@ node scripts/qvac-host-smoke.mjs
 
 The host smoke script loads the configured Llama model, runs the same extraction contract, validates JSON and expected semantics, retries within a bounded policy, unloads the model, and exits non-zero on failure. Physical microphone + Parakeet execution must still be validated on the actual demo phone because generic CI cannot emulate the QVAC native worker and microphone hardware.
 
-## Hackathon-rule alignment
+## Technical alignment
 
 ```mermaid
 flowchart LR
     R1[QVAC required] --> E1[Native QVAC runtime]
     R2[On-device or P2P inference] --> E2[Physical-device inference]
     R3[No cloud inference] --> E3[Fail-closed platform split + static guard]
-    R4[Declare preexisting bases] --> E4[Explicit README declaration]
-    R5[Accessible submission] --> E5[Repository + reproducible commands]
+    R4[Document project foundations] --> E4[Explicit README declaration]
+    R5[Reviewable project] --> E5[Repository + reproducible commands]
 ```
 
-The project is designed around the competition's decisive technical constraint: inference stays on-device/P2P and does not use a cloud model endpoint. The repository also explicitly declares preexisting foundations, as required by the hackathon rules.
+The project is designed around a decisive technical constraint from the ISD Summit challenge: inference stays on-device/P2P and does not use a cloud model endpoint. The repository also documents its foundations and verification path.
 
 ## Evaluation map
 
@@ -218,11 +217,11 @@ The project is designed around the competition's decisive technical constraint: 
 | Design | 10% | Responsive app, onboarding, focused capture composer, useful minimal analytics, explicit AI/privacy states |
 | Completion | 10% | Capture → validation → persistence → reconciliation → dashboard, backed by deterministic fixture/tests |
 
-See [`JUDGING.md`](JUDGING.md) for the judge-facing demo sequence and submission checklist.
+See [`JUDGING.md`](JUDGING.md) for the project verification sequence and checklist.
 
 ## Data and privacy
 
-The workbook under `docs/hackathon_rules/` is a synthetic challenge fixture, not production customer data. Missing information is represented explicitly instead of invented. Dictation audio is processed in memory by the native path and is not intentionally uploaded to an inference provider. Production deployment would still require the organization's normal access control, device management, data-retention, security, and regulatory review.
+The workbook under `docs/hackathon_rules/` is a synthetic development fixture, not production customer data. Missing information is represented explicitly instead of invented. Dictation audio is processed in memory by the native path and is not intentionally uploaded to an inference provider. Production deployment would still require the organization's normal access control, device management, data-retention, security, and regulatory review.
 
 ## Repository structure
 
@@ -241,7 +240,7 @@ FieldSight/
 ├── docs/
 │   ├── adr/           architecture decisions
 │   ├── assets/        README/product visual assets
-│   ├── hackathon_rules/ supplied challenge fixture/reference material
+│   ├── hackathon_rules/ supplied synthetic fixture/reference material
 │   ├── qvac/          QVAC execution documentation
 │   └── research/      supporting research
 ├── scripts/           compliance and real-model verification
@@ -252,15 +251,15 @@ FieldSight/
 
 ## Preexisting base — required declaration
 
-The following preexisting bases/components are explicitly declared for hackathon compliance. They are not presented as newly authored challenge product logic:
+The following project foundations and external components are documented for transparency. They are not presented as authored product logic:
 
-- **quirk Skills workflow bundle**: `.agents/skills/`, `.claude/skills/`, and `skills-lock.json`; preexisting development/agent tooling already present in this repository before the hackathon build window, not product runtime logic. Origin: this repository's pre-hackathon Git history.
+- **quirk Skills workflow bundle**: `.agents/skills/`, `.claude/skills/`, and `skills-lock.json`; development/agent tooling present in this repository, not product runtime logic. Origin: this repository's Git history.
 - **Expo / React Native scaffold and third-party libraries**: Expo, React, React Native/Web, Zod, Lucide, AsyncStorage, `expo-audio`, `expo-asset`, `react-native-svg`, and related configuration. Origins: their public upstream npm/Open Source projects; versions are pinned in `package.json` / `package-lock.json`.
 - **QVAC platform and model artifacts**: official Tether QVAC stack used through `@qvac/sdk`, including the configured Llama text model and Parakeet transcription model. Origin: Tether QVAC SDK/model registry (`qvac.tether.io`).
-- **Synthetic challenge workbook**: `docs/hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx`, supplied by the Philips corporate challenge as seed/reference data. Origin: official hackathon challenge materials.
-- **Repository foundations**: prior scaffold/history already present in `quantumquirkxyz/FieldSight` before the 48-hour build window, including prior documentation and application foundations. Origin: this repository's Git history; these foundations are not claimed as newly authored hackathon work.
+- **Synthetic workbook**: `docs/hackathon_rules/Dummy_Installed_Base_Hackathon.xlsx`, retained as seed/reference data from the ISD Summit challenge. It is not production data.
+- **Repository foundations**: scaffold, documentation, and application foundations maintained in `quantumquirkxyz/FieldSight`. Origin: this repository's Git history.
 
-Substantial hackathon solution work includes the installed-base domain contract, QVAC capture/extraction path, strict validation, persistence/reconciliation, dashboard experience, multilingual voice integration, no-cloud compliance guard, and judge-facing product flow.
+The project includes the installed-base domain contract, QVAC capture/extraction path, strict validation, persistence/reconciliation, dashboard experience, multilingual voice integration, no-cloud guard, and reviewable product flow.
 
 ## Documentation
 
