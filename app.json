@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "FieldSight",
+    "name": "FieldSite",
     "slug": "fieldsight",
     "version": "0.1.0",
     "orientation": "portrait",
@@ -17,7 +17,7 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "Allow FieldSight to capture field notes for private on-device transcription.",
+          "microphonePermission": "Allow FieldSite to capture field notes for private on-device transcription.",
           "recordAudioAndroid": true,
           "enableBackgroundRecording": false,
           "enableBackgroundPlayback": false
