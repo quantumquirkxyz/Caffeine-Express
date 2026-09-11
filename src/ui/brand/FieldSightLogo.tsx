@@ -7,9 +7,9 @@ export function FieldSightMark({ size = 36 }: { readonly size?: number }) {
   const lowerFill = resolvedMode === 'dark' ? '#FFFFFF' : '#252B31';
 
   return (
-    <Svg width={size} height={size} viewBox="0 0 120 120" accessibilityRole="image" accessibilityLabel="FieldSight logo">
+    <Svg width={size} height={size} viewBox="0 0 120 120">
       <Defs>
-        <LinearGradient id="fieldsight-blue" x1="14" y1="106" x2="95" y2="18" gradientUnits="userSpaceOnUse">
+        <LinearGradient id="fieldsight-blue" x1="14" y1="106" x2="95" y2="18">
           <Stop offset="0" stopColor="#06396E" />
           <Stop offset="0.62" stopColor="#0B58B7" />
           <Stop offset="1" stopColor="#0D75FF" />
