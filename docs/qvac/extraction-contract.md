@@ -61,17 +61,18 @@ deviation.
 | `site` | string \| null | optional | Site (location) name as stated in the note; `null` records `"Unknown"` (a hole, never an invented name). |
 | `city` | string | optional | Defaults to `"Unknown"`. |
 | `country` | string | optional | Defaults to `"Unknown"`. |
-| `modality` | string | yes | Canonical term (MRI, CT, Ultrasound, X-Ray, Patient Monitoring, Image Guided Therapy, Other) or a documented alias (MR, scanner, US, xray, monitoring, IGT, ...). Unrecognized values are rejected. |
+| `modality` | string \| null | optional | Canonical term (MRI, CT, Ultrasound, X-Ray, Patient Monitoring, Image Guided Therapy, Other) or a documented alias (MR, scanner, US, xray, monitoring, IGT, ...). A missing or unrecognized value records `"Other"` with `Unknown` provenance. |
 | `brand` | string \| null | optional | `null` when the note does not name a brand. |
 | `model` | string \| null | optional | `null` when the note does not name a model. |
-| `quantity` | positive integer | yes | Defaults to 1 for a single device. |
+| `quantity` | positive integer | optional | Defaults to 1 when missing, zero, negative, or not a whole number. |
 | `age` | `null` \| number \| `{ "min": number, "max": number }` \| `{ "approx": number }` | optional (default `null`) | See "Age rules" below. |
 | `use` | `null` \| `{ "hours": number }` | optional (default `null`) | `hours` must be a non-negative number. `period` is not modeled in the MVP and is recorded as `null` until a future Visit is attached. |
 | `comment` | string \| null | optional | Verbatim collaborator comment, or `null`. |
 
-The parser is **strict**: extra unknown keys in a row are rejected, the
-`observations` array must contain at least one element, and the top-level
-object must be exactly `{ "observations": [...] }`.
+Missing or unusable values never fail the extraction; they fall back to the
+documented defaults (see "Defaults for missing fields" below). Extra unknown
+keys in a row are ignored, the `observations` array must contain at least one
+element, and the top-level object must contain `observations`.
 
 ## Age rules
 
@@ -104,7 +105,7 @@ records `period: null` and a future Visit can attach a real period.
 | Observation input field | Source | Default provenance |
 |---|---|---|
 | `site` | names from the model, `"Unknown"` when absent | not per-field (lives on the Site) |
-| `modality` | normalized from the model | `Reported` |
+| `modality` | normalized from the model, `Other` when absent or unrecognized | `Reported` when recognized, `Unknown` otherwise |
 | `brand` | trimmed string or `null` | `Reported` if present, `Unknown` if `null` |
 | `model` | trimmed string or `null` | `Reported` if present, `Unknown` if `null` |
 | `quantity` | required positive integer | `Reported` |
@@ -262,16 +263,30 @@ Mapped: `use: { hours: 1500, period: null }`, `useProvenance: 'Reported'`.
 
 ### 5. Malformed model output
 
-Any of the following is rejected and surfaced as `ExtractionError`:
+The output must still be a JSON object with a non-empty `observations` array,
+and each row must be an object whose fields use the expected JSON types. Any of
+the following is rejected and surfaced as `ExtractionError`:
 
 - `not json` (malformed JSON)
 - `{ "data": [...] }` (missing `observations` array)
 - `{ "observations": [] }` (empty array is a contract violation)
-- `{ "observations": [ { "client": "a", "site": "b", "modality": "MRI", "quantity": 1, "age": { "min": 9, "max": 4 } } ] }` (reversed Age range)
-- `{ "observations": [ { "client": "a", "site": "b", "quantity": 1 } ] }` (missing required `modality`)
-- `{ "observations": [ { "client": "a", "site": "b", "modality": "MRI", "quantity": 0 } ] }` (non-positive quantity)
-- `{ "observations": [ { "client": "a", "site": "b", "modality": "MRI", "quantity": 1, "use": { "hours": -1 } } ] }` (negative Use hours)
-- `{ "observations": [ { "client": "a", "site": "b", "modality": "MRI", "quantity": 1, "invented": "value" } ] }` (unknown key, the parser is strict)
+- a row that is not an object, or a field with the wrong JSON type (e.g. `"client": 42`)
+
+### Defaults for missing fields
+
+A vague Field note such as
+`two mri machines at hospiten panama in punta pacifica` does not fail: every
+value the model cannot fill falls back to a default, so the Observation is
+persisted as a record with holes instead of an error.
+
+| Missing or unusable value | Default |
+|---|---|
+| `client`, `site`, `city`, `country` | `"Unknown"` |
+| `modality` | `"Other"` (`Unknown` provenance) |
+| `quantity` | `1` |
+| `brand`, `model`, `comment` | `null` |
+| `age`, `use` | `null` |
+| extra unknown keys | ignored |
 
 ## How the capture flow uses the contract
 
