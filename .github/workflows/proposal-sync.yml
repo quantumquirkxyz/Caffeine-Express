@@ -1,0 +1,43 @@
+name: proposal-sync
+
+on:
+  push:
+    branches: [hackathon-final-pass]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: hackathon-final-pass
+      - name: Align proposal with implemented scope
+        shell: python
+        run: |
+          from pathlib import Path
+          path = Path('docs/proposal-solution.md')
+          text = path.read_text(encoding='utf-8')
+          replacements = {
+            'Voice, camera, OCR, follow-up, confirmation, P2P, and advanced analytics are post-MVP capabilities and are documented separately from the MVP flow (`ADR 0006`).': 'Multilingual voice dictation is implemented in the hackathon branch. Camera, OCR, automated follow-up, peer confirmation, P2P synchronization, and advanced analytics remain post-MVP capabilities (`ADR 0006`).',
+            'Post-MVP: dictation, camera, OCR, follow-up, confirmation, P2P, advanced analytics': 'Implemented enhancement: dictation · Post-MVP: camera, OCR, follow-up, confirmation, P2P, advanced analytics',
+            'Voice → Field note (post-MVP)': 'Voice → Field note (implemented)',
+            'Post-MVP dictation; streaming + end-of-utterance': 'Implemented local dictation path; PCM capture followed by local transcription',
+            '### 5.3 Post-MVP capture flow': '### 5.3 Extended capture flow (implemented voice + future vision)',
+            '- MVP session flow: open Visit at a Site → type Observation → validate → save.': '- Implemented session flow: open Capture → type or dictate a Field note → review → local QVAC extraction → validate → save.',
+            '- Post-MVP session flow: add dictation, photo, follow-up, confirmation, and synchronization after the MVP is complete.': '- Post-MVP extensions: add photo/OCR, automated follow-up, independent confirmation workflows, and synchronization.',
+          }
+          for source, target in replacements.items():
+              text = text.replace(source, target)
+          path.write_text(text, encoding='utf-8')
+      - name: Commit proposal synchronization
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/proposal-solution.md
+          git diff --cached --quiet && exit 0
+          git commit -m 'docs: align proposal with implemented voice scope'
+          git push origin HEAD:hackathon-final-pass
