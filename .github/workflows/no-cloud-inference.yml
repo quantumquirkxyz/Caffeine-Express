@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [mvp, main]
   push:
-    branches: [mvp, main, hackathon-final-pass]
+    branches: [mvp, main]
 
 concurrency:
   group: no-cloud-inference-${{ github.workflow }}-${{ github.ref }}
