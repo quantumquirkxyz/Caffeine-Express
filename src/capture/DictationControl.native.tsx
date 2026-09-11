@@ -65,7 +65,7 @@ export function DictationControl({ processingState, disabled = false, error, com
       stream.stop();
       const pcm = resamplePcm16(concat(chunks.current), sourceRate.current);
       if (pcm.length < 16_000) {
-        setCaptureError('La grabación fue demasiado corta. Intenta hablar durante al menos un segundo.');
+        setCaptureError('The recording was too short. Speak for at least one second.');
         return;
       }
       await onAudio(pcm);
@@ -74,7 +74,7 @@ export function DictationControl({ processingState, disabled = false, error, com
 
     const permission = await requestRecordingPermissionsAsync();
     if (!permission.granted) {
-      setCaptureError('Se necesita permiso de micrófono para dictar una observación.');
+      setCaptureError('Microphone permission is required to dictate an observation.');
       return;
     }
     chunks.current = [];
@@ -83,12 +83,12 @@ export function DictationControl({ processingState, disabled = false, error, com
   }
 
   const label = isStreaming
-    ? 'Detener'
+    ? 'Stop'
     : processingState === 'transcribing'
-      ? 'Transcribiendo…'
+      ? 'Transcribing…'
       : processingState === 'cleaning'
-        ? 'Ordenando…'
-        : compact ? 'Dictar' : 'Dictar observación';
+        ? 'Organizing…'
+        : compact ? 'Dictate' : 'Dictate observation';
 
   return (
     <View style={{ gap: spacing.xs, flexShrink: 1 }}>
@@ -120,7 +120,7 @@ export function DictationControl({ processingState, disabled = false, error, com
         )}
         <Text style={{ color: isStreaming ? colors.danger : colors.text, fontSize: typography.sizes.sm, fontWeight: typography.weights.semibold }}>{label}</Text>
       </Pressable>
-      {isStreaming ? <Text style={{ color: colors.danger, fontSize: typography.sizes.xs }}>Grabando · audio local</Text> : null}
+      {isStreaming ? <Text style={{ color: colors.danger, fontSize: typography.sizes.xs }}>Recording · audio stays local</Text> : null}
       {(captureError || error) ? <Text accessibilityRole="alert" style={{ color: colors.danger, fontSize: typography.sizes.xs }}>{captureError || error}</Text> : null}
     </View>
   );
