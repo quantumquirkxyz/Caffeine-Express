@@ -12,7 +12,7 @@ function DonutDots({ aggregation }: { readonly aggregation: OverviewAggregation 
   const total = Math.max(aggregation.units, 1);
   const palette = [colors.primary, colors.success, colors.purple, colors.danger];
   const boundaries = aggregation.byModality.reduce<number[]>((acc, entry, index) => {
-    const previous = index === 0 ? 0 : acc[index - 1];
+    const previous = index === 0 ? 0 : (acc[index - 1] ?? 0);
     acc.push(previous + entry.value / total);
     return acc;
   }, []);
