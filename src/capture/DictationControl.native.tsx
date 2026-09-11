@@ -61,7 +61,7 @@ export function DictationControl({ processingState, disabled = false, error, onA
     if (isStreaming) {
       stream.stop();
       const pcm = resamplePcm16(concat(chunks.current), sourceRate.current);
-      if (pcm.length < 1_600) {
+      if (pcm.length < 16_000) {
         setCaptureError('La grabación fue demasiado corta. Intenta hablar durante al menos un segundo.');
         return;
       }
