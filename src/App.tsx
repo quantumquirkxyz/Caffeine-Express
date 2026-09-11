@@ -5,7 +5,7 @@ import { captureObservation } from './capture/observation-capture';
 import { QVACObservationExtractor } from './capture/qvac-extractor';
 import { loadQvacModel, unloadQvacModel } from './capture/qvac-runtime';
 import { transcribeFieldAudio } from './capture/qvac-transcription';
-import type { DictationProcessingState } from './capture/DictationControl.native';
+import type { DictationProcessingState } from './capture/DictationControl';
 import { dashboardView, overviewAggregation, type DashboardStatus, type DashboardView } from './dashboard/dashboard';
 import type { Modality } from './domain/modality';
 import type { Observation } from './domain/observation';
@@ -55,10 +55,11 @@ export default function App() {
       const transcript = await transcribeFieldAudio(audio);
       if (transcript.trim() === '') throw new Error('No se detectó voz utilizable en la grabación.');
       setRawTranscript(transcript);
+      setFieldNote(transcript);
+      setCaptureState('empty');
       setDictationState('cleaning');
       const cleaned = await normalizeFieldNote(qvacModelId, transcript);
       setFieldNote(cleaned.trim() || transcript);
-      setCaptureState('empty');
       setDictationState('ready');
     } catch (error) {
       setDictationError(error instanceof Error ? error.message : 'No se pudo procesar el dictado local.');
