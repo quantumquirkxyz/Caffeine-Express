@@ -15,22 +15,22 @@ type Slide = {
 const SLIDES: readonly Slide[] = [
   {
     eyebrow: 'LOCAL-FIRST FIELD INTELLIGENCE',
-    title: 'Convierte observaciones de campo en una base instalada confiable.',
-    detail: 'FieldSight transforma notas naturales en evidencia estructurada para saber qué equipo existe, dónde está y qué tan confiable es la observación.',
+    title: 'Turn field observations into a reliable installed base.',
+    detail: 'FieldSite transforms natural field notes into structured evidence so teams can understand what equipment exists, where it is, and how reliable each observation is.',
     metric: 'Field note → Observation → Installed base',
     icon: DatabaseZap,
   },
   {
     eyebrow: 'VOICE, WITHOUT THE CLOUD',
-    title: 'Dicta en el campo. QVAC transcribe y organiza localmente.',
-    detail: 'La voz se procesa con Parakeet y el LLM local limpia el texto sin completar hechos ausentes. Antes de guardar, siempre puedes revisar y editar.',
+    title: 'Dictate in the field. QVAC transcribes and organizes locally.',
+    detail: 'Parakeet processes speech on-device and the local LLM cleans the text without filling in missing facts. The result always remains reviewable and editable before persistence.',
     metric: 'Audio → transcript → cleaned note',
     icon: Mic2,
   },
   {
     eyebrow: 'PRIVATE BY ARCHITECTURE',
-    title: 'La inferencia sensible permanece en el dispositivo.',
-    detail: 'El producto no depende de un endpoint de inferencia cloud. La estructura, validación y reconciliación forman un flujo auditable y preparado para contextos sensibles.',
+    title: 'Sensitive inference stays on the device.',
+    detail: 'The product does not depend on a cloud inference endpoint. Structured extraction, validation, and reconciliation form an auditable path designed for sensitive customer contexts.',
     metric: 'QVAC · on-device · auditable',
     icon: ShieldCheck,
   },
@@ -61,9 +61,9 @@ export function OnboardingScreen({ onFinish }: { readonly onFinish: () => void }
             <View style={{ width: 30, height: 30, borderRadius: 9, borderWidth: 1, borderColor: colors.borderStrong, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface }}>
               <View style={{ width: 9, height: 9, borderRadius: 3, backgroundColor: colors.primary }} />
             </View>
-            <Text style={{ color: colors.text, fontWeight: typography.weights.bold, fontSize: typography.sizes.md }}>FieldSight</Text>
+            <Text style={{ color: colors.text, fontWeight: typography.weights.bold, fontSize: typography.sizes.md }}>FieldSite</Text>
           </View>
-          <Pressable onPress={onFinish} accessibilityRole="button"><Text style={{ color: colors.textSecondary, fontSize: typography.sizes.sm }}>Omitir</Text></Pressable>
+          <Pressable onPress={onFinish} accessibilityRole="button"><Text style={{ color: colors.textSecondary, fontSize: typography.sizes.sm }}>Skip</Text></Pressable>
         </View>
 
         <Animated.View style={{ flex: 1, opacity: fade, justifyContent: 'center', paddingVertical: 56 }}>
@@ -95,13 +95,13 @@ export function OnboardingScreen({ onFinish }: { readonly onFinish: () => void }
             {SLIDES.map((_, dot) => <View key={dot} style={{ height: 5, width: dot === index ? 34 : 12, borderRadius: 3, backgroundColor: dot === index ? colors.primary : colors.borderStrong }} />)}
           </View>
           <View style={{ flexDirection: 'row', gap: spacing.sm, justifyContent: 'flex-end' }}>
-            {index > 0 ? <Button variant="secondary" onPress={() => move(index - 1)}>Atrás</Button> : null}
+            {index > 0 ? <Button variant="secondary" onPress={() => move(index - 1)}>Back</Button> : null}
             <Pressable
               accessibilityRole="button"
               onPress={() => index === SLIDES.length - 1 ? onFinish() : move(index + 1)}
               style={({ pressed }) => ({ minHeight: 46, borderRadius: radius.md, paddingHorizontal: spacing.xl, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, backgroundColor: colors.text, opacity: pressed ? 0.82 : 1 })}
             >
-              <Text style={{ color: colors.background, fontWeight: typography.weights.semibold }}>{index === SLIDES.length - 1 ? 'Entrar a FieldSight' : 'Siguiente'}</Text>
+              <Text style={{ color: colors.background, fontWeight: typography.weights.semibold }}>{index === SLIDES.length - 1 ? 'Enter FieldSite' : 'Next'}</Text>
               <ArrowRight size={17} color={colors.background} />
             </Pressable>
           </View>
