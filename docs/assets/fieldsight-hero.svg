@@ -1,19 +1,17 @@
 <svg width="1280" height="420" viewBox="0 0 1280 420" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">FieldSight animated logo banner</title>
-  <desc id="desc">Animated FieldSight logo and local-first intelligence banner based on the project identity.</desc>
+  <title id="title">FieldSight static logo with animated intelligence scene</title>
+  <desc id="desc">Static FieldSight brand lockup with animated local-first intelligence geometry on the right.</desc>
   <style>
     .orbit { animation: orbit 12s linear infinite; transform-origin: 970px 210px; }
     .orbit-slow { animation: orbitReverse 18s linear infinite; transform-origin: 970px 210px; }
     .pixel-a { animation: floatA 3.8s ease-in-out infinite; }
     .pixel-b { animation: floatB 4.5s ease-in-out infinite; }
     .line-a { animation: draw 3.2s ease-in-out infinite alternate; stroke-dasharray: 220; stroke-dashoffset: 70; }
-    .wordmark { animation: fadeUp 1.2s ease-out both; }
     @keyframes orbit { to { transform: rotate(360deg); } }
     @keyframes orbitReverse { to { transform: rotate(-360deg); } }
     @keyframes floatA { 0%, 100% { transform: translateY(0); opacity: .88; } 50% { transform: translateY(-8px); opacity: 1; } }
     @keyframes floatB { 0%, 100% { transform: translateY(0); opacity: .72; } 50% { transform: translateY(7px); opacity: 1; } }
     @keyframes draw { from { stroke-dashoffset: 180; opacity: .25; } to { stroke-dashoffset: 0; opacity: .78; } }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
   <defs>
     <linearGradient id="blue" x1="84" y1="292" x2="229" y2="104" gradientUnits="userSpaceOnUse">
@@ -42,12 +40,12 @@
       <path d="M14 52 L46 20 H97 V36 L82 51 H41 V80 L14 108 Z" fill="url(#blue)"/>
       <path d="M34 91 H80 L101 70 V58 H75 V69 H58 V80 H45 Z" fill="url(#ink)"/>
       <path d="M46 80 H74 V67 H50 V57 H100 V78 L82 98 H28 Z" fill="url(#ink)" opacity=".96"/>
-      <rect class="pixel-a" x="50" y="60" width="18" height="18" rx="3" fill="url(#blue)"/>
-      <rect class="pixel-b" x="76" y="46" width="15" height="15" rx="2.5" fill="url(#blue)"/>
-      <rect class="pixel-a" x="92" y="30" width="11" height="11" rx="2" fill="url(#blue)"/>
+      <rect x="50" y="60" width="18" height="18" rx="3" fill="url(#blue)"/>
+      <rect x="76" y="46" width="15" height="15" rx="2.5" fill="url(#blue)"/>
+      <rect x="92" y="30" width="11" height="11" rx="2" fill="url(#blue)"/>
     </g>
 
-    <g class="wordmark" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
       <text x="270" y="213" fill="#020407" font-size="70" font-weight="800" letter-spacing="-3.5">FieldSight</text>
       <path d="M86 288H154" stroke="#AAB3BE" stroke-width="2"/>
       <text x="175" y="295" fill="#8E98A6" font-size="17" font-weight="600" letter-spacing="8">LOCAL-FIRST INTELLIGENCE</text>
