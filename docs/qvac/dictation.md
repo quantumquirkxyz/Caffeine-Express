@@ -49,16 +49,13 @@ FieldSight uses the QVAC SDK registry constant:
 PARAKEET_TDT_0_6B_V3_Q8_0
 ```
 
-and loads it as:
+and loads the registry model directly:
 
 ```ts
-await loadModel({
-  modelSrc: PARAKEET_TDT_0_6B_V3_Q8_0,
-  modelType: 'parakeet',
-});
+await loadModel({ modelSrc: PARAKEET_TDT_0_6B_V3_Q8_0 });
 ```
 
-The TDT variant is selected because it supports multilingual speech recognition with automatic language handling. The implementation calls `transcribe()` with the in-memory PCM buffer and unloads the Parakeet model in a `finally` block.
+The registry constant carries the engine metadata required by the current QVAC SDK. This avoids depending on legacy Parakeet variant configuration while allowing the SDK to select the compatible transcription plugin. The TDT variant is selected because it supports multilingual speech recognition. The implementation calls `transcribe()` with the in-memory PCM buffer and unloads the Parakeet model in a `finally` block.
 
 ## Transcript normalization
 
@@ -101,7 +98,7 @@ Before recording the hackathon demo:
 3. Disable network connectivity after provisioning if you want to make the local-execution property visible during the demo.
 4. Open **Capture** and confirm the QVAC state reads as ready.
 5. Dictate one sentence in Spanish and verify raw transcript + cleaned note.
-6. Repeat with a second supported language if demonstrating multilingual behavior.
+6. Repeat with a second language supported by the chosen Parakeet TDT checkpoint if demonstrating multilingual behavior.
 7. Extract the Field note and confirm the Observation appears in the Installed base.
 8. Keep a typed Field note prepared as a deterministic backup path.
 
