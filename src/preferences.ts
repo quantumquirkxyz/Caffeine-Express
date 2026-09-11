@@ -4,14 +4,14 @@ import type { ThemeMode } from './ui/palette';
 const KEY = 'fieldsight.preferences.v1';
 export type Language = 'en' | 'es' | 'pt';
 export type Preferences = { readonly language: Language; readonly themeMode: ThemeMode };
-const defaults: Preferences = { language: 'en', themeMode: 'system' };
+const defaults: Preferences = { language: 'es', themeMode: 'system' };
 export async function loadPreferences(): Promise<Preferences> {
   try {
     const raw = await AsyncStorage.getItem(KEY);
     if (!raw) return defaults;
     const parsed = JSON.parse(raw) as Partial<Preferences>;
     return {
-      language: 'en',
+      language: parsed.language === 'en' || parsed.language === 'es' || parsed.language === 'pt' ? parsed.language : defaults.language,
       themeMode: parsed.themeMode === 'light' || parsed.themeMode === 'dark' ? parsed.themeMode : 'system',
     };
   } catch {

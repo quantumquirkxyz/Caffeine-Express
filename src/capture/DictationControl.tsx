@@ -11,6 +11,8 @@ type Props = {
   readonly error?: string;
   readonly compact?: boolean;
   readonly onAudio: (audio: Int16Array) => Promise<void> | void;
+  readonly onTranscript?: ((text: string) => void) | undefined;
+  readonly language?: 'en' | 'es' | 'pt' | undefined;
 };
 
 export function DictationControl({ compact = false }: Props) {

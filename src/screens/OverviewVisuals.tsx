@@ -7,7 +7,7 @@ import { spacing, typography, useTheme } from '../ui/tokens';
 
 const DOT_COUNT = 36;
 
-function DonutDots({ aggregation }: { readonly aggregation: OverviewAggregation }) {
+function DonutDots({ aggregation, unitLabel = 'total units' }: { readonly aggregation: OverviewAggregation; readonly unitLabel?: string }) {
   const { colors } = useTheme();
   const total = Math.max(aggregation.units, 1);
   const palette = [colors.primary, colors.success, colors.purple, colors.danger];
@@ -41,13 +41,13 @@ function DonutDots({ aggregation }: { readonly aggregation: OverviewAggregation 
       })}
       <View style={{ width: 108, height: 108, borderRadius: 54, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border }}>
         <Text style={{ color: colors.text, fontSize: 30, lineHeight: 34, fontWeight: typography.weights.bold }}>{aggregation.units}</Text>
-        <Text style={{ color: colors.textSecondary, fontSize: typography.sizes.xs }}>total units</Text>
+        <Text style={{ color: colors.textSecondary, fontSize: typography.sizes.xs }}>{unitLabel}</Text>
       </View>
     </View>
   );
 }
 
-export function DistributionRail({ aggregation }: { readonly aggregation: OverviewAggregation }) {
+export function DistributionRail({ aggregation, strings }: { readonly aggregation: OverviewAggregation; readonly strings?: { modality: string; modalitySubtitle: string; unitLabel?: string } | undefined }) {
   const { colors } = useTheme();
   const compact = useWindowDimensions().width < 560;
   const total = Math.max(aggregation.units, 1);
@@ -55,9 +55,9 @@ export function DistributionRail({ aggregation }: { readonly aggregation: Overvi
 
   return (
     <Card>
-      <SectionHeader title="Equipment mix" subtitle="Share of the installed base" />
+      <SectionHeader title={strings?.modality ?? 'Equipment mix'} subtitle={strings?.modalitySubtitle ?? 'Share of the installed base'} />
       <View style={{ flexDirection: compact ? 'column' : 'row', alignItems: 'center', gap: spacing.xl }}>
-        <DonutDots aggregation={aggregation} />
+        <DonutDots aggregation={aggregation} {...(strings?.unitLabel === undefined ? {} : { unitLabel: strings.unitLabel })} />
         <View style={{ flex: 1, width: compact ? '100%' : undefined, gap: spacing.sm }}>
           {aggregation.byModality.map((entry, index) => (
             <View key={entry.label} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingVertical: spacing.sm, borderBottomWidth: index === aggregation.byModality.length - 1 ? 0 : 1, borderBottomColor: colors.border }}>
@@ -73,12 +73,12 @@ export function DistributionRail({ aggregation }: { readonly aggregation: Overvi
   );
 }
 
-export function ClientRanking({ aggregation }: { readonly aggregation: OverviewAggregation }) {
+export function ClientRanking({ aggregation, strings }: { readonly aggregation: OverviewAggregation; readonly strings?: { client: string; clientSubtitle: string } | undefined }) {
   const { colors } = useTheme();
   const maximum = Math.max(...aggregation.byClient.map(entry => entry.value), 1);
   return (
     <Card>
-      <SectionHeader title="Client concentration" subtitle="Relative size without noisy axes" />
+      <SectionHeader title={strings?.client ?? 'Client concentration'} subtitle={strings?.clientSubtitle ?? 'Relative size without noisy axes'} />
       <View style={{ gap: spacing.md }}>
         {aggregation.byClient.slice(0, 6).map((entry, index) => {
           const diameter = 20 + Math.round((entry.value / maximum) * 22);
@@ -100,12 +100,12 @@ export function ClientRanking({ aggregation }: { readonly aggregation: OverviewA
   );
 }
 
-export function SiteDots({ aggregation }: { readonly aggregation: OverviewAggregation }) {
+export function SiteDots({ aggregation, strings }: { readonly aggregation: OverviewAggregation; readonly strings?: { sites: string; sitesSubtitle: string } | undefined }) {
   const { colors } = useTheme();
   const maximum = Math.max(...aggregation.sitesByClient.map(entry => entry.value), 1);
   return (
     <Card>
-      <SectionHeader title="Site footprint" subtitle="Geographic coverage per Client" />
+      <SectionHeader title={strings?.sites ?? 'Site footprint'} subtitle={strings?.sitesSubtitle ?? 'Geographic coverage per Client'} />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md }}>
         {aggregation.sitesByClient.map((entry, index) => {
           const size = 78 + Math.round((entry.value / maximum) * 36);

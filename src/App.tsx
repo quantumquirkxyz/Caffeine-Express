@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Platform, ScrollView } from 'react-native';
 import { normalizeFieldNote } from './capture/field-note-normalizer';
-import { captureObservation } from './capture/observation-capture';
+import { captureObservation, DeterministicObservationExtractor } from './capture/observation-capture';
 import { QVACObservationExtractor } from './capture/qvac-extractor';
 import { loadQvacModel, unloadQvacModel } from './capture/qvac-runtime';
 import { transcribeFieldAudio } from './capture/qvac-transcription';
@@ -32,7 +32,7 @@ export default function App() {
   useEffect(() => { void savePreferences({ language, themeMode }); }, [language, themeMode]);
   useEffect(() => { let active = true; const timer = setTimeout(() => { const nextStore = new AsyncObservationStore(); void loadSyntheticFixtures(nextStore).catch(error => { if (error?.name !== 'ObservationAlreadyPersistedError') throw error; }).then(async () => { if (!active) return; const nextBase = new InstalledBase(); (await nextStore.all()).forEach(observation => nextBase.update(observation)); setBase(nextBase); setStore(nextStore); setDemo('ready'); }).catch(() => { if (active) setDemo('offline'); }); }, 500); return () => { active = false; clearTimeout(timer); }; }, []);
   useEffect(() => {
-    if (Platform.OS === 'web') { setQvacState('web'); return undefined; }
+     if (Platform.OS === 'web') { setQvacModelId('web-fallback'); setQvacState('web'); return undefined; }
     let active = true;
     setQvacState('loading');
     void loadQvacModel().then(id => {
@@ -66,11 +66,12 @@ export default function App() {
       setDictationState('error');
     }
   }
-  async function saveFieldNote() { if (store === null) return; setCaptureState('loading'); setCaptureError(''); try { if (qvacModelId === null) throw new Error('QVAC is still loading its on-device model.'); const observations = await captureObservation(fieldNote, new QVACObservationExtractor(qvacModelId), store); const next = new InstalledBase(); (await store.all()).forEach(item => next.update(item)); setBase(next); setCaptured(observations); setCaptureState('saved'); setFieldNote(''); setRawTranscript(''); setDictationState('idle'); } catch (error) { setCaptureError(error instanceof Error ? error.message : 'Could not extract this Field note.'); setCaptureState('error'); } }
+   async function saveFieldNote() { if (store === null) return; setCaptureState('loading'); setCaptureError(''); try { if (qvacModelId === null) throw new Error('QVAC is still loading its on-device model.'); const extractor = Platform.OS === 'web' ? new DeterministicObservationExtractor() : new QVACObservationExtractor(qvacModelId); const observations = await captureObservation(fieldNote, extractor, store); const next = new InstalledBase(); (await store.all()).forEach(item => next.update(item)); setBase(next); setCaptured(observations); setCaptureState('saved'); setFieldNote(''); setRawTranscript(''); setDictationState('idle'); } catch (error) { setCaptureError(error instanceof Error ? error.message : 'Could not extract this Field note.'); setCaptureState('error'); } }
   function navigate(section: AppSection) { setActiveSection(section); scrollRef.current?.scrollTo({ y: 0, animated: false }); }
   const rows = base?.all() ?? [];
   const countryOptions = [...new Set(rows.map(record => record.site.country))].sort(); const clientOptions = [...new Set(rows.map(record => record.site.client.name))].sort(); const siteOptions = [...new Set(rows.map(record => record.site.name))].sort();
-  const captureProps = { copy, fieldNote, setFieldNote: (value: string) => { setFieldNote(value); if (captureState !== 'empty') setCaptureState('empty'); }, captureState, captureDisabled: store === null || qvacModelId === null || fieldNote.trim() === '', captureError, onSave: () => void saveFieldNote(), captured, qvacState, dictationState, dictationError, rawTranscript, onAudio: processDictation };
+  const captureProps = { copy, fieldNote, setFieldNote: (value: string) => { setFieldNote(value); if (captureState !== 'empty') setCaptureState('empty'); }, captureState, captureDisabled: store === null || qvacModelId === null || fieldNote.trim() === '', captureError, onSave: () => void saveFieldNote(), captured, qvacState, dictationState, dictationError, rawTranscript, onAudio: processDictation, onTranscript: (text: string) => { setFieldNote(text); setRawTranscript(text); setCaptureState('empty'); } };
+  Object.assign(captureProps, { language });
   const screen = activeSection === 'overview'
     ? <OverviewScreen copy={copy} aggregation={aggregation} />
     : activeSection === 'capture'
