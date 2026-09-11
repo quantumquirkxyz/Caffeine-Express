@@ -130,15 +130,15 @@ describe('QVAC MVP extraction contract', () => {
     expect(input!.useProvenance).toBe('Reported');
   });
 
-  it('normalizes modality aliases through the schema and rejects unknown modalities', () => {
+  it('normalizes modality aliases and records an unknown modality as Other', () => {
     const aliased = completeRow({ modality: 'MR' });
     const [input] = observationInputsFromModel([aliased], { fieldNote: 'MR at Site' });
     expect(input!.modality).toBe('MRI');
 
     const unknown = completeRow({ modality: 'flux-capacitor' });
-    expect(() => observationInputsFromModel([unknown], { fieldNote: 'x' })).toThrow(
-      ExtractionError,
-    );
+    const [fallback] = observationInputsFromModel([unknown], { fieldNote: 'x' });
+    expect(fallback!.modality).toBe('Other');
+    expect(fallback!.modalityProvenance).toBe('Unknown');
   });
 
   it('emits multiple Observations for one Field note when the model returns multiple rows', () => {
@@ -172,8 +172,8 @@ describe('QVAC MVP extraction contract', () => {
     );
   });
 
-  it('rejects a row that violates the schema (e.g. reversed Age range) as malformed output', () => {
-    const bad = JSON.stringify({
+  it('drops a reversed Age range to Unknown instead of rejecting the row', () => {
+    const content = JSON.stringify({
       observations: [
         {
           client: 'DemoCare',
@@ -184,7 +184,10 @@ describe('QVAC MVP extraction contract', () => {
         },
       ],
     });
-    expect(() => extractObservationsFromContent(bad, { fieldNote: 'x' })).toThrow(ExtractionError);
+    const [input] = observationInputsFromModel(parseModelContent(content), { fieldNote: 'x' });
+
+    expect(input!.age).toBeNull();
+    expect(input!.ageProvenance).toBe('Unknown');
   });
 
   it('records a row without client or site as Unknown instead of rejecting it', () => {
@@ -201,11 +204,14 @@ describe('QVAC MVP extraction contract', () => {
     });
   });
 
-  it('rejects a row missing the required modality as malformed output', () => {
-    const bad = JSON.stringify({
+  it('records a row missing the modality as Other instead of rejecting it', () => {
+    const content = JSON.stringify({
       observations: [{ client: 'DemoCare', site: 'Pacific Hospital', quantity: 1 }],
     });
-    expect(() => extractObservationsFromContent(bad, { fieldNote: 'x' })).toThrow(ExtractionError);
+    const [input] = observationInputsFromModel(parseModelContent(content), { fieldNote: 'x' });
+
+    expect(input!.modality).toBe('Other');
+    expect(input!.modalityProvenance).toBe('Unknown');
   });
 
   it('summarizes a contract failure instead of listing every issue', () => {
@@ -223,28 +229,25 @@ describe('QVAC MVP extraction contract', () => {
     expect(message.length).toBeLessThan(160);
   });
 
-  it('rejects a row with a non-positive quantity as malformed output', () => {
-    const bad = JSON.stringify({
-      observations: [
-        { client: 'a', site: 'b', modality: 'MRI', quantity: 0 },
-      ],
+  it('defaults a non-positive quantity to 1 instead of rejecting the row', () => {
+    const content = JSON.stringify({
+      observations: [{ client: 'a', site: 'b', modality: 'MRI', quantity: 0 }],
     });
-    expect(() => extractObservationsFromContent(bad, { fieldNote: 'x' })).toThrow(ExtractionError);
+    const [input] = observationInputsFromModel(parseModelContent(content), { fieldNote: 'x' });
+
+    expect(input!.quantity).toBe(1);
   });
 
-  it('rejects a row with negative use hours as malformed output', () => {
-    const bad = JSON.stringify({
+  it('drops negative use hours to Unknown instead of rejecting the row', () => {
+    const content = JSON.stringify({
       observations: [
-        {
-          client: 'a',
-          site: 'b',
-          modality: 'MRI',
-          quantity: 1,
-          use: { hours: -1 },
-        },
+        { client: 'a', site: 'b', modality: 'MRI', quantity: 1, use: { hours: -1 } },
       ],
     });
-    expect(() => extractObservationsFromContent(bad, { fieldNote: 'x' })).toThrow(ExtractionError);
+    const [input] = observationInputsFromModel(parseModelContent(content), { fieldNote: 'x' });
+
+    expect(input!.use).toBeNull();
+    expect(input!.useProvenance).toBeNull();
   });
 
   it('produces inputs that validate as full Observations through the Zod schema', () => {
@@ -261,8 +264,8 @@ describe('QVAC MVP extraction contract', () => {
     }
   });
 
-  it('parseModelContent rejects rows with extra unknown keys (strict contract)', () => {
-    const strict = JSON.stringify({
+  it('parseModelContent ignores extra unknown keys', () => {
+    const content = JSON.stringify({
       observations: [
         {
           client: 'a',
@@ -273,6 +276,9 @@ describe('QVAC MVP extraction contract', () => {
         },
       ],
     });
-    expect(() => parseModelContent(strict)).toThrow(ExtractionError);
+    const rows = parseModelContent(content);
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).not.toHaveProperty('invented');
   });
 });

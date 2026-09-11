@@ -60,7 +60,7 @@ const modelObservationRowSchema = z
       .optional(),
     city: z.string().trim().min(1).optional(),
     country: z.string().trim().min(1).optional(),
-    modality: z.string().trim().min(1, 'Modality is required'),
+    modality: z.string().trim().min(1).nullable().optional(),
     brand: z
       .string()
       .trim()
@@ -76,7 +76,8 @@ const modelObservationRowSchema = z
     quantity: z
       .number({ invalid_type_error: 'Quantity must be a number' })
       .int('Quantity must be a whole number')
-      .positive('Quantity must be a positive count'),
+      .positive('Quantity must be a positive count')
+      .catch(1),
     age: z
       .union([
         z
@@ -106,7 +107,8 @@ const modelObservationRowSchema = z
           }),
         z.null(),
       ])
-      .optional(),
+      .optional()
+      .catch(null),
     use: z
       .union([
         z
@@ -118,21 +120,19 @@ const modelObservationRowSchema = z
           }),
         z.null(),
       ])
-      .optional(),
+      .optional()
+      .catch(null),
     comment: z
       .string()
       .trim()
       .min(1, 'Comment cannot be empty when present')
       .nullable()
       .optional(),
-  })
-  .strict();
+  });
 
-const modelOutputSchema = z
-  .object({
-    observations: z.array(modelObservationRowSchema).min(1, 'At least one observation is required'),
-  })
-  .strict();
+const modelOutputSchema = z.object({
+  observations: z.array(modelObservationRowSchema).min(1, 'At least one observation is required'),
+});
 
 /** Raw shape the model emits for a single observation row. */
 export type ModelObservationRow = z.infer<typeof modelObservationRowSchema>;
@@ -172,7 +172,7 @@ export function buildExtractionPrompt(fieldNote: string): string {
     '- "modality": string. Use the canonical term when you can: MRI, CT,',
     '  Ultrasound, X-Ray, Patient Monitoring, Image Guided Therapy, Other.',
     '  Aliases such as MR, scanner, US, xray, monitoring, IGT are accepted',
-    '  and resolved downstream; an unrecognized modality is rejected.',
+    '  and resolved downstream; an unrecognized modality is recorded as Other.',
     '- "brand": string or null. Null when the note does not name a brand.',
     '- "model": string or null. Null when the note does not name a model.',
     '- "quantity": positive integer. Default to 1 when the note describes a',
@@ -293,12 +293,7 @@ export function observationInputsFromModel(
   return rows.map((row, index) => {
     const age = toAgeRange(row.age);
     const use = toUseValue(row.use);
-    const modality = normalizeModality(row.modality);
-    if (modality === null) {
-      throw new ExtractionError(
-        `QVAC output row ${index + 1} uses an unrecognized modality: ${row.modality}`,
-      );
-    }
+    const modality = normalizeModality(row.modality ?? '');
     const input: ObservationInput = {
       site: {
         client: { name: row.client ?? 'Unknown' },
@@ -306,8 +301,8 @@ export function observationInputsFromModel(
         city: row.city ?? 'Unknown',
         country: row.country ?? 'Unknown',
       },
-      modality,
-      modalityProvenance: 'Reported',
+      modality: modality ?? 'Other',
+      modalityProvenance: modality === null ? 'Unknown' : 'Reported',
       brand: row.brand ?? null,
       brandProvenance: row.brand ? 'Reported' : 'Unknown',
       model: row.model ?? null,
