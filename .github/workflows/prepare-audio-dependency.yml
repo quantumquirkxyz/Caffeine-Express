@@ -7,6 +7,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: prepare-audio-dependency-hackathon-final-pass
+  cancel-in-progress: true
+
 jobs:
   prepare:
     if: github.actor != 'github-actions[bot]'
@@ -16,13 +20,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: hackathon-final-pass
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
       - name: Install Expo Audio for SDK 57
         run: npm install expo-audio@~57.0.4 --save
-      - name: Commit lockfile update when needed
+      - name: Commit dependency update
         run: |
           if git diff --quiet -- package.json package-lock.json; then
             echo "Dependency files already current."
@@ -32,4 +37,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add package.json package-lock.json
           git commit -m "chore: add Expo Audio for on-device dictation"
+          git pull --rebase origin hackathon-final-pass
           git push origin HEAD:hackathon-final-pass
