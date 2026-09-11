@@ -218,11 +218,12 @@ export function parseModelContent(contentText: string): readonly ModelObservatio
   }
   const result = modelOutputSchema.safeParse({ observations: rows });
   if (!result.success) {
-    throw new ExtractionError(
-      `QVAC output failed the extraction contract: ${result.error.issues
-        .map((issue) => issue.message)
-        .join('; ')}`,
-    );
+    const total = result.error.issues.length;
+    const distinct = [...new Set(result.error.issues.map((issue) => issue.message))];
+    const shown = distinct.slice(0, 3).join('; ');
+    const remaining = total - distinct.slice(0, 3).length;
+    const suffix = remaining > 0 ? ` (+${remaining} more)` : '';
+    throw new ExtractionError(`QVAC output failed the extraction contract: ${shown}${suffix}`);
   }
   return result.data.observations;
 }

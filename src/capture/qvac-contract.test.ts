@@ -208,6 +208,21 @@ describe('QVAC MVP extraction contract', () => {
     expect(() => extractObservationsFromContent(bad, { fieldNote: 'x' })).toThrow(ExtractionError);
   });
 
+  it('summarizes a contract failure instead of listing every issue', () => {
+    const observations = Array.from({ length: 40 }, () => ({ modality: 42 }));
+    let message = '';
+    try {
+      parseModelContent(JSON.stringify({ observations }));
+    } catch (error) {
+      expect(error).toBeInstanceOf(ExtractionError);
+      message = (error as Error).message;
+    }
+
+    expect(message).toContain('QVAC output failed the extraction contract');
+    expect(message).toContain('more');
+    expect(message.length).toBeLessThan(160);
+  });
+
   it('rejects a row with a non-positive quantity as malformed output', () => {
     const bad = JSON.stringify({
       observations: [
