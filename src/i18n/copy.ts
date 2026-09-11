@@ -8,8 +8,53 @@ export type AppCopy = {
   readonly theme: { readonly light: string; readonly dark: string; readonly system: string };
 };
 
+const ENGLISH_COPY: AppCopy = {
+  clients: 'clients',
+  sites: 'sites',
+  units: 'units',
+  placeholder: 'Two MRI systems at Pacific Hospital, client DemoCare, brand NovaMed, model N-1',
+  extract: 'Process with AI',
+  processing: 'Processing locally',
+  saved: 'Observation saved',
+  overview: {
+    kicker: 'OVERVIEW',
+    title: 'Installed base',
+    modality: 'Equipment by modality',
+    client: 'Equipment by client',
+    sites: 'Sites by client',
+    modalitySubtitle: 'Units across the installed base',
+    clientSubtitle: 'Global aggregation without inventory filters',
+    sitesSubtitle: 'Geographic distribution',
+    empty: 'No data available',
+  },
+  inventory: {
+    kicker: 'INSTALLED BASE',
+    filters: 'Filters',
+    filter: 'Filter',
+    close: 'Close',
+    all: 'All',
+    country: 'Country',
+    client: 'Client',
+    site: 'Site',
+    modality: 'Modality',
+    brand: 'Brand',
+    model: 'Model',
+    equipment: 'Equipment inventory',
+    evidence: 'Evidence and observations',
+    linked: 'Linked observations',
+    select: 'Select equipment to review its evidence.',
+    unknownLocation: 'No location available',
+    unknownBrand: 'Unknown brand',
+    unknownModel: 'Unknown model',
+    years: 'years',
+    ageUnknown: 'Unknown',
+  },
+  nav: { overview: 'Overview', capture: 'Capture', inventory: 'Installed base', settings: 'Settings' },
+  theme: { light: 'Light', dark: 'Dark', system: 'System' },
+};
+
 export const COPY: Record<Language, AppCopy> = {
-  en: { clients: 'clients', sites: 'sites', units: 'units', placeholder: 'Two MRI machines at Pacific Hospital, client DemoCare, brand NovaMed, model N-1', extract: 'Extract observation', processing: 'Processing', saved: 'Observation saved', overview: { kicker: 'OVERVIEW', title: 'Installed base', modality: 'Equipment by modality', client: 'Equipment by Client', sites: 'Sites by Client', modalitySubtitle: 'Units across the installed base', clientSubtitle: 'Global aggregation, without inventory filters', sitesSubtitle: 'Geographic distribution', empty: 'No data available' }, inventory: { kicker: 'INSTALLED BASE', filters: 'Filters', filter: 'Filter', close: 'Close', all: 'All', country: 'Country', client: 'Client', site: 'Site', modality: 'Modality', brand: 'Brand', model: 'Model', equipment: 'Equipment inventory', evidence: 'Evidence and observations', linked: 'Linked observations', select: 'Select equipment to review its evidence.', unknownLocation: 'No location available', unknownBrand: 'Unknown brand', unknownModel: 'Unknown model', years: 'years', ageUnknown: 'Unknown' }, nav: { overview: 'Overview', capture: 'Capture', inventory: 'Installed base', settings: 'Settings' }, theme: { light: 'Light', dark: 'Dark', system: 'System' } },
-  es: { clients: 'clientes', sites: 'sedes', units: 'unidades', placeholder: 'Dos equipos de MRI en Pacific Hospital, cliente DemoCare, marca NovaMed, modelo N-1', extract: 'Extraer observación', processing: 'Procesando', saved: 'Observación guardada', overview: { kicker: 'RESUMEN', title: 'Base instalada', modality: 'Equipos por modalidad', client: 'Equipos por Client', sites: 'Sites por Client', modalitySubtitle: 'Unidades en toda la base instalada', clientSubtitle: 'Agregación global, sin filtros de inventario', sitesSubtitle: 'Distribución geográfica', empty: 'Sin datos disponibles' }, inventory: { kicker: 'BASE INSTALADA', filters: 'Filtros', filter: 'Filtrar', close: 'Cerrar', all: 'Todos', country: 'País', client: 'Cliente', site: 'Sede', modality: 'Modalidad', brand: 'Marca', model: 'Modelo', equipment: 'Inventario de equipos', evidence: 'Evidencia y observaciones', linked: 'Observaciones vinculadas', select: 'Selecciona un equipo para revisar su evidencia.', unknownLocation: 'Sin ubicación disponible', unknownBrand: 'Marca desconocida', unknownModel: 'Modelo desconocido', years: 'años', ageUnknown: 'Desconocido' }, nav: { overview: 'Resumen', capture: 'Captura', inventory: 'Base instalada', settings: 'Configuración' }, theme: { light: 'Claro', dark: 'Oscuro', system: 'Sistema' } },
-  pt: { clients: 'clientes', sites: 'locais', units: 'unidades', placeholder: 'Dois equipamentos de MRI no Pacific Hospital, cliente DemoCare, marca NovaMed, modelo N-1', extract: 'Extrair observação', processing: 'Processando', saved: 'Observação salva', overview: { kicker: 'RESUMO', title: 'Base instalada', modality: 'Equipamentos por modalidade', client: 'Equipamentos por Client', sites: 'Locais por Client', modalitySubtitle: 'Unidades em toda a base instalada', clientSubtitle: 'Agregação global, sem filtros de inventário', sitesSubtitle: 'Distribuição geográfica', empty: 'Sem dados disponíveis' }, inventory: { kicker: 'BASE INSTALADA', filters: 'Filtros', filter: 'Filtrar', close: 'Fechar', all: 'Todos', country: 'País', client: 'Cliente', site: 'Local', modality: 'Modalidade', brand: 'Marca', model: 'Modelo', equipment: 'Inventário de equipamentos', evidence: 'Evidências e observações', linked: 'Observações vinculadas', select: 'Selecione um equipamento para revisar suas evidências.', unknownLocation: 'Localização indisponível', unknownBrand: 'Marca desconhecida', unknownModel: 'Modelo desconhecido', years: 'anos', ageUnknown: 'Desconhecido' }, nav: { overview: 'Resumo', capture: 'Captura', inventory: 'Base instalada', settings: 'Configurações' }, theme: { light: 'Claro', dark: 'Escuro', system: 'Sistema' } },
+  en: ENGLISH_COPY,
+  es: ENGLISH_COPY,
+  pt: ENGLISH_COPY,
 };
